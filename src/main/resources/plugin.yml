@@ -1,0 +1,190 @@
+name: PvPIndexFactions
+version: '${project.version}'
+main: com.gyvex.pvpindex.factions.PvPIndexFactions
+api-version: '1.21'
+description: A modern factions plugin backed by Jaloquent and optional TeamsAPI integration.
+website: https://modrinth.com/plugin/pvpindex-factions
+authors:
+  - Shadow48402
+  # Original MassiveCraft Factions authors
+  - Madus
+  - Cayorion
+  - Ulumulu1510
+  - MarkehMe
+  - Brettflan
+
+load: STARTUP
+
+softdepend:
+  - TeamsAPI
+  - Vault
+  - WorldGuard
+  - WorldEdit
+  - PlaceholderAPI
+  - Essentials
+  - EssentialsX
+  - dynmap
+  - EzEconomy
+  - LWC
+  - LWCX
+
+commands:
+  f:
+    description: Factions root command.
+    usage: /f <subcommand> [args]
+    aliases:
+      - faction
+      - factions
+  fa:
+    description: Factions admin command.
+    usage: /fa <subcommand> [args]
+    aliases:
+      - factionadmin
+    permission: factions.admin
+
+permissions:
+
+  # Administrative
+  factions.admin:
+    description: Full administrative access to all /fa commands and bypasses.
+    default: op
+    children:
+      factions.bypass: true
+      factions.cmd.claim.other: true
+      factions.cmd.disband.other: true
+
+  factions.bypass:
+    description: Bypass faction territory protection (build, interact, PvP).
+    default: op
+
+  # Faction lifecycle
+  factions.cmd.create:
+    description: Create a new faction.
+    default: true
+
+  factions.cmd.disband:
+    description: Disband own faction.
+    default: true
+
+  factions.cmd.disband.other:
+    description: Force-disband any faction.
+    default: op
+
+  factions.cmd.rename:
+    description: Rename own faction.
+    default: true
+
+  factions.cmd.desc:
+    description: Set own faction description.
+    default: true
+
+  # Information
+  factions.cmd.list:
+    description: List all factions.
+    default: true
+
+  factions.cmd.map:
+    description: View the faction territory map.
+    default: true
+
+  factions.cmd.notify:
+    description: Manage personal faction notification settings.
+    default: true
+
+  factions.cmd.gui:
+    description: Open the factions graphical menu.
+    default: true
+
+  factions.cmd.top:
+    description: View the faction power leaderboard.
+    default: true
+
+  # Membership management
+  factions.cmd.invite:
+    description: Invite players to a faction and manage incoming invites.
+    default: true
+
+  factions.cmd.invite.list:
+    description: List pending faction invitations.
+    default: true
+
+  factions.cmd.invite.revoke:
+    description: Revoke a sent faction invitation.
+    default: true
+
+  factions.cmd.join:
+    description: Join a faction via a pending invite.
+    default: true
+
+  factions.cmd.leave:
+    description: Leave the current faction.
+    default: true
+
+  factions.cmd.kick:
+    description: Kick a member from the faction.
+    default: true
+
+  factions.cmd.promote:
+    description: Promote a faction member one rank.
+    default: true
+
+  factions.cmd.demote:
+    description: Demote a faction member one rank.
+    default: true
+
+  factions.cmd.leader:
+    description: Transfer faction leadership to another member.
+    default: true
+
+  # Relations
+  factions.cmd.relation:
+    description: Set or view faction relations (ally, truce, enemy, neutral).
+    default: true
+
+  # Land management
+  factions.cmd.claim:
+    description: Claim land for own faction.
+    default: true
+
+  factions.cmd.claim.other:
+    description: Force-claim or force-unclaim land for any faction.
+    default: op
+
+  factions.cmd.unclaim:
+    description: Unclaim land from own faction.
+    default: true
+
+  # Home and warps
+  factions.cmd.home:
+    description: Teleport to faction home.
+    default: true
+
+  factions.cmd.sethome:
+    description: Set or remove the faction home.
+    default: true
+
+  factions.cmd.warp:
+    description: Teleport to a faction warp.
+    default: true
+
+  factions.cmd.setwarp:
+    description: Create, update, or delete faction warps.
+    default: true
+
+  # Economy
+  factions.cmd.bank:
+    description: View the faction bank balance and make deposits or withdrawals.
+    default: true
+
+  factions.cmd.bank.transfer:
+    description: Transfer money from own faction bank to another faction.
+    default: op
+
+  factions.cmd.bank.history:
+    description: View faction bank transaction history.
+    default: true
+
+  # Misc
+  factions.cmd.fly:
+    description: Toggle faction flight in own territory.
+    default: true

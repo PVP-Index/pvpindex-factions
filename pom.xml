@@ -1,99 +1,319 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Parent -->
-    <parent>
-        <groupId>com.massivecraft.massivesuper</groupId>
-        <artifactId>MassiveSuper</artifactId>
-        <version>3.3.3</version>
-        <relativePath>../MassiveSuper</relativePath>
-    </parent>
-
-    <!-- Basics -->
-    <groupId>com.massivecraft.factions</groupId>
-    <artifactId>Factions</artifactId>
+    <groupId>com.gyvex.pvpindex</groupId>
+    <artifactId>pvpindex-factions</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <!-- Info -->
-    <name>${project.artifactId}</name>
-    <description>${massiveColorInfo}${project.name} allows the players to team up and claim land as their own and start wars with other factions. This way we hope to inspire politics, intrigue, and team spirit. ${massiveDescriptionSuffix}</description>
-    <url>${massiveBaseUrl}/factions</url>
+    <name>PvPIndex Factions</name>
+    <description>A modern factions plugin backed by Jaloquent and TeamsAPI.</description>
+    <url>https://modrinth.com/plugin/pvpindex-factions</url>
 
-    <!-- Dependencies -->
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License v3.0</name>
+            <url>https://www.gnu.org/licenses/lgpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <properties>
+        <java.version>25</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>vault-repo</id>
+            <url>https://nexus.hc.to/content/repositories/pub_releases</url>
+        </repository>
+        <repository>
+            <id>enginehub</id>
+            <url>https://maven.enginehub.org/repo/</url>
+        </repository>
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
+        <repository>
+            <id>dynmap-repo</id>
+            <url>https://repo.mikeprimm.com/</url>
+            <releases>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencies>
-        <!-- Spigot -->
+        <!-- ===== PROVIDED ===== -->
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
+            <groupId>io.papermc.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>1.21.4-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
-        <!-- MassiveCore -->
         <dependency>
-            <groupId>com.massivecraft.massivecore</groupId>
-            <artifactId>MassiveCore</artifactId>
+            <groupId>com.github.ez-plugins</groupId>
+            <artifactId>teams-api</artifactId>
+            <version>1.3.0</version>
+            <scope>provided</scope>
         </dependency>
-        <!-- WorldEdit -->
         <dependency>
-            <groupId>com.sk89q.worldedit</groupId>
-            <artifactId>worldedit-core</artifactId>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
-        </dependency>
-        <!-- WorldGuard -->
-        <dependency>
-            <groupId>com.sk89q.worldguard</groupId>
-            <artifactId>worldguard-core</artifactId>
+            <version>7.3.9</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-bukkit</artifactId>
+            <version>7.0.12</version>
+            <scope>provided</scope>
         </dependency>
-        <!-- Vault -->
         <dependency>
-            <groupId>net.milkbowl.vault</groupId>
-            <artifactId>Vault</artifactId>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.11.6</version>
+            <scope>provided</scope>
         </dependency>
-        <!-- LWC -->
         <dependency>
-            <groupId>com.griefcraft</groupId>
-            <artifactId>lwc</artifactId>
+            <groupId>us.dynmap</groupId>
+            <artifactId>dynmap-api</artifactId>
+            <version>3.4-beta-3</version>
+            <scope>provided</scope>
         </dependency>
-        <!-- PlaceholderAPI -->
+
+        <!-- ===== COMPILE (shaded into final JAR) ===== -->
         <dependency>
-          <groupId>me.clip</groupId>
-          <artifactId>placeholderapi</artifactId>
+            <groupId>com.github.EzFramework</groupId>
+            <artifactId>Jaloquent</artifactId>
+            <version>1.3.0</version>
+            <scope>compile</scope>
         </dependency>
-        <!-- MineverseChat/VentureChat -->
         <dependency>
-          <groupId>mineverse.Aust1n46.chat</groupId>
-          <artifactId>MineverseChat</artifactId>
+            <groupId>com.github.EzFramework</groupId>
+            <artifactId>JavaQueryBuilder</artifactId>
+            <version>1.2.0</version>
+            <scope>compile</scope>
         </dependency>
-        <!-- Dynmap -->
+        <!--
+          H2 embedded database. Opened in MySQL-compatibility mode so that
+          Jaloquent's "INSERT … ON DUPLICATE KEY UPDATE" upsert syntax works
+          without requiring a remote MySQL server.
+        -->
         <dependency>
-          <groupId>us.dynmap</groupId>
-          <artifactId>dynmap</artifactId>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.3.232</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>6.2.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <!--
+          MySQL Connector/J — bundled so the plugin works with a remote
+          MySQL server without requiring the driver to be present on the
+          server classpath. Relocated to avoid conflicts.
+        -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>9.1.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- ===== TEST ===== -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.11.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.14.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>5.14.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
-    <!-- Build -->
     <build>
-        <!-- Resources -->
+        <defaultGoal>package</defaultGoal>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+
         <resources>
-            <!-- Standard -->
             <resource>
-                <directory>${project.basedir}</directory>
+                <directory>src/main/resources</directory>
                 <filtering>true</filtering>
-                <includes>
-                    <include>*.yml</include>
-                </includes>
-            </resource>
-            <!-- OpenSource -->
-            <resource>
-                <directory>${project.build.sourceDirectory}</directory>
-                <filtering>false</filtering>
             </resource>
         </resources>
-    </build>
 
+        <plugins>
+            <!-- Java 21 bytecode — Paper 1.21.4 minimum; runs on Java 21+ including Java 25 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.14.0</version>
+                <configuration>
+                    <release>21</release>
+                    <encoding>UTF-8</encoding>
+                    <!-- Workaround for intermittent Maven compiler incremental cache crash:
+                         "Cannot load from object array because \"this.hashes\" is null" -->
+                    <useIncrementalCompilation>false</useIncrementalCompilation>
+                    <fork>true</fork>
+                </configuration>
+            </plugin>
+
+            <!-- Bundle + relocate shaded libs to avoid classpath conflicts -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.6.0</version>
+                <!-- Override ASM to 9.8 which supports Java 25 (class file version 69) -->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm</artifactId>
+                        <version>9.8</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm-commons</artifactId>
+                        <version>9.8</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <relocations>
+                        <relocation>
+                            <pattern>com.github.ezframework.jaloquent</pattern>
+                            <shadedPattern>com.gyvex.pvpindex.lib.jaloquent</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.github.ezframework.javaquerybuilder</pattern>
+                            <shadedPattern>com.gyvex.pvpindex.lib.javaquerybuilder</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.zaxxer.hikari</pattern>
+                            <shadedPattern>com.gyvex.pvpindex.lib.hikari</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.h2</pattern>
+                            <shadedPattern>com.gyvex.pvpindex.lib.h2</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.mysql</pattern>
+                            <shadedPattern>com.gyvex.pvpindex.lib.mysql</shadedPattern>
+                        </relocation>
+                    </relocations>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                                <exclude>META-INF/MANIFEST.MF</exclude>
+                                <!-- Driver SPI not needed: we set driverClassName explicitly in HikariCP -->
+                                <exclude>META-INF/services/java.sql.Driver</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+            </plugin>
+
+            <!-- JUnit 5 runner -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.2</version>
+                <configuration>
+                    <!-- Java 25: allow Mockito byte-buddy agent to self-attach -->
+                    <argLine>-XX:+EnableDynamicAgentLoading -Djdk.attach.allowAttachSelf=true</argLine>
+                </configuration>
+            </plugin>
+
+            <!-- Coverage reports for Codecov -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Checkstyle (violations fail at verify phase) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <failOnViolation>true</failOnViolation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>checkstyle-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -1,0 +1,99 @@
+gui:
+  enabled: true
+  default-menu: main
+  menus:
+    main:
+      title: "<gradient:#f6d365:#fda085><bold>Factions Control</bold></gradient>"
+      size: 54
+      items:
+        info:
+          slot: 10
+          material: BOOK
+          name: "<gold><bold>Your Faction</bold></gold>"
+          lore:
+            - "<gray>Faction: <white>{faction}</white>"
+            - "<gray>Members: <white>{faction_members}</white>"
+            - "<gray>Land: <white>{faction_land}</white>"
+            - "<gray>Bank: <white>${faction_bank}</white>"
+            - "<dark_gray>Open detailed faction info"
+          action: RUN_COMMAND
+          command: "/f info"
+        map:
+          slot: 12
+          material: FILLED_MAP
+          name: "<aqua><bold>Territory Map</bold></aqua>"
+          lore:
+            - "<gray>Open a live territorial map."
+            - "<dark_gray>Click to run /f map"
+          action: RUN_COMMAND
+          command: "/f map"
+        claim:
+          slot: 14
+          material: GRASS_BLOCK
+          name: "<green><bold>Claim Current Chunk</bold></green>"
+          lore:
+            - "<gray>Claim where you are standing."
+            - "<dark_gray>Fast claim action"
+          action: RUN_COMMAND
+          command: "/f claim"
+        unclaim:
+          slot: 16
+          material: BARRIER
+          name: "<red><bold>Unclaim Current Chunk</bold></red>"
+          lore:
+            - "<gray>Unclaim where you are standing."
+            - "<dark_gray>Fast unclaim action"
+          action: RUN_COMMAND
+          command: "/f unclaim"
+        invites:
+          slot: 28
+          material: WRITABLE_BOOK
+          name: "<yellow><bold>Invitations</bold></yellow>"
+          lore:
+            - "<gray>Review and accept pending invites."
+            - "<dark_gray>Opens invite list"
+          action: RUN_COMMAND
+          command: "/f join"
+        home:
+          slot: 30
+          material: LODESTONE
+          name: "<gold><bold>Faction Home</bold></gold>"
+          lore:
+            - "<gray>Teleport to your faction home."
+            - "<dark_gray>Click to run /f home"
+          action: RUN_COMMAND
+          command: "/f home"
+        warps:
+          slot: 32
+          material: ENDER_PEARL
+          name: "<light_purple><bold>Warps</bold></light_purple>"
+          lore:
+            - "<gray>View and use faction warps."
+            - "<dark_gray>Click to run /f warp list"
+          action: RUN_COMMAND
+          command: "/f warp list"
+        top:
+          slot: 34
+          material: NETHER_STAR
+          name: "<#3ddad7><bold>Top Factions</bold></#3ddad7>"
+          lore:
+            - "<gray>Open the faction leaderboard."
+            - "<dark_gray>Click to run /f top"
+          action: RUN_COMMAND
+          command: "/f top"
+        your-power:
+          slot: 49
+          material: PLAYER_HEAD
+          name: "<white><bold>{player}</bold></white>"
+          glow: true
+          lore:
+            - "<gray>Power: <white>{power}</white><gray>/<white>{max_power}</white>"
+            - "<dark_gray>Personal faction status"
+          action: REFRESH
+        close:
+          slot: 53
+          material: STRUCTURE_VOID
+          name: "<red><bold>Close</bold></red>"
+          lore:
+            - "<gray>Close this menu."
+          action: CLOSE
