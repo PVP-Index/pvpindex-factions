@@ -32,12 +32,27 @@ public final class CmdHelp extends FactionCommand {
 
     @Override
     protected void perform(final CommandContext ctx) {
-        MsgUtil.sendKey(ctx.getSender(), "help.title", "<gradient:#f6d365:#fda085><bold>PvPIndex Factions Help</bold></gradient>");
+        MsgUtil.sendKey(
+            ctx.getSender(),
+            "help.title",
+            "<gradient:#f6d365:#fda085><bold>PvPIndex Factions Help</bold></gradient>");
         MsgUtil.sendKey(ctx.getSender(), "help.start-here", "<gray>Start here:");
-        MsgUtil.sendKey(ctx.getSender(), "help.start-step-1", "<gray>1) <white>/f create <name></white> <dark_gray>- create your faction");
-        MsgUtil.sendKey(ctx.getSender(), "help.start-step-2", "<gray>2) <white>/f invite <player></white> <dark_gray>- recruit your team");
-        MsgUtil.sendKey(ctx.getSender(), "help.start-step-3", "<gray>3) <white>/f claim</white> <dark_gray>- claim your first chunk");
-        MsgUtil.sendKey(ctx.getSender(), "help.start-step-4", "<gray>4) <white>/f sethome</white> <dark_gray>- set your base home");
+        MsgUtil.sendKey(
+            ctx.getSender(),
+            "help.start-step-1",
+            "<gray>1) <white>/f create <name></white> <dark_gray>- create your faction");
+        MsgUtil.sendKey(
+            ctx.getSender(),
+            "help.start-step-2",
+            "<gray>2) <white>/f invite <player></white> <dark_gray>- recruit your team");
+        MsgUtil.sendKey(
+            ctx.getSender(),
+            "help.start-step-3",
+            "<gray>3) <white>/f claim</white> <dark_gray>- claim your first chunk");
+        MsgUtil.sendKey(
+            ctx.getSender(),
+            "help.start-step-4",
+            "<gray>4) <white>/f sethome</white> <dark_gray>- set your base home");
         MsgUtil.sendKey(ctx.getSender(), "help.separator", "<dark_gray>----------------------------------------");
 
         sendSection(ctx, "Core", List.of("help", "info", "list", "map", "top", "gui"));
@@ -48,9 +63,18 @@ public final class CmdHelp extends FactionCommand {
 
         if (ctx.getSender().hasPermission("factions.cmd.kick")) {
             MsgUtil.sendKey(ctx.getSender(), "help.officer-title", "<gold>Officer/Moderator Tips</gold>");
-            MsgUtil.sendKey(ctx.getSender(), "help.officer-line-1", "<gray>- Manage invites: <white>/f invite list|revoke|declineall</white>");
-            MsgUtil.sendKey(ctx.getSender(), "help.officer-line-2", "<gray>- Manage roles: <white>/f promote</white>, <white>/f demote</white>, <white>/f leader</white>");
-            MsgUtil.sendKey(ctx.getSender(), "help.officer-line-3", "<gray>- Protect territory: <white>/f claim auto on</white> or <white>/f unclaim auto on</white>");
+            MsgUtil.sendKey(
+                ctx.getSender(),
+                "help.officer-line-1",
+                "<gray>- Manage invites: <white>/f invite list|revoke|declineall</white>");
+            MsgUtil.sendKey(
+                ctx.getSender(),
+                "help.officer-line-2",
+                "<gray>- Manage roles: <white>/f promote</white>, <white>/f demote</white>, <white>/f leader</white>");
+            MsgUtil.sendKey(
+                ctx.getSender(),
+                "help.officer-line-3",
+                "<gray>- Protect territory: <white>/f claim auto on</white> or <white>/f unclaim auto on</white>");
         }
 
         if (ctx.getSender().hasPermission("factions.admin")) {

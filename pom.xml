@@ -184,13 +184,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.14.0</version>
                 <configuration>
                     <release>21</release>
                     <encoding>UTF-8</encoding>
                     <!-- Workaround for intermittent Maven compiler incremental cache crash:
                          "Cannot load from object array because \"this.hashes\" is null" -->
                     <useIncrementalCompilation>false</useIncrementalCompilation>
+                    <fork>true</fork>
                 </configuration>
             </plugin>
 

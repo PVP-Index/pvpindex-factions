@@ -50,6 +50,16 @@ public final class MsgUtil {
         sender.sendMessage(MINI.deserialize(message));
     }
 
+    /**
+     * Send an Adventure {@link Component} directly to a {@link CommandSender}.
+     *
+     * @param sender    recipient
+     * @param component pre-built component
+     */
+    public static void send(final CommandSender sender, final Component component) {
+        sender.sendMessage(component);
+    }
+
     public static void sendKey(
             final CommandSender sender,
             final String key,
@@ -62,16 +72,6 @@ public final class MsgUtil {
     public static String message(final String key, final String fallback) {
         final MessagesConfig cfg = messagesConfig;
         return cfg == null ? fallback : cfg.get(key, fallback);
-    }
-
-    /**
-     * Send an Adventure {@link Component} directly to a {@link CommandSender}.
-     *
-     * @param sender    recipient
-     * @param component pre-built component
-     */
-    public static void send(final CommandSender sender, final Component component) {
-        sender.sendMessage(component);
     }
 
     /**
