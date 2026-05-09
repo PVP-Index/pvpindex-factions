@@ -51,6 +51,12 @@
         <repository>
             <id>dynmap-repo</id>
             <url>https://repo.mikeprimm.com/</url>
+            <releases>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -268,7 +274,6 @@
                     <configLocation>checkstyle.xml</configLocation>
                     <failOnViolation>true</failOnViolation>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                    <encoding>UTF-8</encoding>
                 </configuration>
                 <executions>
                     <execution>
