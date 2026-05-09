@@ -1,0 +1,29 @@
+# PvPIndex Factions — Database Configuration
+# Changes require a server restart.
+
+# "h2"    → embedded file-based database (default, no external server required)
+#            Opened in MySQL-compatibility mode so that Jaloquent's
+#            upsert syntax works out of the box.
+# "mysql" → remote MySQL / MariaDB server
+type: h2
+
+# H2 settings (used when type is "h2")
+h2:
+  # Path relative to the plugin data folder (plugins/PvPIndexFactions/).
+  file: data/factions
+
+# MySQL / MariaDB settings (used when type is "mysql")
+mysql:
+  host: localhost
+  port: 3306
+  database: factions
+  username: root
+  password: ""
+  pool-size: 10
+
+# Debug options
+debug:
+  # Print every SQL query Jaloquent executes to the console.
+  # Requires an SLF4J provider on the classpath (e.g. slf4j-jdk14).
+  # Keep false in production — it generates a lot of output.
+  jaloquent-logging: false

@@ -1,0 +1,154 @@
+# PvPIndex Factions — Messages
+# All values support MiniMessage formatting tags: <red>, <gold>, <bold>, etc.
+# See https://docs.advntr.dev/minimessage/format.html
+
+prefix: "<gray>[<gold>Factions</gold>]</gray> "
+
+general:
+  no-permission: "<red>You don't have permission to do that."
+  player-only: "<red>This command can only be run by a player."
+  invalid-args: "<red>Usage: {usage}"
+  unknown-subcommand: "<red>Unknown sub-command. Try <yellow>/f help</yellow>."
+  faction-not-found: "<red>Faction <yellow>{name}</yellow> not found."
+  player-not-found: "<red>Player <yellow>{name}</yellow> not found."
+  not-in-faction: "<red>You are not in a faction."
+  must-be-leader: "<red>Only the faction leader can do that."
+  must-be-officer: "<red>Only officers or above can do that."
+  economy-disabled: "<red>The economy integration is not available."
+  cancelled: "<red>Action cancelled."
+  unknown-subcommand-detailed: "<red>Unknown command '<yellow>{input}<red>'. "
+  help-hover: "<gray>Click to view all faction commands"
+
+help:
+  title: "<gradient:#f6d365:#fda085><bold>PvPIndex Factions Help</bold></gradient>"
+  start-here: "<gray>Start here:"
+  start-step-1: "<gray>1) <white>/f create <name></white> <dark_gray>- create your faction"
+  start-step-2: "<gray>2) <white>/f invite <player></white> <dark_gray>- recruit your team"
+  start-step-3: "<gray>3) <white>/f claim</white> <dark_gray>- claim your first chunk"
+  start-step-4: "<gray>4) <white>/f sethome</white> <dark_gray>- set your base home"
+  separator: "<dark_gray>----------------------------------------"
+  section:
+    core: "<gold>Core</gold>"
+    faction-setup: "<gold>Faction Setup</gold>"
+    members-and-invites: "<gold>Members & Invites</gold>"
+    land-and-navigation: "<gold>Land & Navigation</gold>"
+    economy-and-utility: "<gold>Economy & Utility</gold>"
+  officer-title: "<gold>Officer/Moderator Tips</gold>"
+  officer-line-1: "<gray>- Manage invites: <white>/f invite list|revoke|declineall</white>"
+  officer-line-2: "<gray>- Manage roles: <white>/f promote</white>, <white>/f demote</white>, <white>/f leader</white>"
+  officer-line-3: "<gray>- Protect territory: <white>/f claim auto on</white> or <white>/f unclaim auto on</white>"
+  admin-title: "<red><bold>Admin Commands</bold></red>"
+  tip-notify: "<dark_gray>Tip: <gray>Use <white>/f notify status</white> to manage your notifications."
+  entry-line: "<yellow>{usage}<gray> - {description}"
+  entry-hover: "<gray>{description}<newline><dark_gray>Click to suggest command"
+
+faction:
+  created: "<green>Faction <yellow>{name}</yellow> created."
+  name-taken: "<red>That faction name is already taken."
+  name-too-short: "<red>Faction name must be at least 3 characters."
+  name-too-long: "<red>Faction name may be at most 32 characters."
+  name-invalid: "<red>Faction name may only contain letters, digits, underscores, and hyphens."
+  disbanded: "<red>Faction <yellow>{name}</yellow> has been disbanded."
+  disband-confirm: "<yellow>Are you sure you want to disband your faction? Run the command again within 30 seconds to confirm."
+  already-in-faction: "<red>You are already in a faction."
+  cost-to-create: "<yellow>Creating a faction costs <gold>{cost}</gold>. You have <gold>{balance}</gold>."
+  not-enough-money-create: "<red>You cannot afford to create a faction (costs {cost})."
+
+member:
+  joined: "<green>You joined faction <yellow>{faction}</yellow>."
+  player-joined: "<green>{player} joined your faction."
+  left: "<yellow>You left faction <yellow>{faction}</yellow>."
+  player-left: "<yellow>{player} left your faction."
+  kicked: "<red>You were kicked from <yellow>{faction}</yellow> by <yellow>{kicker}</yellow>."
+  player-kicked: "<yellow>{player} was kicked by {kicker}."
+  not-member: "<red>{player} is not a member of your faction."
+  cannot-kick-self: "<red>You cannot kick yourself."
+  cannot-kick-leader: "<red>You cannot kick the faction leader."
+
+invite:
+  sent: "<green>Invite sent to <yellow>{player}</yellow>."
+  received: "<yellow>{player} has invited you to join <gold>{faction}</gold>. Type <green>/f join {faction}</green> to accept."
+  summary: "<gold>You have <white>{count}</white> pending faction invite(s):"
+  summary-line: "<yellow>- <white>{faction}</white> <gray>(invited by <white>{inviter}</white>)"
+  accepted: "<green>You accepted the invite to <yellow>{faction}</yellow>."
+  declined: "<yellow>You declined the invite to <yellow>{faction}</yellow>."
+  expired: "<red>Your invite to <yellow>{faction}</yellow> has expired."
+  already-invited: "<red>{player} already has a pending invite."
+  not-invited: "<red>You don't have a pending invite from that faction."
+  no-invite-pending: "<red>You don't have any pending invites."
+  received-short: "<yellow>{faction}<gray> has invited you to their faction! "
+  accept-hover: "<green>Click to join <white>{faction}"
+  decline-hover: "<red>Simply ignore to decline"
+
+claim:
+  claimed: "<green>You claimed this chunk for <yellow>{faction}</yellow>."
+  unclaimed: "<yellow>You unclaimed this chunk."
+  unclaimed-all: "<yellow>Unclaimed all land for <yellow>{faction}</yellow>."
+  already-claimed: "<red>This chunk is already claimed by <yellow>{faction}</yellow>."
+  not-your-land: "<red>You cannot unclaim land that doesn't belong to your faction."
+  not-enough-power: "<red>Your faction doesn't have enough power to claim more land."
+  no-border: "<red>You must claim land that borders your existing territory or the wilderness."
+  cannot-claim-safezone: "<red>You cannot claim a safe zone or war zone."
+  cost-per-chunk: "<yellow>Claiming this chunk costs <gold>{cost}</gold>. You have <gold>{balance}</gold>."
+  not-enough-money-claim: "<red>Your faction cannot afford to claim this chunk (costs {cost})."
+  enter-faction: "<gray>Entering <yellow>{faction}</yellow> territory."
+  enter-wilderness: "<gray>Entering <green>Wilderness</green>."
+  enter-safezone: "<gray>Entering <aqua>Safe Zone</aqua>."
+  enter-warzone: "<gray>Entering <red>War Zone</red>."
+
+bank:
+  balance: "<gold>Faction bank balance: <yellow>{balance}</yellow>."
+  deposited: "<green>Deposited <yellow>{amount}</yellow>. New balance: <yellow>{balance}</yellow>."
+  withdrew: "<green>Withdrew <yellow>{amount}</yellow>. New balance: <yellow>{balance}</yellow>."
+  transferred: "<green>Transferred <yellow>{amount}</yellow> from <yellow>{from}</yellow> to <yellow>{to}</yellow>."
+  insufficient-funds: "<red>Insufficient funds. Bank balance: <yellow>{balance}</yellow>."
+  invalid-amount: "<red>Amount must be a positive number."
+  tax-charged: "<gold>Faction bank tax charged: <yellow>{amount}<gold>. New bank: <yellow>{balance}<gold>."
+
+home:
+  set: "<green>Faction home set to your current location."
+  teleporting: "<yellow>Teleporting to faction home…"
+  no-home: "<red>Your faction has not set a home."
+  set-in-own-territory: "<red>Faction home must be set inside your own territory."
+
+warp:
+  set: "<green>Warp <yellow>{name}</yellow> set."
+  deleted: "<yellow>Warp <yellow>{name}</yellow> deleted."
+  not-found: "<red>Warp <yellow>{name}</yellow> not found."
+  teleporting: "<yellow>Teleporting to warp <yellow>{name}</yellow>…"
+  limit-reached: "<red>Your faction has reached the maximum number of warps ({max})."
+  set-in-own-territory: "<red>Warps must be set inside your own territory."
+
+relation:
+  set: "<green>You set your relation with <yellow>{faction}</yellow> to <yellow>{relation}</yellow>."
+  updated: "<yellow>Your relation with <yellow>{faction}</yellow> is now <yellow>{relation}</yellow>."
+  cannot-set-self: "<red>You cannot set a relation with your own faction."
+
+power:
+  too-low-raid: "<red>Your faction does not have enough power — your land can be raided!"
+
+fly:
+  enabled: "<green>Faction fly enabled."
+  disabled: "<yellow>Faction fly disabled."
+  left-territory: "<red>Faction fly disabled — you left your territory."
+  enemy-nearby: "<red>Faction fly disabled — enemy nearby."
+
+lwc:
+  stale-protection-removed: "<yellow>Removed stale LWC protection because the owner no longer has build rights."
+
+info:
+  header: "<gold>===== <yellow>{name}</yellow> ====="
+  leader: "<gray>Leader: <white>{leader}"
+  members: "<gray>Members: <white>{count}/{max}"
+  power: "<gray>Power: <white>{power}/{max_power}"
+  land: "<gray>Land: <white>{land}"
+  balance: "<gray>Bank: <white>{balance}"
+  home: "<gray>Home: <white>{home}"
+  relation: "<gray>Your relation: <white>{relation}"
+  allies: "<gray>Allies: <white>{allies}"
+  description: "<gray>Description: <white>{description}"
+
+admin:
+  bypass-enabled: "<gold>[Admin] Bypass enabled."
+  bypass-disabled: "<gold>[Admin] Bypass disabled."
+  reload: "<green>Configuration reloaded."

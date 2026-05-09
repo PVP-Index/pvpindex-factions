@@ -1,0 +1,105 @@
+# PvPIndex Factions — Configuration
+# Restart required for most changes. Reload with /fa reload.
+# Database settings have moved to database.yml.
+
+factions:
+  max-members: 50
+  max-warps: 10
+  max-allies: 5
+  max-truces: 5
+  invites:
+    # Pending invite lifetime. Expired invites are auto-pruned on login/list/join.
+    ttl-hours: 72
+
+  power:
+    # Maximum power each online player contributes to the faction.
+    per-player-max: 10.0
+    # Power regenerated per second while the player is online.
+    regen-per-second: 0.1
+    # Power lost when a player dies in enemy or war-zone territory.
+    loss-on-death: 4.0
+    # Seconds after server start before power-loss on death is enforced.
+    grace-period-seconds: 3600
+    # Interval between power-tick updates.
+    tick-interval-seconds: 60
+
+  map:
+    # Radius used by /f map once rendering.
+    once-radius: 2
+
+  list:
+    # Entries per page for /f list.
+    page-size: 8
+
+  top:
+    # Entries per page for /f top.
+    page-size: 8
+
+  land:
+    # Minimum buffer (in chunks) between two enemy factions' territory.
+    # 0 = disabled.
+    buffer-zone: 0
+    # A single /f claim command may claim at most this many chunks
+    # when using fill/circle/square modes.
+    max-per-command: 200
+
+  economy:
+    enabled: true
+    # Cost (in server economy units) to create a faction.
+    cost-create: 50.0
+    # Cost per chunk claimed.
+    cost-claim: 100.0
+
+    tax:
+      enabled: false
+      # Fraction of faction bank balance deducted each interval.
+      rate: 0.05
+      interval-hours: 24
+      # Do not tax factions with bank below this amount.
+      min-bank-balance: 0.0
+      # Skip tiny deductions below this amount.
+      min-charge-amount: 0.01
+      # Notify online members when tax is charged.
+      notify-members: true
+    bank:
+      history:
+        # Entries per page for /f bank history.
+        page-size: 8
+
+  warp:
+    list:
+      # Entries per page for /f warp list.
+      page-size: 8
+
+  fly:
+    enabled: true
+    # Cancel faction flight when an enemy enters the chunk.
+    disable-on-threat: true
+    # Players can only fly inside their own faction's territory.
+    require-own-territory: true
+
+  chat:
+    # Show faction tag before player name in global chat.
+    show-tag: true
+    # MiniMessage format — placeholders: {faction_name}, {rank_prefix}
+    tag-format: "<gray>[<gold>{faction_name}</gold>]</gray> "
+
+# Soft-integration toggles. The plugin checks for the provider plugin at startup
+# and gracefully disables the integration if it is absent.
+integrations:
+  vault: true
+  worldguard: true
+  dynmap: true
+  placeholderapi: true
+  essentialsx:
+    # When true and EssentialsX is installed, /f home teleports through EssentialsX.
+    enabled: false
+  lwc:
+    # Master toggle for LWC/LWCX interop.
+    enabled: true
+    # Block creating protections when the creator lacks faction build rights.
+    require-build-rights-to-create: true
+    # Remove stale protections on interact when owner no longer has build rights.
+    remove-if-no-build-rights: true
+    # Remove alien protections after successful chunk ownership changes.
+    remove-on-claim-change: true
