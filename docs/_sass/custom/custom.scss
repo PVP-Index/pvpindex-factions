@@ -16,3 +16,31 @@
 .main-content code {
   border-radius: 4px;
 }
+
+.side-bar,
+.site-header {
+  box-shadow: none;
+}
+
+.nav-list .nav-list-item .nav-list-link {
+  color: #d7e8f2;
+  text-shadow: none;
+}
+
+.nav-list .nav-list-item .nav-list-link:hover,
+.nav-list .nav-list-item .nav-list-link.active {
+  color: #93f0bd;
+  background: rgba(147, 240, 189, 0.12);
+  text-shadow: none;
+}
+
+.main-content pre,
+.main-content code {
+  background: #111b22;
+  color: #d8ecf8;
+  border: 1px solid #223743;
+}
+
+.main-content pre code {
+  border: 0;
+}

@@ -5,7 +5,7 @@ description: >-
   Professional, operator-focused documentation for installing, configuring,
   and running PvPIndex Factions on Paper servers.
 
-url: "https://gyvex.github.io"
+url: "https://pvp-index.github.io"
 baseurl: "/pvpindex-factions"
 
 color_scheme: pvpindex
@@ -13,9 +13,9 @@ heading_anchors: true
 
 aux_links:
   "GitHub":
-    - "https://github.com/gyvex/pvpindex-factions"
+    - "https://github.com/PVP-Index/pvpindex-factions"
   "Releases":
-    - "https://github.com/gyvex/pvpindex-factions/releases"
+    - "https://github.com/PVP-Index/pvpindex-factions/releases"
 
 aux_links_new_tab: true
 nav_sort: case_insensitive

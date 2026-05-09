@@ -5,7 +5,7 @@
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.gyvex.pvpindex</groupId>
+    <groupId>com.pvpindex</groupId>
     <artifactId>pvpindex-factions</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -226,23 +226,23 @@
                     <relocations>
                         <relocation>
                             <pattern>com.github.ezframework.jaloquent</pattern>
-                            <shadedPattern>com.gyvex.pvpindex.lib.jaloquent</shadedPattern>
+                            <shadedPattern>com.pvpindex.lib.jaloquent</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.github.ezframework.javaquerybuilder</pattern>
-                            <shadedPattern>com.gyvex.pvpindex.lib.javaquerybuilder</shadedPattern>
+                            <shadedPattern>com.pvpindex.lib.javaquerybuilder</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.zaxxer.hikari</pattern>
-                            <shadedPattern>com.gyvex.pvpindex.lib.hikari</shadedPattern>
+                            <shadedPattern>com.pvpindex.lib.hikari</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.h2</pattern>
-                            <shadedPattern>com.gyvex.pvpindex.lib.h2</shadedPattern>
+                            <shadedPattern>com.pvpindex.lib.h2</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.mysql</pattern>
-                            <shadedPattern>com.gyvex.pvpindex.lib.mysql</shadedPattern>
+                            <shadedPattern>com.pvpindex.lib.mysql</shadedPattern>
                         </relocation>
                     </relocations>
                     <filters>

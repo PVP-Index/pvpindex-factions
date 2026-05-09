@@ -1,6 +1,6 @@
 name: PvPIndexFactions
 version: '${project.version}'
-main: com.gyvex.pvpindex.factions.PvPIndexFactions
+main: com.pvpindex.factions.PvPIndexFactions
 api-version: '1.21'
 description: A modern factions plugin backed by Jaloquent and optional TeamsAPI integration.
 website: https://modrinth.com/plugin/pvpindex-factions

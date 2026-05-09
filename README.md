@@ -211,7 +211,7 @@ Refactor attribution: this modern PvPIndex refactor is maintained by the **PvPIn
 
 ### Third-Party Components
 
-The distributed plugin jar bundles the following libraries, relocated under `com.gyvex.pvpindex.lib`:
+The distributed plugin jar bundles the following libraries, relocated under `com.pvpindex.lib`:
 
 | Library | License |
 |---|---|
