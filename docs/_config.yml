@@ -1,0 +1,49 @@
+remote_theme: just-the-docs/just-the-docs
+
+title: PvPIndex Factions Docs
+description: >-
+  Professional, operator-focused documentation for installing, configuring,
+  and running PvPIndex Factions on Paper servers.
+
+url: "https://gyvex.github.io"
+baseurl: "/pvpindex-factions"
+
+color_scheme: pvpindex
+heading_anchors: true
+
+aux_links:
+  "GitHub":
+    - "https://github.com/gyvex/pvpindex-factions"
+  "Releases":
+    - "https://github.com/gyvex/pvpindex-factions/releases"
+
+aux_links_new_tab: true
+nav_sort: case_insensitive
+
+search_enabled: true
+search:
+  heading_level: 2
+  previews: 3
+  preview_words_before: 5
+  preview_words_after: 10
+  tokenizer_separator: /[\s/]+/
+
+back_to_top: true
+back_to_top_text: "Back to top"
+
+footer_content: >-
+  PvPIndex Factions documentation.
+  Distributed under LGPL-3.0.
+
+kramdown:
+  syntax_highlighter_opts:
+    block:
+      line_numbers: false
+
+plugins:
+  - jekyll-remote-theme
+  - jekyll-seo-tag
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
