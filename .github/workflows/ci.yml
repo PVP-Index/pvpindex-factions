@@ -30,6 +30,14 @@ jobs:
       - name: Build and run tests
         run: mvn --batch-mode --no-transfer-progress verify
 
+      - name: Upload coverage to Codecov
+        if: matrix.java == '21'
+        uses: codecov/codecov-action@v4
+        with:
+          files: target/site/jacoco/jacoco.xml
+          fail_ci_if_error: false
+          verbose: true
+
       - name: Upload JAR artifact
         if: matrix.java == '25'
         uses: actions/upload-artifact@v4
