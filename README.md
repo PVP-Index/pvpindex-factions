@@ -199,6 +199,9 @@ See [licenses/LGPL.txt](licenses/LGPL.txt) and [licenses/LICENCE.txt](licenses/L
 This project is a derivative work of [MassiveCraft Factions](https://github.com/MassiveCraft/Factions),
 copyright MassiveCraft, also distributed under LGPL-3.0.
 
+Refactor attribution: this modern PvPIndex refactor is maintained by the **PvPIndex.com team**
+(Shadow48402, Epildev).
+
 ### Third-Party Components
 
 The distributed plugin jar bundles the following libraries, relocated under `com.gyvex.pvpindex.lib`:
