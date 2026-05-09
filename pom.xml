@@ -108,7 +108,7 @@
         <!-- ===== COMPILE (shaded into final JAR) ===== -->
         <dependency>
             <groupId>com.github.EzFramework</groupId>
-            <artifactId>jaloquent</artifactId>
+            <artifactId>Jaloquent</artifactId>
             <version>1.2.1</version>
             <scope>compile</scope>
         </dependency>
