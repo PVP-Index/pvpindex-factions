@@ -109,7 +109,7 @@
         <dependency>
             <groupId>com.github.EzFramework</groupId>
             <artifactId>Jaloquent</artifactId>
-            <version>1.2.1</version>
+            <version>1.2.2</version>
             <scope>compile</scope>
         </dependency>
         <!--
@@ -263,6 +263,28 @@
                     <!-- Java 25: allow Mockito byte-buddy agent to self-attach -->
                     <argLine>-XX:+EnableDynamicAgentLoading -Djdk.attach.allowAttachSelf=true</argLine>
                 </configuration>
+            </plugin>
+
+            <!-- Coverage reports for Codecov -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Checkstyle (violations fail at verify phase) -->
