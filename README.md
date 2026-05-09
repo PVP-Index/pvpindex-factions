@@ -7,6 +7,13 @@ A modern factions plugin for Paper 1.21.4, backed by Jaloquent persistence and o
 
 ---
 
+## Documentation
+
+Project documentation for server owners is available in [`/docs`](docs) and is
+published through the GitHub Pages docs workflow.
+
+---
+
 ## Requirements
 
 | Requirement | Version |
