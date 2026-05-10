@@ -79,27 +79,32 @@ public final class ServicesBootstrapComponent extends AbstractBootstrapComponent
     public void stop(final BootstrapContext context) {
         if (context.getTeamsAdapter() != null) {
             try {
-                com.skyblockexp.teamsapi.api.TeamsAPI.unregisterProvider(context.getTeamsAdapter());
+                com.skyblockexp.teamsapi.api.TeamsAPI.unregisterProvider(
+                    (com.skyblockexp.teamsapi.api.TeamsService) context.getTeamsAdapter());
             } catch (Exception ignored) { }
         }
         if (context.getInviteAdapter() != null) {
             try {
-                com.skyblockexp.teamsapi.api.TeamsAPI.unregisterInviteProvider(context.getInviteAdapter());
+                com.skyblockexp.teamsapi.api.TeamsAPI.unregisterInviteProvider(
+                    (com.skyblockexp.teamsapi.api.TeamsInviteService) context.getInviteAdapter());
             } catch (Exception ignored) { }
         }
         if (context.getWarpAdapter() != null) {
             try {
-                com.skyblockexp.teamsapi.api.TeamsAPI.unregisterWarpProvider(context.getWarpAdapter());
+                com.skyblockexp.teamsapi.api.TeamsAPI.unregisterWarpProvider(
+                    (com.skyblockexp.teamsapi.api.TeamsWarpService) context.getWarpAdapter());
             } catch (Exception ignored) { }
         }
         if (context.getClaimAdapter() != null) {
             try {
-                com.skyblockexp.teamsapi.api.TeamsAPI.unregisterClaimProvider(context.getClaimAdapter());
+                com.skyblockexp.teamsapi.api.TeamsAPI.unregisterClaimProvider(
+                    (com.skyblockexp.teamsapi.api.TeamsClaimService) context.getClaimAdapter());
             } catch (Exception ignored) { }
         }
         if (context.getPowerAdapter() != null) {
             try {
-                com.skyblockexp.teamsapi.api.TeamsAPI.unregisterPowerProvider(context.getPowerAdapter());
+                com.skyblockexp.teamsapi.api.TeamsAPI.unregisterPowerProvider(
+                    (com.skyblockexp.teamsapi.api.TeamsPowerService) context.getPowerAdapter());
             } catch (Exception ignored) { }
         }
     }

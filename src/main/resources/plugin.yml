@@ -13,8 +13,6 @@ authors:
   - MarkehMe
   - Brettflan
 
-load: STARTUP
-
 softdepend:
   - TeamsAPI
   - Vault
