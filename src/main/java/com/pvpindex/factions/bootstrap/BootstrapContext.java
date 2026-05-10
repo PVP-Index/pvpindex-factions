@@ -1,11 +1,6 @@
 package com.pvpindex.factions.bootstrap;
 
 import com.pvpindex.factions.PvPIndexFactions;
-import com.pvpindex.factions.api.FactionsTeamsClaimService;
-import com.pvpindex.factions.api.FactionsTeamsInviteService;
-import com.pvpindex.factions.api.FactionsTeamsPowerService;
-import com.pvpindex.factions.api.FactionsTeamsService;
-import com.pvpindex.factions.api.FactionsTeamsWarpService;
 import com.pvpindex.factions.registry.EngineRegistry;
 import com.pvpindex.factions.registry.InfraRegistry;
 import com.pvpindex.factions.registry.ServiceRegistry;
@@ -20,11 +15,11 @@ public final class BootstrapContext {
     private final ServiceRegistry serviceRegistry;
     private final EngineRegistry engineRegistry;
 
-    private FactionsTeamsService teamsAdapter;
-    private FactionsTeamsInviteService inviteAdapter;
-    private FactionsTeamsWarpService warpAdapter;
-    private FactionsTeamsClaimService claimAdapter;
-    private FactionsTeamsPowerService powerAdapter;
+    private Object teamsAdapter;
+    private Object inviteAdapter;
+    private Object warpAdapter;
+    private Object claimAdapter;
+    private Object powerAdapter;
     private boolean teamsApiEnabled;
     private boolean vaultEnabled;
     private boolean placeholderApiEnabled;
@@ -47,16 +42,16 @@ public final class BootstrapContext {
     public ServiceRegistry services() { return serviceRegistry; }
     public EngineRegistry engines() { return engineRegistry; }
 
-    public FactionsTeamsService getTeamsAdapter() { return teamsAdapter; }
-    public void setTeamsAdapter(final FactionsTeamsService teamsAdapter) { this.teamsAdapter = teamsAdapter; }
-    public FactionsTeamsInviteService getInviteAdapter() { return inviteAdapter; }
-    public void setInviteAdapter(final FactionsTeamsInviteService inviteAdapter) { this.inviteAdapter = inviteAdapter; }
-    public FactionsTeamsWarpService getWarpAdapter() { return warpAdapter; }
-    public void setWarpAdapter(final FactionsTeamsWarpService warpAdapter) { this.warpAdapter = warpAdapter; }
-    public FactionsTeamsClaimService getClaimAdapter() { return claimAdapter; }
-    public void setClaimAdapter(final FactionsTeamsClaimService claimAdapter) { this.claimAdapter = claimAdapter; }
-    public FactionsTeamsPowerService getPowerAdapter() { return powerAdapter; }
-    public void setPowerAdapter(final FactionsTeamsPowerService powerAdapter) { this.powerAdapter = powerAdapter; }
+    public Object getTeamsAdapter() { return teamsAdapter; }
+    public void setTeamsAdapter(final Object teamsAdapter) { this.teamsAdapter = teamsAdapter; }
+    public Object getInviteAdapter() { return inviteAdapter; }
+    public void setInviteAdapter(final Object inviteAdapter) { this.inviteAdapter = inviteAdapter; }
+    public Object getWarpAdapter() { return warpAdapter; }
+    public void setWarpAdapter(final Object warpAdapter) { this.warpAdapter = warpAdapter; }
+    public Object getClaimAdapter() { return claimAdapter; }
+    public void setClaimAdapter(final Object claimAdapter) { this.claimAdapter = claimAdapter; }
+    public Object getPowerAdapter() { return powerAdapter; }
+    public void setPowerAdapter(final Object powerAdapter) { this.powerAdapter = powerAdapter; }
     public boolean isTeamsApiEnabled() { return teamsApiEnabled; }
     public void setTeamsApiEnabled(final boolean teamsApiEnabled) { this.teamsApiEnabled = teamsApiEnabled; }
     public boolean isVaultEnabled() { return vaultEnabled; }
