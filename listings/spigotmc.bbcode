@@ -1,0 +1,152 @@
+PvPIndex Factions is a long-term modernization of the classic Factions experience for modern Paper servers.
+
+The mission is to revive Factions as an API-connectable, timeless, and production-ready plugin while preserving the gameplay identity players already love.
+
+[B]Supported versions[/B]
+[LIST]
+[*]Minecraft / Paper 1.21.*
+[*]Paper API line 26.1.*
+[*]Java 21+
+[/LIST]
+
+[B]Vision: timeless Factions with modern internals[/B]
+[LIST]
+[*]Preserve familiar faction gameplay while modernizing architecture
+[*]Provide stable persistence and operational reliability
+[*]Enable long-term ecosystem/API connectivity
+[*]Reduce technical debt from legacy-era implementations
+[/LIST]
+
+[B]What is improved vs old Factions-era plugins[/B]
+[LIST]
+[*]Cleaner command UX and help discoverability
+[*]Persistent invite lifecycle with login-time invite summaries
+[*]Improved /f map readability and interaction flow
+[*]Expanded claim and unclaim argument modes
+[*]Configurable GUI navigation via gui.yml
+[*]Optional faction bank tax with configurable controls
+[*]Modern permission structure for admins and staff
+[*]Soft integrations that fail gracefully when providers are missing
+[/LIST]
+
+[B]Why PvPIndex Factions[/B]
+[LIST]
+[*]Modernized /f command surface with familiar Factions flow
+[*]Persistent invite lifecycle with login-time notification summaries
+[*]Advanced land control: claim/unclaim one, square, circle, fill, auto
+[*]Interactive map and improved faction territory context
+[*]Faction bank system with history, transfer support, and optional tax
+[*]Configurable /f GUI via gui.yml
+[*]Leaderboard sorting with /f top power|bank|land
+[/LIST]
+
+[B]Feature overview[/B]
+[B]Faction lifecycle[/B]
+[LIST]
+[*]Create, rename, describe, and disband factions
+[*]Invite/revoke/accept/decline/decline-all flows
+[*]Rank management with promote, demote, and leader transfer
+[/LIST]
+
+[B]Land and territory[/B]
+[LIST]
+[*]Claim and unclaim with one/square/circle/fill/auto variants
+[*]Map-centered territory interaction and visibility
+[*]Territory context messaging for better player clarity
+[/LIST]
+
+[B]Economy and bank[/B]
+[LIST]
+[*]Deposit, withdraw, transfer, and bank history tracking
+[*]Optional periodic tax engine with configurable rate and interval
+[*]Vault-ready for economy ecosystem compatibility
+[/LIST]
+
+[B]Homes, warps, and QoL[/B]
+[LIST]
+[*]Faction home and warp systems
+[*]Warp management commands and listing flows
+[*]Notification controls for invite and territory updates
+[/LIST]
+
+[B]Integrations[/B]
+[LIST]
+[*]Vault
+[*]PlaceholderAPI
+[*]TeamsAPI
+[*]WorldGuard / WorldEdit
+[*]dynmap
+[*]EssentialsX
+[*]LWC / LWCX
+[/LIST]
+
+[B]Integration downloads[/B]
+[LIST]
+[*]PlaceholderAPI: [URL]https://modrinth.com/plugin/placeholderapi[/URL]
+[*]WorldEdit: [URL]https://modrinth.com/plugin/worldedit[/URL]
+[*]WorldGuard: [URL]https://modrinth.com/plugin/worldguard[/URL]
+[*]dynmap: [URL]https://modrinth.com/plugin/dynmap[/URL]
+[*]EssentialsX: [URL]https://modrinth.com/plugin/essentialsx[/URL]
+[*]LWC: [URL]https://modrinth.com/plugin/lwc[/URL]
+[*]Vault API (official): [URL]https://www.spigotmc.org/resources/vault.34315/[/URL]
+[*]TeamsAPI: [URL]https://modrinth.com/plugin/teams-api[/URL]
+[/LIST]
+
+[B]API/connectability direction[/B]
+PvPIndex Factions is designed as a modern service-oriented base so it can integrate cleanly with optional plugins and future ecosystem tooling.
+
+This refactor direction focuses on long-term maintainability, adapter-based integration, and reliable standalone operation.
+
+[B]Visual preview[/B]
+[B]GUI[/B]
+[IMG]https://i.ibb.co/Gfh4VcLv/image.png[/IMG]
+
+[B]Map[/B]
+[IMG]https://i.ibb.co/Jw4qzdqC/image.png[/IMG]
+
+[B]Faction info[/B]
+[IMG]https://i.ibb.co/Y469RX8j/image.png[/IMG]
+
+[B]/f top tab-complete[/B]
+[IMG]https://i.ibb.co/5XY0cN0X/image.png[/IMG]
+
+[B]Command roots[/B]
+[LIST]
+[*]Player: [ICODE]/f[/ICODE] (aliases: [ICODE]/faction[/ICODE], [ICODE]/factions[/ICODE])
+[*]Admin: [ICODE]/fa[/ICODE] (alias: [ICODE]/factionadmin[/ICODE])
+[/LIST]
+
+[B]Configuration and operations[/B]
+[LIST]
+[*]Generated files: [ICODE]config.yml[/ICODE], [ICODE]database.yml[/ICODE], [ICODE]messages.yml[/ICODE], [ICODE]gui.yml[/ICODE]
+[*]Storage support: embedded H2 or MySQL/MariaDB
+[*]Operations docs available for rollout, troubleshooting, and scaling
+[/LIST]
+
+[B]Migration-oriented for existing communities[/B]
+If your network comes from legacy Factions servers, PvPIndex Factions is built to keep the familiar gameplay loop while giving you a cleaner and more future-proof backend.
+
+[B]Documentation and links[/B]
+[LIST]
+[*]Docs: [URL]https://pvp-index.github.io/pvpindex-factions[/URL]
+[*]Getting started: [URL]https://pvp-index.github.io/pvpindex-factions/getting-started[/URL]
+[*]Installation: [URL]https://pvp-index.github.io/pvpindex-factions/installation[/URL]
+[*]Step-by-step guides: [URL]https://pvp-index.github.io/pvpindex-factions/guides[/URL]
+[*]Core configuration: [URL]https://pvp-index.github.io/pvpindex-factions/configuration/core-settings[/URL]
+[*]Full config reference: [URL]https://pvp-index.github.io/pvpindex-factions/configuration/reference[/URL]
+[*]Features overview: [URL]https://pvp-index.github.io/pvpindex-factions/features[/URL]
+[*]Integrations docs: [URL]https://pvp-index.github.io/pvpindex-factions/integrations[/URL]
+[*]Operations runbook: [URL]https://pvp-index.github.io/pvpindex-factions/operations/admin-runbook[/URL]
+[*]Troubleshooting: [URL]https://pvp-index.github.io/pvpindex-factions/operations/troubleshooting[/URL]
+[*]Commands reference: [URL]https://pvp-index.github.io/pvpindex-factions/commands[/URL]
+[*]Permissions reference: [URL]https://pvp-index.github.io/pvpindex-factions/permissions[/URL]
+[*]Source: [URL]https://github.com/PVP-Index/pvpindex-factions[/URL]
+[*]Issues: [URL]https://github.com/PVP-Index/pvpindex-factions/issues[/URL]
+[/LIST]
+
+[B]License and attribution[/B]
+[LIST]
+[*]LGPL-3.0
+[*]Derivative of MassiveCraft Factions (LGPL-3.0)
+[*]Refactor attribution: PvPIndex.com team (Shadow48402, Epildev)
+[/LIST]
