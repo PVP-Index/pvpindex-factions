@@ -88,8 +88,6 @@ factions:
     bstats:
       # Enable anonymous bStats metrics collection.
       enabled: true
-      # PvPIndex Factions bStats plugin id.
-      plugin-id: 31240
 
 # Soft-integration toggles. The plugin checks for the provider plugin at startup
 # and gracefully disables the integration if it is absent.
