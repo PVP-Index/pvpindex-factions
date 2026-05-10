@@ -31,6 +31,11 @@ This page documents all shipped configuration keys with a description and a conc
 | `factions.power.loss-on-death` | Power removed on death in relevant contexts. | `loss-on-death: 4.0` |
 | `factions.power.grace-period-seconds` | Startup grace window before power-loss logic. | `grace-period-seconds: 3600` |
 | `factions.power.tick-interval-seconds` | Interval for periodic power engine updates. | `tick-interval-seconds: 60` |
+| `factions.power.gain-on-kill.enabled` | Whether killing an enemy player grants power to the killer. | `enabled: true` |
+| `factions.power.gain-on-kill.amount` | Power awarded to the killer per player kill. | `amount: 2.0` |
+| `factions.power.buy.enabled` | Opt-in: allow players to purchase personal power via `/f power buy`. Requires Vault. | `enabled: false` |
+| `factions.power.buy.cost-per-point` | Money charged per 1 unit of power purchased. | `cost-per-point: 100.0` |
+| `factions.power.buy.max-per-purchase` | Maximum power a player can buy in a single command. | `max-per-purchase: 5.0` |
 
 ### `factions.land.*`
 
@@ -180,7 +185,7 @@ This page documents all shipped configuration keys with a description and a conc
 | `home` | Home set/teleport messages | `home.set` |
 | `warp` | Warp flow messages | `warp.set` |
 | `relation` | Relation messages | `relation.set` |
-| `power` | Power model messages | `power.too-low-raid` |
+| `power` | Power model messages | `power.too-low-raid`, `power.lost-on-death`, `power.kill-gained`, `power.buy-success` |
 | `fly` | Fly state messages | `fly.enabled` |
 | `lwc` | LWC integration notices | `lwc.stale-protection-removed` |
 | `info` | Faction info formatting | `info.header` |
