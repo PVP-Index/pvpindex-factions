@@ -24,6 +24,8 @@ Key groups:
 ## New tuning knobs
 
 - `factions.power.tick-interval-seconds`
+- `factions.power.gain-on-kill.enabled` / `factions.power.gain-on-kill.amount`
+- `factions.power.buy.enabled` / `factions.power.buy.cost-per-point` / `factions.power.buy.max-per-purchase`
 - `factions.map.once-radius`
 - `factions.list.page-size`
 - `factions.top.page-size`
