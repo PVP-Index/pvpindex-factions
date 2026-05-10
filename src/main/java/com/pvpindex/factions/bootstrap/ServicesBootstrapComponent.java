@@ -1,6 +1,8 @@
 package com.pvpindex.factions.bootstrap;
 
+import com.pvpindex.factions.api.FactionsTeamsClaimService;
 import com.pvpindex.factions.api.FactionsTeamsInviteService;
+import com.pvpindex.factions.api.FactionsTeamsPowerService;
 import com.pvpindex.factions.api.FactionsTeamsService;
 import com.pvpindex.factions.api.FactionsTeamsWarpService;
 import com.pvpindex.factions.config.FactionsConfig;
@@ -44,14 +46,20 @@ public final class ServicesBootstrapComponent extends AbstractBootstrapComponent
         final FactionsTeamsService teamsAdapter = new FactionsTeamsService(factionImpl);
         final FactionsTeamsInviteService inviteAdapter = new FactionsTeamsInviteService(inviteImpl);
         final FactionsTeamsWarpService warpAdapter = new FactionsTeamsWarpService(warpImpl, factionImpl);
+        final FactionsTeamsClaimService claimAdapter = new FactionsTeamsClaimService(factionImpl);
+        final FactionsTeamsPowerService powerAdapter = new FactionsTeamsPowerService(factionImpl);
 
         try {
             com.skyblockexp.teamsapi.api.TeamsAPI.registerProvider(context.plugin(), teamsAdapter);
             com.skyblockexp.teamsapi.api.TeamsAPI.registerInviteProvider(context.plugin(), inviteAdapter);
             com.skyblockexp.teamsapi.api.TeamsAPI.registerWarpProvider(context.plugin(), warpAdapter);
+            com.skyblockexp.teamsapi.api.TeamsAPI.registerClaimProvider(context.plugin(), claimAdapter);
+            com.skyblockexp.teamsapi.api.TeamsAPI.registerPowerProvider(context.plugin(), powerAdapter);
             context.setTeamsAdapter(teamsAdapter);
             context.setInviteAdapter(inviteAdapter);
             context.setWarpAdapter(warpAdapter);
+            context.setClaimAdapter(claimAdapter);
+            context.setPowerAdapter(powerAdapter);
             context.setTeamsApiEnabled(true);
             logger(context).info("TeamsAPI integration enabled.");
         } catch (Exception e) {
@@ -59,6 +67,8 @@ public final class ServicesBootstrapComponent extends AbstractBootstrapComponent
             context.setTeamsAdapter(null);
             context.setInviteAdapter(null);
             context.setWarpAdapter(null);
+            context.setClaimAdapter(null);
+            context.setPowerAdapter(null);
             context.setTeamsApiEnabled(false);
         }
 
@@ -80,6 +90,16 @@ public final class ServicesBootstrapComponent extends AbstractBootstrapComponent
         if (context.getWarpAdapter() != null) {
             try {
                 com.skyblockexp.teamsapi.api.TeamsAPI.unregisterWarpProvider(context.getWarpAdapter());
+            } catch (Exception ignored) { }
+        }
+        if (context.getClaimAdapter() != null) {
+            try {
+                com.skyblockexp.teamsapi.api.TeamsAPI.unregisterClaimProvider(context.getClaimAdapter());
+            } catch (Exception ignored) { }
+        }
+        if (context.getPowerAdapter() != null) {
+            try {
+                com.skyblockexp.teamsapi.api.TeamsAPI.unregisterPowerProvider(context.getPowerAdapter());
             } catch (Exception ignored) { }
         }
     }
