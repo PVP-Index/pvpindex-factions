@@ -1,10 +1,13 @@
+---
 name: Release
 
-on:
+"on":
   workflow_dispatch:
     inputs:
       version:
-        description: "Release version (for example: 1.0.3). Leave empty to use pom version without -SNAPSHOT."
+        description: >-
+          Release version (for example: 1.0.3).
+          Leave empty to use pom version without -SNAPSHOT.
         required: false
         type: string
       prerelease:
@@ -44,7 +47,8 @@ jobs:
           if [ -n "$INPUT_VERSION" ]; then
             RELEASE_VERSION="$INPUT_VERSION"
           else
-            POM_VERSION="$(mvn -q help:evaluate -Dexpression=project.version -DforceStdout)"
+            POM_VERSION="$(mvn -q help:evaluate \
+              -Dexpression=project.version -DforceStdout)"
             RELEASE_VERSION="${POM_VERSION%-SNAPSHOT}"
           fi
           TAG="v${RELEASE_VERSION}"
@@ -57,7 +61,8 @@ jobs:
       - name: Resolve built artifact
         id: artifact
         run: |
-          ARTIFACT="$(ls target/pvpindex-factions-*.jar | grep -v 'original' | head -n 1)"
+          ARTIFACT="$(ls target/pvpindex-factions-*.jar \
+            | grep -v 'original' | head -n 1)"
           if [ -z "$ARTIFACT" ]; then
             echo "No release JAR found in target/" >&2
             exit 1
@@ -93,7 +98,9 @@ jobs:
               BEGIN { in_unreleased=0; found=0 }
               /^## \[/ {
                 if (in_unreleased==1) exit
-                if ($0 ~ /^## \[Unreleased\]/) { in_unreleased=1; found=1; next }
+                if ($0 ~ /^## \[Unreleased\]/) {
+                  in_unreleased=1; found=1; next
+                }
               }
               {
                 if (in_unreleased==1) print
@@ -105,11 +112,13 @@ jobs:
           fi
 
           if [ ! -s RELEASE_NOTES.tmp ]; then
-            cat > RELEASE_NOTES.tmp << 'EOF'
-No detailed changelog section found for this release version.
-
-Please update CHANGELOG.md with a `## [x.y.z] - YYYY-MM-DD` section.
-EOF
+            {
+              echo 'No detailed changelog section' \
+                'found for this release version.'
+              echo ''
+              echo 'Please update CHANGELOG.md with a' \
+                '`## [x.y.z] - YYYY-MM-DD` section.'
+            } > RELEASE_NOTES.tmp
           fi
 
           {
