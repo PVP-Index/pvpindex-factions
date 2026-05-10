@@ -238,4 +238,16 @@ public class FactionsConfig {
     public boolean isLwcRemoveOnClaimChange() {
         return cfg.getBoolean("integrations.lwc.remove-on-claim-change", true);
     }
+
+    // -------------------------------------------------------------------------
+    // Metrics
+    // -------------------------------------------------------------------------
+
+    public boolean isBstatsEnabled() {
+        return cfg.getBoolean("factions.metrics.bstats.enabled", true);
+    }
+
+    public int getBstatsPluginId() {
+        return cfg.getInt("factions.metrics.bstats.plugin-id", 31240);
+    }
 }
