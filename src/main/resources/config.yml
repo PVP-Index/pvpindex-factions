@@ -22,6 +22,15 @@ factions:
     grace-period-seconds: 3600
     # Interval between power-tick updates.
     tick-interval-seconds: 60
+    # Power gained by a player killer when they kill an enemy player.
+    gain-on-kill:
+      enabled: true
+      amount: 2.0
+    # Optional opt-in: allow players to purchase additional personal power with money.
+    buy:
+      enabled: false
+      cost-per-point: 100.0
+      max-per-purchase: 5.0
 
   map:
     # Radius used by /f map once rendering.
