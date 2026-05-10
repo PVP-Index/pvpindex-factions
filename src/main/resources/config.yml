@@ -84,6 +84,11 @@ factions:
     # MiniMessage format — placeholders: {faction_name}, {rank_prefix}
     tag-format: "<gray>[<gold>{faction_name}</gold>]</gray> "
 
+  metrics:
+    bstats:
+      # Enable anonymous bStats metrics collection.
+      enabled: true
+
 # Soft-integration toggles. The plugin checks for the provider plugin at startup
 # and gracefully disables the integration if it is absent.
 integrations:
