@@ -14,6 +14,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
+- Updated to [TeamsAPI v1.4.0](https://modrinth.com/plugin/teams-api)
 - TeamsAPI `ClaimService` adapter: claim and unclaim individual chunks, bulk-unclaim by team, query claims by chunk or team, check whether a chunk is claimed or owned by a specific team, and compute max claim allowance from total power.
 - TeamsAPI `PowerService` adapter: get and set individual player power (clamped to configured max), query total and max power for a team.
 - `FactionTeamClaim` value type bridging internal `BoardEntry` data to the TeamsAPI `TeamClaim` contract.
