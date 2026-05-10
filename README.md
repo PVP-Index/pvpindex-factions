@@ -1,6 +1,6 @@
 # PvPIndex Factions
 
-A modern factions plugin for Paper 1.21.4, backed by Jaloquent persistence and optional TeamsAPI integration.
+A modern factions plugin for Paper 1.21.* - 26.1.*, backed by Jaloquent persistence and optional TeamsAPI integration.
 
 > This project is a refactor of [MassiveCraft Factions](https://github.com/MassiveCraft/Factions), which is also licensed under LGPL-3.0.
 > Both projects remain open-source under the same license terms.

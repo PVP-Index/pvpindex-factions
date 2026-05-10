@@ -57,8 +57,7 @@ public class FactionsTeamsPowerService implements TeamsPowerService {
         try {
             final Optional<PlayerModel> pm = repos.players().find(playerUUID.toString());
             return pm.map(PlayerModel::getPower).orElse(0.0);
-        }
-        catch (StorageException e) {
+        } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to get power for player " + playerUUID, e);
             return 0.0;
         }
@@ -77,8 +76,7 @@ public class FactionsTeamsPowerService implements TeamsPowerService {
                 return 0.0;
             }
             return config.getMaxPower();
-        }
-        catch (StorageException e) {
+        } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to get max power for player " + playerUUID, e);
             return 0.0;
         }
@@ -102,8 +100,7 @@ public class FactionsTeamsPowerService implements TeamsPowerService {
             model.setPower(clamped);
             repos.players().save(model);
             return true;
-        }
-        catch (StorageException e) {
+        } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to set power for player " + playerUUID, e);
             return false;
         }
@@ -127,8 +124,7 @@ public class FactionsTeamsPowerService implements TeamsPowerService {
                 total += pm.getPower();
             }
             return total;
-        }
-        catch (StorageException e) {
+        } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to compute team power for " + teamId, e);
             return 0.0;
         }
@@ -151,8 +147,7 @@ public class FactionsTeamsPowerService implements TeamsPowerService {
                 }
             }
             return config.getMaxPower() * members.size();
-        }
-        catch (StorageException e) {
+        } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to compute max team power for " + teamId, e);
             return 0.0;
         }

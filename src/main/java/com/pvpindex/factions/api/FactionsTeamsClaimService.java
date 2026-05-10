@@ -86,8 +86,7 @@ public class FactionsTeamsClaimService implements TeamsClaimService {
             }
             repos.board().claimChunk(worldName, chunkX, chunkZ, teamId.toString());
             return true;
-        }
-        catch (StorageException e) {
+        } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to claim chunk for team " + teamId, e);
             return false;
         }
@@ -122,8 +121,7 @@ public class FactionsTeamsClaimService implements TeamsClaimService {
             }
             repos.board().unclaimChunk(worldName, chunkX, chunkZ);
             return true;
-        }
-        catch (StorageException e) {
+        } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to unclaim chunk for team " + teamId, e);
             return false;
         }
@@ -144,8 +142,7 @@ public class FactionsTeamsClaimService implements TeamsClaimService {
             }
             repos.board().deleteByFactionId(teamId.toString());
             return true;
-        }
-        catch (StorageException e) {
+        } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to unclaim all chunks for team " + teamId, e);
             return false;
         }
@@ -160,8 +157,7 @@ public class FactionsTeamsClaimService implements TeamsClaimService {
         try {
             return repos.board().findByChunk(worldName, chunkX, chunkZ)
                 .map(FactionTeamClaim::new);
-        }
-        catch (StorageException e) {
+        } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to look up claim at " + worldName + ":" + chunkX + ":" + chunkZ, e);
             return Optional.empty();
         }
@@ -179,8 +175,7 @@ public class FactionsTeamsClaimService implements TeamsClaimService {
                 result.add(new FactionTeamClaim(entry));
             }
             return result;
-        }
-        catch (StorageException e) {
+        } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to fetch claims for team " + teamId, e);
             return new ArrayList<>();
         }
@@ -193,8 +188,7 @@ public class FactionsTeamsClaimService implements TeamsClaimService {
     public int getClaimCount(final UUID teamId) {
         try {
             return repos.board().countByFactionId(teamId.toString());
-        }
-        catch (StorageException e) {
+        } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to count claims for team " + teamId, e);
             return 0;
         }
@@ -207,8 +201,7 @@ public class FactionsTeamsClaimService implements TeamsClaimService {
     public boolean isClaimed(final String worldName, final int chunkX, final int chunkZ) {
         try {
             return repos.board().findByChunk(worldName, chunkX, chunkZ).isPresent();
-        }
-        catch (StorageException e) {
+        } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to check claim at " + worldName + ":" + chunkX + ":" + chunkZ, e);
             return false;
         }
@@ -223,8 +216,7 @@ public class FactionsTeamsClaimService implements TeamsClaimService {
         try {
             final Optional<BoardEntry> entry = repos.board().findByChunk(worldName, chunkX, chunkZ);
             return entry.isPresent() && teamId.toString().equals(entry.get().getFactionId());
-        }
-        catch (StorageException e) {
+        } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to check ownership of " + worldName + ":" + chunkX + ":" + chunkZ, e);
             return false;
         }
@@ -254,8 +246,7 @@ public class FactionsTeamsClaimService implements TeamsClaimService {
                 return config.getMaxLand();
             }
             return Math.min(config.getMaxLand(), (int) (totalPower / landPerPower));
-        }
-        catch (StorageException e) {
+        } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to compute max claims for team " + teamId, e);
             return 0;
         }
