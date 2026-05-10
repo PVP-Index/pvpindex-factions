@@ -36,6 +36,7 @@ import com.pvpindex.factions.command.sub.admin.CmdAdminHelp;
 import com.pvpindex.factions.command.sub.admin.CmdAdminReload;
 import com.pvpindex.factions.command.sub.admin.CmdAdminUnclaim;
 import com.pvpindex.factions.command.sub.bank.CmdBank;
+import com.pvpindex.factions.command.sub.power.CmdPower;
 import com.pvpindex.factions.command.sub.warp.CmdWarp;
 import com.pvpindex.factions.config.FactionsConfig;
 import com.pvpindex.factions.data.Repositories;
@@ -86,6 +87,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         commandRegistry.register(new CmdRelation(factionSvc));
         commandRegistry.register(new CmdWarp(factionSvc, warpSvc, context.infra().getTerritoryGuard()));
         commandRegistry.register(new CmdBank(factionSvc, economy));
+        commandRegistry.register(new CmdPower(context.infra().getVaultEconomy(), cfg, repos));
         commandRegistry.register(new CmdList(factionSvc));
         commandRegistry.register(new CmdMap());
         commandRegistry.register(new CmdNotify());

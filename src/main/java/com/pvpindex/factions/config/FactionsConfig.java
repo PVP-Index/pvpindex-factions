@@ -79,6 +79,26 @@ public class FactionsConfig {
         return cfg.getInt("factions.power.tick-interval-seconds", 60);
     }
 
+    public boolean isPowerGainOnKillEnabled() {
+        return cfg.getBoolean("factions.power.gain-on-kill.enabled", true);
+    }
+
+    public double getPowerGainOnKill() {
+        return cfg.getDouble("factions.power.gain-on-kill.amount", 2.0);
+    }
+
+    public boolean isPowerBuyEnabled() {
+        return cfg.getBoolean("factions.power.buy.enabled", false);
+    }
+
+    public double getPowerBuyCostPerPoint() {
+        return cfg.getDouble("factions.power.buy.cost-per-point", 100.0);
+    }
+
+    public double getPowerBuyMaxPerPurchase() {
+        return cfg.getDouble("factions.power.buy.max-per-purchase", 5.0);
+    }
+
     // -------------------------------------------------------------------------
     // Land
     // -------------------------------------------------------------------------

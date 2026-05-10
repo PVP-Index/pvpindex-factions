@@ -126,6 +126,14 @@ relation:
 
 power:
   too-low-raid: "<red>Your faction does not have enough power — your land can be raided!"
+  lost-on-death: "<red>You lost <yellow>{amount}<red> power on death."
+  kill-gained: "<green>You gained <yellow>{amount}<green> power from your kill."
+  buy-success: "<green>You purchased <yellow>{amount}<green> power for <yellow>{cost}<green>."
+  buy-disabled: "<red>Buying power is not enabled on this server."
+  buy-no-vault: "<red>An economy plugin is required to buy power."
+  buy-invalid-amount: "<red>Enter a positive amount (max <yellow>{max}<red> per purchase)."
+  buy-already-max: "<red>You already have maximum power."
+  buy-insufficient-funds: "<red>You need <yellow>{cost}<red> to buy that much power."
 
 fly:
   enabled: "<green>Faction fly enabled."
