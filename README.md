@@ -18,7 +18,7 @@ published through the GitHub Pages docs workflow.
 
 | Requirement | Version |
 |---|---|
-| Paper | 1.21.4 |
+| Paper | 1.21.x – 26.1.x |
 | Java | 21+ |
 
 ## Optional Integrations
