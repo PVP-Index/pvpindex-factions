@@ -17,6 +17,8 @@ import java.util.Optional;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -57,6 +59,8 @@ class CmdMapTest extends CommandTestBase {
         when(world.getName()).thenReturn("world");
         when(chunk.getX()).thenReturn(10);
         when(chunk.getZ()).thenReturn(20);
+        when(location.getBlockY()).thenReturn(64);
+        when(config.getMapOnceRadius()).thenReturn(2);
         when(playerRepository.find(uuid.toString())).thenReturn(Optional.empty());
         when(boardRepository.findByChunk("world", 10, 20)).thenReturn(Optional.empty());
     }
@@ -79,6 +83,36 @@ class CmdMapTest extends CommandTestBase {
         cmd.execute(ctx("once"));
         verify(player, atLeastOnce()).sendMessage(argThat(componentContains("Legend")));
         verify(player, atLeastOnce()).sendMessage(argThat(componentContains("■")));
+    }
+
+    @Test
+    @DisplayName("map once default radius uses configured radius")
+    void mapOnceDefaultRadiusUsesConfigValue() {
+        cmd.execute(ctx("once"));
+        verify(player, atLeastOnce()).sendMessage(argThat((Component c) -> hasClaimAtClickFor(c, 8, 20)));
+    }
+
+    @Test
+    @DisplayName("map once supports --size argument")
+    void mapOnceSupportsSizeArgument() {
+        cmd.execute(ctx("once", "--size=1"));
+        verify(player, atLeastOnce()).sendMessage(argThat((Component c) -> hasClaimAtClickFor(c, 9, 20)));
+        verify(player, atLeastOnce()).sendMessage(argThat((Component c) -> hasClaimAtClickFor(c, 11, 20)));
+    }
+
+    @Test
+    @DisplayName("map once no longer shows z-row suffix")
+    void mapOnceNoLongerShowsZRowSuffix() {
+        cmd.execute(ctx("once"));
+        verify(player, atLeastOnce()).sendMessage(argThat(componentNotContains("z=")));
+    }
+
+    @Test
+    @DisplayName("map hover text includes explicit Y and Z labels")
+    void mapHoverIncludesYAndZLabels() {
+        cmd.execute(ctx("once"));
+        verify(player, atLeastOnce()).sendMessage(argThat((Component c) -> hasHoverText(c, "Chunk Z: 20")));
+        verify(player, atLeastOnce()).sendMessage(argThat((Component c) -> hasHoverText(c, "Player Y: 64")));
     }
 
     @Test
@@ -128,5 +162,41 @@ class CmdMapTest extends CommandTestBase {
             }
         }
         return false;
+    }
+
+    private boolean hasClaimAtClickFor(final Component component, final int x, final int z) {
+        final ClickEvent click = component.clickEvent();
+        if (click != null
+            && click.action() == ClickEvent.Action.RUN_COMMAND
+            && click.value().equals("/f claim at " + x + " " + z)) {
+            return true;
+        }
+        for (final Component child : component.children()) {
+            if (hasClaimAtClickFor(child, x, z)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasHoverText(final Component component, final String text) {
+        final HoverEvent<?> hover = component.hoverEvent();
+        if (hover != null && hover.value() instanceof Component hoverComponent) {
+            final String hoverText = PlainTextComponentSerializer.plainText().serialize(hoverComponent);
+            if (hoverText.contains(text)) {
+                return true;
+            }
+        }
+        for (final Component child : component.children()) {
+            if (hasHoverText(child, text)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static org.mockito.ArgumentMatcher<Component> componentNotContains(final String text) {
+        return comp -> !net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+            .plainText().serialize(comp).contains(text);
     }
 }

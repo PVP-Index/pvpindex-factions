@@ -372,7 +372,6 @@ public abstract class FactionCommand {
             .collect(Collectors.toSet());
         final List<String> positional = new ArrayList<>();
         final Map<String, String> options = new LinkedHashMap<>();
-
         for (int i = 0; i < rawArgs.size(); i++) {
             final String token = rawArgs.get(i);
             if (!token.startsWith("--")) {
@@ -385,7 +384,6 @@ public abstract class FactionCommand {
             String name = eqIndex >= 0 ? body.substring(0, eqIndex) : body;
             String value = eqIndex >= 0 ? body.substring(eqIndex + 1) : null;
             name = name.toLowerCase();
-
             if (!valued.contains(name)) {
                 return ParsedCommandArgs.error("<red>Unknown option: <white>--" + name);
             }
@@ -400,7 +398,6 @@ public abstract class FactionCommand {
             }
             options.put(name, value.trim());
         }
-
         return ParsedCommandArgs.success(positional, options);
     }
 

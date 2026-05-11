@@ -9,27 +9,52 @@ import com.pvpindex.factions.data.model.PlayerModel;
 import com.pvpindex.factions.util.MsgUtil;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
-/** {@code /f map [on|off|once]}. */
+/** {@code /f map [on|off|once] [--size=<size>]}. */
 public final class CmdMap extends FactionCommand {
 
     public CmdMap() {
         super("map");
         setPermission("factions.cmd.map");
         setDescription("Show or toggle territory map notifications.");
-        setOptionalArgs("[on|off|once]");
+        setOptionalArgs("[on|off|once]", "[--size=<size>]");
         setRequiresPlayer(true);
     }
 
     @Override
     protected void perform(final CommandContext ctx) {
         final Player player = (Player) ctx.getSender();
-        final String mode = ctx.arg(0).toLowerCase();
+        final ParsedCommandArgs parsedArgs = parseArguments(ctx.getArgs(), Set.of("size"));
+        if (parsedArgs.hasError()) {
+            MsgUtil.send(player, parsedArgs.errorMessage());
+            return;
+        }
+        final List<String> positional = parsedArgs.positionalArgs();
+        if (positional.size() > 1) {
+            MsgUtil.send(player, "<red>Usage: /f map [on|off|once] [--size=<size>]");
+            return;
+        }
+        final String mode = positional.isEmpty() ? "" : positional.get(0).toLowerCase();
+        Integer parsedSize = null;
+        final String sizeArg = parsedArgs.optionValue("size");
+        if (sizeArg != null) {
+            try {
+                parsedSize = Integer.parseInt(sizeArg);
+            } catch (NumberFormatException ex) {
+                MsgUtil.send(player, "<red>Map size must be a number.");
+                return;
+            }
+            if (parsedSize < 1) {
+                MsgUtil.send(player, "<red>Map size must be at least 1.");
+                return;
+            }
+        }
         try {
             final PlayerModel model = ctx.getRepos().players().findOrCreate(player.getUniqueId().toString());
             if ("on".equals(mode)) {
@@ -48,21 +73,27 @@ public final class CmdMap extends FactionCommand {
             MsgUtil.send(player, "<red>Failed to update map preference.");
             return;
         }
-        renderOnce(ctx, player);
+        final int radius = parsedSize != null
+            ? parsedSize
+            : Math.max(1, ctx.getConfig().getMapOnceRadius());
+        renderOnce(ctx, player, radius);
     }
 
     @Override
     protected List<String> complete(final CommandContext ctx, final int argIndex) {
         if (argIndex == 0) {
-            return List.of("on", "off", "once");
+            return List.of("on", "off", "once", "--size=");
+        }
+        if (argIndex == 1) {
+            return List.of("--size=");
         }
         return List.of();
     }
 
-    private void renderOnce(final CommandContext ctx, final Player player) {
-        final int radius = Math.max(1, ctx.getConfig().getMapOnceRadius());
+    private void renderOnce(final CommandContext ctx, final Player player, final int radius) {
         final int cx = player.getLocation().getChunk().getX();
         final int cz = player.getLocation().getChunk().getZ();
+        final int playerY = player.getLocation().getBlockY();
         final String world = player.getWorld().getName();
         final String playerFactionId = resolvePlayerFactionId(ctx, player);
         MsgUtil.send(player, "<dark_gray>----------------------------------------");
@@ -71,11 +102,10 @@ public final class CmdMap extends FactionCommand {
         for (int z = cz - radius; z <= cz + radius; z++) {
             Component line = Component.text("| ", NamedTextColor.DARK_GRAY);
             for (int x = cx - radius; x <= cx + radius; x++) {
-                line = line.append(cellComponent(ctx, world, x, z, cx, cz, playerFactionId))
+                line = line.append(cellComponent(ctx, world, x, z, cx, cz, playerY, playerFactionId))
                     .append(Component.text(" ", NamedTextColor.DARK_GRAY));
             }
-            line = line.append(Component.text("| ", NamedTextColor.DARK_GRAY))
-                .append(Component.text("z=" + z, NamedTextColor.GRAY));
+            line = line.append(Component.text("| ", NamedTextColor.DARK_GRAY));
             MsgUtil.send(player, line);
         }
         MsgUtil.send(player, "<gray>Legend: <white>■ <gray>you, <green>■ <gray>your faction, "
@@ -91,9 +121,12 @@ public final class CmdMap extends FactionCommand {
             final int z,
             final int cx,
             final int cz,
+            final int playerY,
             final String playerFactionId) {
         final Component symbol = Component.text("■");
-        final String locationHint = "<gray>Chunk: <white>" + x + ", " + z + "</white>";
+        final String locationHint = "<gray>Chunk X: <white>" + x + "</white><newline>"
+            + "<gray>Chunk Z: <white>" + z + "</white><newline>"
+            + "<gray>Player Y: <white>" + playerY + "</white>";
         if (x == cx && z == cz) {
                 return symbol.color(NamedTextColor.WHITE)
                     .hoverEvent(HoverEvent.showText(MsgUtil.parse("<white>Your current chunk</white><newline>"
@@ -149,4 +182,5 @@ public final class CmdMap extends FactionCommand {
             return null;
         }
     }
+
 }
