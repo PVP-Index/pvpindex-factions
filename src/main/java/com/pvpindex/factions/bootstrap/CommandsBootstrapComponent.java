@@ -22,6 +22,7 @@ import com.pvpindex.factions.command.sub.CmdLeave;
 import com.pvpindex.factions.command.sub.CmdList;
 import com.pvpindex.factions.command.sub.CmdMap;
 import com.pvpindex.factions.command.sub.CmdNotify;
+import com.pvpindex.factions.command.sub.CmdPredefined;
 import com.pvpindex.factions.command.sub.CmdPromote;
 import com.pvpindex.factions.command.sub.CmdRelation;
 import com.pvpindex.factions.command.sub.CmdRename;
@@ -91,6 +92,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         commandRegistry.register(new CmdList(factionSvc));
         commandRegistry.register(new CmdMap());
         commandRegistry.register(new CmdNotify());
+        commandRegistry.register(new CmdPredefined(factionSvc));
         commandRegistry.register(new CmdGui(context.engines().getFactionsGuiManager(), context.infra().getGuiConfig()));
         commandRegistry.register(new CmdLeader(factionSvc));
         commandRegistry.register(new CmdPromote(factionSvc));

@@ -139,6 +139,36 @@ permissions:
     description: Set or view faction relations (ally, truce, enemy, neutral).
     default: true
 
+  factions.cmd.predefined:
+    description: Root command for predefined faction management.
+    default: op
+    children:
+      factions.cmd.predefined.create: true
+      factions.cmd.predefined.claim: true
+      factions.cmd.predefined.sethome: true
+      factions.cmd.predefined.reload: true
+      factions.cmd.predefined.list: true
+
+  factions.cmd.predefined.create:
+    description: Create a predefined faction.
+    default: op
+
+  factions.cmd.predefined.claim:
+    description: Save current chunk into a predefined faction preset.
+    default: op
+
+  factions.cmd.predefined.sethome:
+    description: Save current location as predefined faction home.
+    default: op
+
+  factions.cmd.predefined.reload:
+    description: Reload pre-defined.yml in-memory cache.
+    default: op
+
+  factions.cmd.predefined.list:
+    description: List predefined faction entries.
+    default: op
+
   # Land management
   factions.cmd.claim:
     description: Claim land for own faction.

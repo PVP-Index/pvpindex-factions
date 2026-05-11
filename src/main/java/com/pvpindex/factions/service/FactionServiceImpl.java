@@ -12,6 +12,7 @@ import com.pvpindex.factions.event.FactionCreateEvent;
 import com.pvpindex.factions.event.FactionDisbandEvent;
 import com.pvpindex.factions.event.FactionJoinEvent;
 import com.pvpindex.factions.event.FactionLeaveEvent;
+import com.pvpindex.factions.predefined.PredefinedConfigManager;
 import com.pvpindex.factions.util.MsgUtil;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -177,6 +178,7 @@ public class FactionServiceImpl implements FactionService {
             });
 
             final FactionModel faction = repos.factions().find(factionId).orElseThrow();
+            applyPredefinedSeedIfNeeded(faction);
             Bukkit.getPluginManager().callEvent(new FactionCreateEvent(faction, ownerUUID));
             return Optional.of(faction);
         } catch (StorageException e) {
@@ -570,6 +572,42 @@ public class FactionServiceImpl implements FactionService {
                 "<green>{player} joined your faction.",
                 "player",
                 joinedName));
+    }
+
+    private void applyPredefinedSeedIfNeeded(final FactionModel faction) {
+        final PredefinedConfigManager manager = PredefinedConfigManager.getInstance();
+        if (manager == null || !manager.isEnabled()) {
+            return;
+        }
+        final Optional<PredefinedConfigManager.PredefinedFactionPreset> presetOpt = manager.getPreset(faction.getName());
+        if (presetOpt.isEmpty()) {
+            return;
+        }
+        final PredefinedConfigManager.PredefinedFactionPreset preset = presetOpt.get();
+        if (preset.created()) {
+            return;
+        }
+        try {
+            repos.factions().transaction(() -> {
+                if (preset.home() != null) {
+                    faction.setHomeWorld(preset.home().world());
+                    faction.setHomeX(preset.home().x());
+                    faction.setHomeY(preset.home().y());
+                    faction.setHomeZ(preset.home().z());
+                    faction.setHomeYaw(preset.home().yaw());
+                    faction.setHomePitch(preset.home().pitch());
+                    repos.factions().save(faction);
+                }
+                for (final PredefinedConfigManager.ClaimPreset claim : preset.claims()) {
+                    if (repos.board().findByChunk(claim.world(), claim.x(), claim.z()).isEmpty()) {
+                        repos.board().claimChunk(claim.world(), claim.x(), claim.z(), faction.getId());
+                    }
+                }
+            });
+            manager.setCreated(preset.name(), true);
+        } catch (StorageException e) {
+            logger.log(Level.WARNING, "Failed to apply predefined seed for faction " + faction.getName(), e);
+        }
     }
 
     private Map<String, Relation> parseRelations(final String json) {
