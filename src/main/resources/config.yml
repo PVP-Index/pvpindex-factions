@@ -34,7 +34,7 @@ factions:
 
   map:
     # Radius used by /f map once rendering.
-    once-radius: 2
+    once-radius: 3
 
   list:
     # Entries per page for /f list.

@@ -122,7 +122,7 @@ public class FactionsConfig {
     }
 
     public int getMapOnceRadius() {
-        return cfg.getInt("factions.map.once-radius", 2);
+        return cfg.getInt("factions.map.once-radius", 3);
     }
 
     public int getListPageSize() {
