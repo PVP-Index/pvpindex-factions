@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -350,5 +351,95 @@ public abstract class FactionCommand {
             "general.player-only",
             "<red>This command can only be used by a player.");
         return null;
+    }
+
+    /**
+     * Parse command arguments into positional arguments and long options.
+     *
+     * <p>Supported option forms:
+     * <ul>
+     *   <li>{@code --name=value}</li>
+     *   <li>{@code --name value}</li>
+     * </ul>
+     *
+     * @param rawArgs raw argument list
+     * @param valuedOptionNames known long-option names that require values
+     * @return parsed args or parse error
+     */
+    protected ParsedCommandArgs parseArguments(final List<String> rawArgs, final Set<String> valuedOptionNames) {
+        final Set<String> valued = valuedOptionNames.stream()
+            .map(String::toLowerCase)
+            .collect(Collectors.toSet());
+        final List<String> positional = new ArrayList<>();
+        final Map<String, String> options = new LinkedHashMap<>();
+
+        for (int i = 0; i < rawArgs.size(); i++) {
+            final String token = rawArgs.get(i);
+            if (!token.startsWith("--")) {
+                positional.add(token);
+                continue;
+            }
+
+            final String body = token.substring(2);
+            final int eqIndex = body.indexOf('=');
+            String name = eqIndex >= 0 ? body.substring(0, eqIndex) : body;
+            String value = eqIndex >= 0 ? body.substring(eqIndex + 1) : null;
+            name = name.toLowerCase();
+
+            if (!valued.contains(name)) {
+                return ParsedCommandArgs.error("<red>Unknown option: <white>--" + name);
+            }
+            if (value == null) {
+                if (i + 1 >= rawArgs.size() || rawArgs.get(i + 1).startsWith("--")) {
+                    return ParsedCommandArgs.error("<red>Missing value for option: <white>--" + name);
+                }
+                value = rawArgs.get(++i);
+            }
+            if (value == null || value.trim().isEmpty()) {
+                return ParsedCommandArgs.error("<red>Missing value for option: <white>--" + name);
+            }
+            options.put(name, value.trim());
+        }
+
+        return ParsedCommandArgs.success(positional, options);
+    }
+
+    protected static final class ParsedCommandArgs {
+        private final List<String> positionalArgs;
+        private final Map<String, String> valuedOptions;
+        private final String error;
+
+        private ParsedCommandArgs(
+                final List<String> positionalArgs,
+                final Map<String, String> valuedOptions,
+                final String error) {
+            this.positionalArgs = positionalArgs;
+            this.valuedOptions = valuedOptions;
+            this.error = error;
+        }
+
+        public static ParsedCommandArgs success(final List<String> positionalArgs, final Map<String, String> valuedOptions) {
+            return new ParsedCommandArgs(List.copyOf(positionalArgs), Map.copyOf(valuedOptions), null);
+        }
+
+        public static ParsedCommandArgs error(final String error) {
+            return new ParsedCommandArgs(List.of(), Map.of(), error);
+        }
+
+        public boolean hasError() {
+            return error != null;
+        }
+
+        public String errorMessage() {
+            return error;
+        }
+
+        public List<String> positionalArgs() {
+            return positionalArgs;
+        }
+
+        public String optionValue(final String name) {
+            return valuedOptions.get(name.toLowerCase());
+        }
     }
 }

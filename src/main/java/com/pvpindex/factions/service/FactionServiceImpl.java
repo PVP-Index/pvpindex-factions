@@ -23,6 +23,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 
@@ -522,11 +524,37 @@ public class FactionServiceImpl implements FactionService {
                 repos.invitations().deleteByInviteeId(playerId);
             });
 
+            notifyFactionMembersOnJoin(factionId, playerUUID);
             Bukkit.getPluginManager().callEvent(new FactionJoinEvent(faction.get(), playerUUID));
             return true;
         } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to add member " + playerUUID + " to " + factionId, e);
             return false;
+        }
+    }
+
+    private void notifyFactionMembersOnJoin(final String factionId, final UUID joinedPlayerUuid) {
+        try {
+            final OfflinePlayer joined = Bukkit.getOfflinePlayer(joinedPlayerUuid);
+            final String joinedName = joined.getName() == null ? joinedPlayerUuid.toString() : joined.getName();
+            final List<PlayerModel> members = repos.players().findByFactionId(factionId);
+            for (final PlayerModel member : members) {
+                if (member.getId().equals(joinedPlayerUuid.toString())) {
+                    continue;
+                }
+                try {
+                    final UUID memberUuid = UUID.fromString(member.getId());
+                    final Player online = Bukkit.getPlayer(memberUuid);
+                    if (online != null) {
+                        online.sendMessage(com.pvpindex.factions.util.MsgUtil.parse(
+                            "<yellow><white>" + joinedName + "<yellow> joined your faction."));
+                    }
+                } catch (IllegalArgumentException ignored) {
+                    // Ignore malformed UUID entries.
+                }
+            }
+        } catch (StorageException e) {
+            logger.log(Level.WARNING, "Failed to notify faction members for join: " + factionId, e);
         }
     }
 

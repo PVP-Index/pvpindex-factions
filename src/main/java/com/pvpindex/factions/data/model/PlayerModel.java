@@ -30,6 +30,16 @@ public class PlayerModel extends Model {
 
     public PlayerModel(final String id) {
         super(id);
+        // Ensure NOT NULL database columns always have explicit values on first save.
+        setPowerBoost(0.0);
+        setPower(0.0);
+        setJoinedAt(0L);
+        setLastActivity(0L);
+        setOverriding(false);
+        setTerritoryTitles(true);
+        setAutoTerritoryMode(AutoTerritoryMode.OFF);
+        setInviteNotifications(true);
+        setBankTaxNotifications(true);
     }
 
     // -------------------------------------------------------------------------
