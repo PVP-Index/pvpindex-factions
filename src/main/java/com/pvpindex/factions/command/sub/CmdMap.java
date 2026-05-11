@@ -9,6 +9,7 @@ import com.pvpindex.factions.data.model.PlayerModel;
 import com.pvpindex.factions.util.MsgUtil;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -29,12 +30,31 @@ public final class CmdMap extends FactionCommand {
     @Override
     protected void perform(final CommandContext ctx) {
         final Player player = (Player) ctx.getSender();
-        final ParsedMapArgs parsed = parseArgs(ctx.getArgs());
-        if (parsed.error != null) {
-            MsgUtil.send(player, parsed.error);
+        final ParsedCommandArgs parsedArgs = parseArguments(ctx.getArgs(), Set.of("size"));
+        if (parsedArgs.hasError()) {
+            MsgUtil.send(player, parsedArgs.error());
             return;
         }
-        final String mode = parsed.mode;
+        final List<String> positional = parsedArgs.positionalArgs();
+        if (positional.size() > 1) {
+            MsgUtil.send(player, "<red>Usage: /f map [on|off|once] [--size=<size>]");
+            return;
+        }
+        final String mode = positional.isEmpty() ? "" : positional.get(0).toLowerCase();
+        Integer parsedSize = null;
+        final String sizeArg = parsedArgs.optionValue("size");
+        if (sizeArg != null) {
+            try {
+                parsedSize = Integer.parseInt(sizeArg);
+            } catch (NumberFormatException ex) {
+                MsgUtil.send(player, "<red>Map size must be a number.");
+                return;
+            }
+            if (parsedSize < 1) {
+                MsgUtil.send(player, "<red>Map size must be at least 1.");
+                return;
+            }
+        }
         try {
             final PlayerModel model = ctx.getRepos().players().findOrCreate(player.getUniqueId().toString());
             if ("on".equals(mode)) {
@@ -53,8 +73,8 @@ public final class CmdMap extends FactionCommand {
             MsgUtil.send(player, "<red>Failed to update map preference.");
             return;
         }
-        final int radius = parsed.size != null
-            ? parsed.size
+        final int radius = parsedSize != null
+            ? parsedSize
             : Math.max(1, ctx.getConfig().getMapOnceRadius());
         renderOnce(ctx, player, radius);
     }
@@ -163,45 +183,4 @@ public final class CmdMap extends FactionCommand {
         }
     }
 
-    private ParsedMapArgs parseArgs(final List<String> args) {
-        String mode = "";
-        Integer size = null;
-        for (final String rawArg : args) {
-            final String arg = rawArg.toLowerCase();
-            if (arg.startsWith("--size=")) {
-                final String value = rawArg.substring("--size=".length()).trim();
-                if (value.isEmpty()) {
-                    return new ParsedMapArgs(null, null, "<red>Map size is required: <white>--size=<number></white>");
-                }
-                try {
-                    final int parsed = Integer.parseInt(value);
-                    if (parsed < 1) {
-                        return new ParsedMapArgs(null, null, "<red>Map size must be at least 1.");
-                    }
-                    size = parsed;
-                } catch (NumberFormatException ex) {
-                    return new ParsedMapArgs(null, null, "<red>Map size must be a number.");
-                }
-                continue;
-            }
-            if (mode.isEmpty()) {
-                mode = arg;
-            } else {
-                return new ParsedMapArgs(null, null, "<red>Usage: /f map [on|off|once] [--size=<size>]");
-            }
-        }
-        return new ParsedMapArgs(mode, size, null);
-    }
-
-    private static final class ParsedMapArgs {
-        private final String mode;
-        private final Integer size;
-        private final String error;
-
-        private ParsedMapArgs(final String mode, final Integer size, final String error) {
-            this.mode = mode;
-            this.size = size;
-            this.error = error;
-        }
-    }
 }
