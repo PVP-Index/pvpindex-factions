@@ -91,6 +91,7 @@ class FactionServiceImplJoinNotificationTest {
         member.setFactionId(factionId);
 
         final Player onlineMember = mock(Player.class);
+        when(onlineMember.isOnline()).thenReturn(true);
         final Player joinedPlayerBukkit = mock(Player.class);
         when(joinedPlayerBukkit.getName()).thenReturn("Joiner");
 

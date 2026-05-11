@@ -1,6 +1,7 @@
 package com.pvpindex.factions.command.sub;
 
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -10,6 +11,7 @@ import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.service.FactionService;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,16 +31,16 @@ class CmdRelationTest extends CommandTestBase {
     @BeforeEach
     void setUp() {
         cmd = new CmdRelation(factionService);
+    }
+
+    @Test
+    void setsRelation() {
         when(player.getUniqueId()).thenReturn(uuid);
         when(factionService.getFactionByPlayer(uuid)).thenReturn(Optional.of(sourceFaction));
         when(factionService.isOfficerOrAbove(uuid)).thenReturn(true);
         when(sourceFaction.getId()).thenReturn("A");
         when(targetFaction.getId()).thenReturn("B");
         when(targetFaction.getName()).thenReturn("Beta");
-    }
-
-    @Test
-    void setsRelation() {
         when(factionService.getFactionByName("Beta")).thenReturn(Optional.of(targetFaction));
         when(factionService.setRelation(uuid, "Beta", Relation.ALLY)).thenReturn(Optional.of(Relation.ALLY));
 
@@ -46,5 +48,13 @@ class CmdRelationTest extends CommandTestBase {
 
         verify(player).sendMessage(argThat(componentContains("set to")));
     }
-}
 
+    @Test
+    void tabCompletesRelationTypeAfterFactionName() {
+        final List<String> completions = cmd.tabComplete(ctx("Beta", ""));
+        assertTrue(completions.contains("ally"));
+        assertTrue(completions.contains("truce"));
+        assertTrue(completions.contains("neutral"));
+        assertTrue(completions.contains("enemy"));
+    }
+}

@@ -53,8 +53,13 @@ class CmdInfoTest extends CommandTestBase {
         when(faction.getDescription()).thenReturn("");
         when(config.getMaxMembers()).thenReturn(50);
         when(config.getMaxPower()).thenReturn(10.0);
+        when(config.isInfoShowAllies()).thenReturn(true);
+        when(config.isInfoShowTruces()).thenReturn(false);
+        when(config.isInfoShowNeutrals()).thenReturn(false);
+        when(config.isInfoShowEnemies()).thenReturn(false);
         when(repos.players()).thenReturn(playerRepository);
         when(repos.board()).thenReturn(boardRepository);
+        when(faction.getRelationsJson()).thenReturn("{}");
         final PlayerModel p1 = new PlayerModel("p1");
         p1.setPower(5.0);
         final PlayerModel p2 = new PlayerModel("p2");
@@ -79,6 +84,41 @@ class CmdInfoTest extends CommandTestBase {
         verify(player).sendMessage(argThat(componentContains("Land")));
         verify(player).sendMessage(argThat(componentContains("Bank")));
         verify(player).sendMessage(argThat(componentContains("Home")));
+        verify(player).sendMessage(argThat(componentContains("Allies")));
+    }
+
+    @Test
+    @DisplayName("optional relation types shown when enabled")
+    void testOptionalRelationTypesShown() throws StorageException {
+        when(config.isInfoShowTruces()).thenReturn(true);
+        when(config.isInfoShowNeutrals()).thenReturn(true);
+        when(config.isInfoShowEnemies()).thenReturn(true);
+        final String allyId = UUID.randomUUID().toString();
+        final String truceId = UUID.randomUUID().toString();
+        final String neutralId = UUID.randomUUID().toString();
+        final String enemyId = UUID.randomUUID().toString();
+        when(faction.getRelationsJson()).thenReturn("{\"" + allyId + "\":\"ALLY\",\"" + truceId + "\":\"TRUCE\","
+            + "\"" + neutralId + "\":\"NEUTRAL\",\"" + enemyId + "\":\"ENEMY\"}");
+        final FactionModel ally = org.mockito.Mockito.mock(FactionModel.class);
+        when(ally.getName()).thenReturn("Allies");
+        final FactionModel truce = org.mockito.Mockito.mock(FactionModel.class);
+        when(truce.getName()).thenReturn("Truces");
+        final FactionModel neutral = org.mockito.Mockito.mock(FactionModel.class);
+        when(neutral.getName()).thenReturn("Neutrals");
+        final FactionModel enemy = org.mockito.Mockito.mock(FactionModel.class);
+        when(enemy.getName()).thenReturn("Enemies");
+        when(factionService.getFactionByPlayer(uuid)).thenReturn(Optional.of(faction));
+        when(factionService.getFactionById(allyId)).thenReturn(Optional.of(ally));
+        when(factionService.getFactionById(truceId)).thenReturn(Optional.of(truce));
+        when(factionService.getFactionById(neutralId)).thenReturn(Optional.of(neutral));
+        when(factionService.getFactionById(enemyId)).thenReturn(Optional.of(enemy));
+
+        cmd.execute(ctx());
+
+        verify(player).sendMessage(argThat(componentContains("Allies:")));
+        verify(player).sendMessage(argThat(componentContains("Truces:")));
+        verify(player).sendMessage(argThat(componentContains("Neutrals:")));
+        verify(player).sendMessage(argThat(componentContains("Enemies:")));
     }
 
     @Test

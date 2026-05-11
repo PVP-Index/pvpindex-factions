@@ -263,7 +263,11 @@ public abstract class FactionCommand {
             if (child != null) {
                 return child.tabComplete(ctx.shift());
             }
-            return List.of();
+            // No child matched: this command may still accept positional args.
+            final int argIndex = Math.max(0, args.size() - 1);
+            return complete(ctx, argIndex).stream()
+                .filter(s -> s.toLowerCase().startsWith(partial))
+                .collect(Collectors.toList());
         }
 
         // Leaf command: delegate to complete()
