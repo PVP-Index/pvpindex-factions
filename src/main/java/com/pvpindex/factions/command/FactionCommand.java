@@ -434,7 +434,7 @@ public abstract class FactionCommand {
             return error != null;
         }
 
-        public String error() {
+        public String errorMessage() {
             return error;
         }
 

@@ -32,7 +32,7 @@ public final class CmdMap extends FactionCommand {
         final Player player = (Player) ctx.getSender();
         final ParsedCommandArgs parsedArgs = parseArguments(ctx.getArgs(), Set.of("size"));
         if (parsedArgs.hasError()) {
-            MsgUtil.send(player, parsedArgs.error());
+            MsgUtil.send(player, parsedArgs.errorMessage());
             return;
         }
         final List<String> positional = parsedArgs.positionalArgs();

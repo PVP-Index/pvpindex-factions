@@ -49,7 +49,7 @@ class FactionCommandArgumentParsingTest {
         final FactionCommand.ParsedCommandArgs parsed = cmd.parse(List.of("--nope=1"), Set.of("size"));
 
         assertTrue(parsed.hasError());
-        assertTrue(parsed.error().contains("Unknown option"));
+        assertTrue(parsed.errorMessage().contains("Unknown option"));
     }
 
     @Test
@@ -59,6 +59,6 @@ class FactionCommandArgumentParsingTest {
         final FactionCommand.ParsedCommandArgs parsed = cmd.parse(List.of("--size"), Set.of("size"));
 
         assertTrue(parsed.hasError());
-        assertTrue(parsed.error().contains("Missing value"));
+        assertTrue(parsed.errorMessage().contains("Missing value"));
     }
 }
