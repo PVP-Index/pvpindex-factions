@@ -1,0 +1,8 @@
+# Predefined factions config.
+# This feature is disabled by default.
+
+enabled: false
+case-sensitive: false
+block-disband: true
+
+factions: {}

@@ -10,9 +10,14 @@ import static org.mockito.Mockito.when;
 
 import com.pvpindex.factions.command.CommandTestBase;
 import com.pvpindex.factions.data.model.FactionModel;
+import com.pvpindex.factions.predefined.PredefinedConfigManager;
 import com.pvpindex.factions.service.FactionService;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.command.CommandSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,6 +43,11 @@ class CmdCreateTest extends CommandTestBase {
     void setUp() {
         cmd = new CmdCreate(factionService);
         when(player.getUniqueId()).thenReturn(uuid);
+    }
+
+    @org.junit.jupiter.api.AfterEach
+    void tearDown() {
+        PredefinedConfigManager.setInstance(null);
     }
 
     @Test
@@ -92,6 +102,26 @@ class CmdCreateTest extends CommandTestBase {
         cmd.execute(ctx("Alpha"));
 
         verify(player).sendMessage(argThat(componentContains("already exists")));
+    }
+
+    @Test
+    @DisplayName("predefined enabled denies non-whitelisted faction names")
+    void testPredefinedWhitelistBlocksUnknownName() throws IOException {
+        final Path dir = Files.createTempDirectory("predefined-create-test");
+        final PredefinedConfigManager manager = new PredefinedConfigManager(dir.toFile(), logger);
+        manager.initialize();
+        final YamlConfiguration cfg = YamlConfiguration.loadConfiguration(dir.resolve("pre-defined.yml").toFile());
+        cfg.set("enabled", true);
+        cfg.set("factions.France.name", "France");
+        cfg.save(dir.resolve("pre-defined.yml").toFile());
+        manager.reload();
+        PredefinedConfigManager.setInstance(manager);
+
+        when(factionService.isInFaction(uuid)).thenReturn(false);
+        cmd.execute(ctx("Denmark"));
+
+        verify(player).sendMessage(argThat(componentContains("only create predefined factions")));
+        verify(factionService, never()).createFaction(anyString(), any());
     }
 
     @Test

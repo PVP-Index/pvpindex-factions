@@ -13,6 +13,7 @@ import com.pvpindex.factions.integration.lwc.NoopLwcInterop;
 import com.pvpindex.factions.integration.vault.VaultEconomy;
 import com.pvpindex.factions.integration.worldguard.NoopTerritoryGuard;
 import com.pvpindex.factions.integration.worldguard.TerritoryGuard;
+import com.pvpindex.factions.predefined.PredefinedConfigManager;
 
 /**
  * Holds core infrastructure instances: config, database, repositories, and Vault.
@@ -32,6 +33,7 @@ public class InfraRegistry {
     private EssentialsInterop essentialsInterop = new NoopEssentialsInterop();
     private TerritoryGuard territoryGuard = new NoopTerritoryGuard();
     private LwcInterop lwcInterop = new NoopLwcInterop();
+    private PredefinedConfigManager predefinedConfigManager;
 
     public void setConfig(final FactionsConfig config) { this.config = config; }
     public void setGuiConfig(final GuiConfig guiConfig) { this.guiConfig = guiConfig; }
@@ -43,6 +45,9 @@ public class InfraRegistry {
     public void setEssentialsInterop(final EssentialsInterop interop) { this.essentialsInterop = interop; }
     public void setTerritoryGuard(final TerritoryGuard territoryGuard) { this.territoryGuard = territoryGuard; }
     public void setLwcInterop(final LwcInterop lwcInterop) { this.lwcInterop = lwcInterop; }
+    public void setPredefinedConfigManager(final PredefinedConfigManager predefinedConfigManager) {
+        this.predefinedConfigManager = predefinedConfigManager;
+    }
 
     public FactionsConfig getConfig() { return config; }
     public GuiConfig getGuiConfig() { return guiConfig; }
@@ -54,4 +59,5 @@ public class InfraRegistry {
     public EssentialsInterop getEssentialsInterop() { return essentialsInterop; }
     public TerritoryGuard getTerritoryGuard() { return territoryGuard; }
     public LwcInterop getLwcInterop() { return lwcInterop; }
+    public PredefinedConfigManager getPredefinedConfigManager() { return predefinedConfigManager; }
 }

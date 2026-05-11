@@ -4,6 +4,7 @@ import com.pvpindex.factions.command.CommandContext;
 import com.pvpindex.factions.command.FactionCommand;
 import com.pvpindex.factions.command.CommandGuards;
 import com.pvpindex.factions.data.model.FactionModel;
+import com.pvpindex.factions.predefined.PredefinedConfigManager;
 import com.pvpindex.factions.service.FactionService;
 import com.pvpindex.factions.util.MsgUtil;
 import java.util.Optional;
@@ -30,6 +31,17 @@ public final class CmdDisband extends FactionCommand {
             return;
         }
         if (!CommandGuards.requireOwner(player, factionService)) {
+            return;
+        }
+        final PredefinedConfigManager predefined = PredefinedConfigManager.getInstance();
+        if (predefined != null
+            && predefined.isEnabled()
+            && predefined.isBlockDisband()
+            && predefined.isPredefinedName(factionOpt.get().getName())) {
+            MsgUtil.sendKey(
+                player,
+                "predefined.disband-blocked",
+                "<red>Predefined factions cannot be disbanded.");
             return;
         }
         if (factionService.disbandFaction(factionOpt.get().getId())) {

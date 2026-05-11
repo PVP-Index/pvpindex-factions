@@ -12,6 +12,7 @@ import com.pvpindex.factions.integration.lwc.LwcInteropFactory;
 import com.pvpindex.factions.integration.lwc.NoopLwcInterop;
 import com.pvpindex.factions.integration.vault.VaultEconomy;
 import com.pvpindex.factions.integration.worldguard.TerritoryGuardFactory;
+import com.pvpindex.factions.predefined.PredefinedConfigManager;
 import com.pvpindex.factions.util.MsgUtil;
 import java.io.File;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -73,6 +74,10 @@ public final class InfrastructureBootstrapComponent extends AbstractBootstrapCom
         MsgUtil.setMessagesConfig(messagesConfig);
         final FileConfiguration dbCfgRaw = YamlConfiguration.loadConfiguration(dbFile);
         context.infra().setDatabaseConfig(new DatabaseConfig(dbCfgRaw));
+        final PredefinedConfigManager predefined = new PredefinedConfigManager(context.plugin().getDataFolder(), logger(context));
+        predefined.initialize();
+        PredefinedConfigManager.setInstance(predefined);
+        context.infra().setPredefinedConfigManager(predefined);
         return true;
     }
 

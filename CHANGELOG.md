@@ -17,6 +17,9 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - `/f map` now supports a size option: `--size=<size>`.
 - Shared command argument parsing coverage for valued long options (`--key=value` and `--key value`), including error handling tests.
 - New reusable faction member notification helper (`FactionMemberNotifier`) for consistent online-member notifications across features.
+- New predefined factions system with separate `pre-defined.yml` storage and explicit in-memory reload flow.
+- New `/f predefined` command tree (with `/f prefined` alias): `create`, `claim`, `sethome`, `reload`, and `list`.
+- New predefined defaults and policy toggles in `pre-defined.yml`: `enabled` (default `false`), `case-sensitive`, and `block-disband`.
 - `/f info` can now display relationship sections, configurable via:
   - `factions.info.relations.show-allies` (default `true`)
   - `factions.info.relations.show-truces` (default `false`)
@@ -28,6 +31,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - `/f map once` default render radius increased to `3` via config default (`factions.map.once-radius`).
 - `/f map` row suffix formatting no longer appends `z=<value>` at line ends.
 - `/f map` tile hover text now uses explicit coordinate labels for clarity: `Chunk X`, `Chunk Z`, and `Player Y`.
+- `/f create <name>` now enforces a predefined-name whitelist when predefined mode is enabled.
 - Improved relation workflow and UX:
   - `/f relation` now supports `relationship` alias.
   - Ally/truce now support pending-to-mutual confirmation flow.
@@ -38,11 +42,13 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   - Fixed `/f relationship ...` completion.
   - Improved `/f map` completion for mixed argument order (`on|off|once` with `--size`).
 - Join and relation notifications now use configurable message keys in `messages.yml`.
+- Added predefined command permissions and configurable predefined messages in `messages.yml`.
 
 ### Fixed
 
 - Fixed invite acceptance join path that could fail with database NOT NULL constraint errors when player rows were first created.
 - Faction members are now notified when a player successfully joins their faction.
+- Predefined factions can be protected from disbanding (player and admin disband paths) when policy is enabled.
 
 ## [1.0.1] - 2026-05-10
 

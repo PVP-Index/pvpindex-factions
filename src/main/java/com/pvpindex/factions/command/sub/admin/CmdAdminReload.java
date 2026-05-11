@@ -3,6 +3,7 @@ package com.pvpindex.factions.command.sub.admin;
 import com.pvpindex.factions.command.CommandContext;
 import com.pvpindex.factions.command.FactionCommand;
 import com.pvpindex.factions.config.MessagesConfig;
+import com.pvpindex.factions.predefined.PredefinedConfigManager;
 import com.pvpindex.factions.util.MsgUtil;
 import java.io.File;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -26,6 +27,10 @@ public final class CmdAdminReload extends FactionCommand {
         }
         final FileConfiguration msgCfgRaw = YamlConfiguration.loadConfiguration(messagesFile);
         MsgUtil.setMessagesConfig(new MessagesConfig(msgCfgRaw));
+        final PredefinedConfigManager predefined = PredefinedConfigManager.getInstance();
+        if (predefined != null) {
+            predefined.reload();
+        }
         MsgUtil.sendKey(ctx.getSender(), "admin.reload", "<green>Configuration reloaded.");
     }
 }

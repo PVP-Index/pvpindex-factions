@@ -3,6 +3,7 @@ package com.pvpindex.factions.command.sub.admin;
 import com.pvpindex.factions.command.CommandContext;
 import com.pvpindex.factions.command.FactionCommand;
 import com.pvpindex.factions.data.model.FactionModel;
+import com.pvpindex.factions.predefined.PredefinedConfigManager;
 import com.pvpindex.factions.service.FactionService;
 import com.pvpindex.factions.util.MsgUtil;
 import java.util.Optional;
@@ -27,6 +28,17 @@ public final class CmdAdminDisband extends FactionCommand {
             MsgUtil.send(ctx.getSender(), "<red>Faction not found.");
             return;
         }
+        final PredefinedConfigManager predefined = PredefinedConfigManager.getInstance();
+        if (predefined != null
+            && predefined.isEnabled()
+            && predefined.isBlockDisband()
+            && predefined.isPredefinedName(faction.get().getName())) {
+            MsgUtil.sendKey(
+                ctx.getSender(),
+                "predefined.disband-blocked",
+                "<red>Predefined factions cannot be disbanded.");
+            return;
+        }
         if (factionService.disbandFaction(faction.get().getId())) {
             MsgUtil.send(ctx.getSender(), "<yellow>Disbanded faction <white>" + faction.get().getName() + "<yellow>.");
             return;
@@ -34,4 +46,3 @@ public final class CmdAdminDisband extends FactionCommand {
         MsgUtil.send(ctx.getSender(), "<red>Failed to disband faction.");
     }
 }
-

@@ -2,6 +2,7 @@ package com.pvpindex.factions.command.sub;
 
 import com.pvpindex.factions.command.CommandContext;
 import com.pvpindex.factions.command.FactionCommand;
+import com.pvpindex.factions.predefined.PredefinedConfigManager;
 import com.pvpindex.factions.service.FactionService;
 import com.pvpindex.factions.util.MsgUtil;
 import org.bukkit.entity.Player;
@@ -28,6 +29,14 @@ public final class CmdCreate extends FactionCommand {
             return;
         }
         final String name = ctx.arg(0);
+        final PredefinedConfigManager predefined = PredefinedConfigManager.getInstance();
+        if (predefined != null && predefined.isEnabled() && !predefined.isPredefinedName(name)) {
+            MsgUtil.sendKey(
+                player,
+                "predefined.create-not-allowed",
+                "<red>You can only create predefined factions on this server.");
+            return;
+        }
         if (name.length() < 3 || name.length() > 32) {
             MsgUtil.send(player, "<red>Faction name must be between 3 and 32 characters.");
             return;

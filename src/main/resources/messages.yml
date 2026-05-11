@@ -130,6 +130,17 @@ relation:
   mutual-established-target: "<green><white>{faction}<green> and your faction are now <white>{relation}<green>."
   updated-by-other: "<yellow><white>{faction}<yellow> set relation to <white>{relation}<yellow>."
 
+predefined:
+  disabled: "<red>Predefined factions are disabled."
+  unknown: "<red>Unknown predefined faction: <white>{faction}"
+  create-not-allowed: "<red>You can only create predefined factions on this server."
+  disband-blocked: "<red>Predefined factions cannot be disbanded."
+  claim-saved: "<green>Saved predefined claim for <yellow>{faction}</yellow> at <white>{x}</white>,<white>{z}</white>."
+  home-saved: "<green>Saved predefined home for <yellow>{faction}</yellow>."
+  reload-success: "<green>Predefined factions reloaded."
+  reload-failed: "<red>Failed to reload predefined factions."
+  none: "<yellow>No predefined factions configured."
+
 power:
   too-low-raid: "<red>Your faction does not have enough power — your land can be raided!"
   lost-on-death: "<red>You lost <yellow>{amount}<red> power on death."
