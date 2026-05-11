@@ -7,10 +7,12 @@ import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.model.PlayerModel;
 import com.pvpindex.factions.data.model.RankModel;
+import com.pvpindex.factions.engine.FactionMemberNotifier;
 import com.pvpindex.factions.event.FactionCreateEvent;
 import com.pvpindex.factions.event.FactionDisbandEvent;
 import com.pvpindex.factions.event.FactionJoinEvent;
 import com.pvpindex.factions.event.FactionLeaveEvent;
+import com.pvpindex.factions.util.MsgUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,7 +26,6 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 
@@ -357,10 +358,31 @@ public class FactionServiceImpl implements FactionService {
             if (source.getId().equals(target.getId())) {
                 return Optional.empty();
             }
-            final Map<String, Relation> map = parseRelations(source.getRelationsJson());
-            map.put(target.getId(), relation);
-            source.setRelationsJson(serializeRelations(map));
+            final Map<String, Relation> sourceMap = parseRelations(source.getRelationsJson());
+            final Map<String, Relation> targetMap = parseRelations(target.getRelationsJson());
+            final Relation previous = sourceMap.get(target.getId());
+
+            if (!withinRelationLimit(sourceMap, previous, relation)) {
+                return Optional.empty();
+            }
+
+            sourceMap.put(target.getId(), relation);
+            source.setRelationsJson(serializeRelations(sourceMap));
             repos.factions().save(source);
+
+            // Enemies and neutral relations are always mirrored for consistency.
+            if (relation == Relation.ENEMY || relation == Relation.NEUTRAL) {
+                targetMap.put(source.getId(), relation);
+                target.setRelationsJson(serializeRelations(targetMap));
+                repos.factions().save(target);
+                return Optional.of(relation);
+            }
+
+            // Friendly relations are promoted to active when both factions agree.
+            if (targetMap.get(source.getId()) == relation) {
+                target.setRelationsJson(serializeRelations(targetMap));
+                repos.factions().save(target);
+            }
             return Optional.of(relation);
         } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to set relation for " + actorUUID, e);
@@ -534,28 +556,20 @@ public class FactionServiceImpl implements FactionService {
     }
 
     private void notifyFactionMembersOnJoin(final String factionId, final UUID joinedPlayerUuid) {
-        try {
-            final OfflinePlayer joined = Bukkit.getOfflinePlayer(joinedPlayerUuid);
-            final String joinedName = joined.getName() == null ? joinedPlayerUuid.toString() : joined.getName();
-            final List<PlayerModel> members = repos.players().findByFactionId(factionId);
-            for (final PlayerModel member : members) {
-                if (member.getId().equals(joinedPlayerUuid.toString())) {
-                    continue;
-                }
-                try {
-                    final UUID memberUuid = UUID.fromString(member.getId());
-                    final Player online = Bukkit.getPlayer(memberUuid);
-                    if (online != null) {
-                        online.sendMessage(com.pvpindex.factions.util.MsgUtil.parse(
-                            "<yellow><white>" + joinedName + "<yellow> joined your faction."));
-                    }
-                } catch (IllegalArgumentException ignored) {
-                    // Ignore malformed UUID entries.
-                }
-            }
-        } catch (StorageException e) {
-            logger.log(Level.WARNING, "Failed to notify faction members for join: " + factionId, e);
-        }
+        final OfflinePlayer joined = Bukkit.getOfflinePlayer(joinedPlayerUuid);
+        final String joinedName = joined.getName() == null ? joinedPlayerUuid.toString() : joined.getName();
+        FactionMemberNotifier.notifyOnlineMembers(
+            plugin,
+            repos,
+            logger,
+            factionId,
+            member -> !member.getId().equals(joinedPlayerUuid.toString()),
+            online -> MsgUtil.sendKey(
+                online,
+                "member.player-joined",
+                "<green>{player} joined your faction.",
+                "player",
+                joinedName));
     }
 
     private Map<String, Relation> parseRelations(final String json) {
@@ -613,6 +627,31 @@ public class FactionServiceImpl implements FactionService {
             out = out.substring(0, out.length() - 1);
         }
         return out;
+    }
+
+    private boolean withinRelationLimit(
+            final Map<String, Relation> current,
+            final Relation previous,
+            final Relation next) {
+        if (next != Relation.ALLY && next != Relation.TRUCE) {
+            return true;
+        }
+        if (previous == next) {
+            return true;
+        }
+        final int count = countRelations(current, next);
+        final int max = next == Relation.ALLY ? config.getMaxAllies() : config.getMaxTruces();
+        return count < Math.max(0, max);
+    }
+
+    private int countRelations(final Map<String, Relation> relations, final Relation relation) {
+        int count = 0;
+        for (final Relation value : relations.values()) {
+            if (value == relation) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private boolean changeMemberRank(final UUID actorUUID, final UUID targetUUID, final boolean promote) {

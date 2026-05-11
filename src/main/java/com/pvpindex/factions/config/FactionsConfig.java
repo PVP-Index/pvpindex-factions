@@ -133,6 +133,22 @@ public class FactionsConfig {
         return cfg.getInt("factions.top.page-size", 8);
     }
 
+    public boolean isInfoShowAllies() {
+        return cfg.getBoolean("factions.info.relations.show-allies", true);
+    }
+
+    public boolean isInfoShowTruces() {
+        return cfg.getBoolean("factions.info.relations.show-truces", false);
+    }
+
+    public boolean isInfoShowNeutrals() {
+        return cfg.getBoolean("factions.info.relations.show-neutrals", false);
+    }
+
+    public boolean isInfoShowEnemies() {
+        return cfg.getBoolean("factions.info.relations.show-enemies", false);
+    }
+
     public int getBankHistoryPageSize() {
         return cfg.getInt("factions.bank.history.page-size", 8);
     }

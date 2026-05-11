@@ -44,6 +44,15 @@ factions:
     # Entries per page for /f top.
     page-size: 8
 
+  info:
+    relations:
+      # Show allies in /f info.
+      show-allies: true
+      # Optionally include additional relation types in /f info.
+      show-truces: false
+      show-neutrals: false
+      show-enemies: false
+
   land:
     # Minimum buffer (in chunks) between two enemy factions' territory.
     # 0 = disabled.

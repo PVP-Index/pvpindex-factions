@@ -420,33 +420,18 @@ public class EngineEconomy {
         if (!config.isTaxNotifyMembersEnabled()) {
             return;
         }
-        try {
-            repos.players().findByFactionId(faction.getId()).forEach(member -> {
-                if (!member.hasBankTaxNotifications()) {
-                    return;
-                }
-                final String playerId = member.getId();
-                try {
-                    final UUID uuid = UUID.fromString(playerId);
-                    final Player online = Bukkit.getPlayer(uuid);
-                    if (online == null || !online.isOnline()) {
-                        return;
-                    }
-                    Bukkit.getScheduler().runTask(
-                        plugin,
-                        () -> MsgUtil.sendKey(
-                            online,
-                            "bank.tax-charged",
-                            "<gold>Faction bank tax charged: <yellow>{amount}<gold>. New bank: <yellow>{balance}<gold>.",
-                            "amount", String.format(Locale.US, "%.2f", taxAmount),
-                            "balance", String.format(Locale.US, "%.2f", newBank)));
-                } catch (IllegalArgumentException ignored) {
-                    // Ignore malformed UUID rows.
-                }
-            });
-        } catch (StorageException e) {
-            logger.log(Level.WARNING, "Failed to notify faction members for tax charge: " + faction.getId(), e);
-        }
+        FactionMemberNotifier.notifyOnlineMembers(
+            plugin,
+            repos,
+            logger,
+            faction.getId(),
+            member -> member.hasBankTaxNotifications(),
+            online -> MsgUtil.sendKey(
+                online,
+                "bank.tax-charged",
+                "<gold>Faction bank tax charged: <yellow>{amount}<gold>. New bank: <yellow>{balance}<gold>.",
+                "amount", String.format(Locale.US, "%.2f", taxAmount),
+                "balance", String.format(Locale.US, "%.2f", newBank)));
     }
 
     private double roundMoney(final double value) {

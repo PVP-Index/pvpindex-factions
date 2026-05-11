@@ -81,13 +81,30 @@ public final class CmdMap extends FactionCommand {
 
     @Override
     protected List<String> complete(final CommandContext ctx, final int argIndex) {
-        if (argIndex == 0) {
-            return List.of("on", "off", "once", "--size=");
-        }
-        if (argIndex == 1) {
-            return List.of("--size=");
+        final List<String> args = ctx.getArgs();
+        final boolean hasModeArg = args.stream().anyMatch(this::isModeToken);
+        final boolean hasSizeArg = args.stream().anyMatch(this::isSizeToken);
+
+        if (argIndex <= 1) {
+            final java.util.ArrayList<String> out = new java.util.ArrayList<>();
+            if (!hasModeArg) {
+                out.addAll(List.of("on", "off", "once"));
+            }
+            if (!hasSizeArg) {
+                out.addAll(List.of("--size=", "--size=1", "--size=2", "--size=3", "--size=4", "--size=5"));
+            }
+            return out;
         }
         return List.of();
+    }
+
+    private boolean isModeToken(final String token) {
+        final String lowered = token.toLowerCase();
+        return "on".equals(lowered) || "off".equals(lowered) || "once".equals(lowered);
+    }
+
+    private boolean isSizeToken(final String token) {
+        return token.equalsIgnoreCase("--size") || token.toLowerCase().startsWith("--size=");
     }
 
     private void renderOnce(final CommandContext ctx, final Player player, final int radius) {

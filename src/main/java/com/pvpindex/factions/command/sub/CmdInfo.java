@@ -1,6 +1,7 @@
 package com.pvpindex.factions.command.sub;
 
 import com.github.ezframework.jaloquent.exception.StorageException;
+import com.pvpindex.factions.Relation;
 import com.pvpindex.factions.command.CommandContext;
 import com.pvpindex.factions.command.FactionCommand;
 import com.pvpindex.factions.data.model.FactionModel;
@@ -8,8 +9,10 @@ import com.pvpindex.factions.data.model.PlayerModel;
 import com.pvpindex.factions.service.FactionService;
 import com.pvpindex.factions.util.MsgUtil;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
@@ -80,6 +83,7 @@ public final class CmdInfo extends FactionCommand {
             MsgUtil.send(sender, "<gold> Land: <white>" + land);
             MsgUtil.send(sender, "<gold> Bank: <white>" + bank);
             MsgUtil.send(sender, "<gold> Home: <white>" + formatHome(faction));
+            sendRelationInfo(sender, ctx, faction);
             if (!faction.getDescription().isBlank()) {
                 MsgUtil.send(sender, "<gold> Description: <white>" + faction.getDescription());
             }
@@ -142,5 +146,76 @@ public final class CmdInfo extends FactionCommand {
         return MsgUtil.parse("<gold> Members: <white>" + members.size() + "/" + maxMembers
                 + " <gray>(hover)")
             .hoverEvent(HoverEvent.showText(MsgUtil.parse(hover)));
+    }
+
+    private void sendRelationInfo(final CommandSender sender, final CommandContext ctx, final FactionModel faction) {
+        final Map<String, Relation> relations = parseRelations(faction.getRelationsJson());
+        sendRelationLine(sender, "Allies", Relation.ALLY, ctx.getConfig().isInfoShowAllies(), relations);
+        sendRelationLine(sender, "Truces", Relation.TRUCE, ctx.getConfig().isInfoShowTruces(), relations);
+        sendRelationLine(sender, "Neutrals", Relation.NEUTRAL, ctx.getConfig().isInfoShowNeutrals(), relations);
+        sendRelationLine(sender, "Enemies", Relation.ENEMY, ctx.getConfig().isInfoShowEnemies(), relations);
+    }
+
+    private void sendRelationLine(
+            final CommandSender sender,
+            final String label,
+            final Relation relation,
+            final boolean enabled,
+            final Map<String, Relation> relations) {
+        if (!enabled) {
+            return;
+        }
+        final List<String> names = new ArrayList<>();
+        for (final Map.Entry<String, Relation> entry : relations.entrySet()) {
+            if (entry.getValue() != relation) {
+                continue;
+            }
+            final String target = factionService.getFactionById(entry.getKey())
+                .map(FactionModel::getName)
+                .orElse(entry.getKey());
+            names.add(target);
+        }
+        final String value = names.isEmpty() ? "None" : String.join(", ", names);
+        MsgUtil.send(sender, "<gold> " + label + ": <white>" + value);
+    }
+
+    private Map<String, Relation> parseRelations(final String json) {
+        final Map<String, Relation> out = new HashMap<>();
+        if (json == null || json.isBlank() || "{}".equals(json.trim())) {
+            return out;
+        }
+        final String trimmed = json.trim();
+        if (!trimmed.startsWith("{") || !trimmed.endsWith("}")) {
+            return out;
+        }
+        final String body = trimmed.substring(1, trimmed.length() - 1).trim();
+        if (body.isEmpty()) {
+            return out;
+        }
+        for (final String rawEntry : body.split(",")) {
+            final String[] kv = rawEntry.split(":", 2);
+            if (kv.length != 2) {
+                continue;
+            }
+            final String key = stripQuotes(kv[0].trim());
+            final String value = stripQuotes(kv[1].trim());
+            try {
+                out.put(key, Relation.valueOf(value));
+            } catch (IllegalArgumentException ignored) {
+                // Ignore invalid stored values.
+            }
+        }
+        return out;
+    }
+
+    private String stripQuotes(final String value) {
+        String out = value;
+        if (out.startsWith("\"")) {
+            out = out.substring(1);
+        }
+        if (out.endsWith("\"")) {
+            out = out.substring(0, out.length() - 1);
+        }
+        return out;
     }
 }

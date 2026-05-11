@@ -43,11 +43,11 @@ public final class CmdRelationList extends FactionCommand {
             if (filter != null && entry.getValue() != filter) {
                 continue;
             }
-            final String target = factionService.getFactionById(entry.getKey())
-                .map(FactionModel::getName)
-                .orElse(entry.getKey());
+            final Optional<FactionModel> targetFaction = factionService.getFactionById(entry.getKey());
+            final String target = targetFaction.map(FactionModel::getName).orElse(entry.getKey());
+            final String status = relationStatus(source.get(), targetFaction.orElse(null), entry.getValue());
             MsgUtil.send(player, "<yellow>- <white>" + target + "<gray>: " + entry.getValue().colorTag()
-                + entry.getValue().displayName());
+                + entry.getValue().displayName() + "<gray> (" + status + ")");
             shown++;
         }
         if (shown == 0) {
@@ -103,6 +103,17 @@ public final class CmdRelationList extends FactionCommand {
         return out;
     }
 
+    private String relationStatus(final FactionModel source, final FactionModel target, final Relation relation) {
+        if (target == null) {
+            return "unknown";
+        }
+        if (relation != Relation.ALLY && relation != Relation.TRUCE) {
+            return "active";
+        }
+        final Map<String, Relation> targetMap = parseRelations(target.getRelationsJson());
+        return targetMap.get(source.getId()) == relation ? "mutual" : "pending";
+    }
+
     private String stripQuotes(final String value) {
         String out = value;
         if (out.startsWith("\"")) out = out.substring(1);
@@ -110,4 +121,3 @@ public final class CmdRelationList extends FactionCommand {
         return out;
     }
 }
-
