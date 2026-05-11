@@ -7,7 +7,7 @@
 
     <groupId>com.pvpindex</groupId>
     <artifactId>pvpindex-factions</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
 
     <name>PvPIndex Factions</name>
