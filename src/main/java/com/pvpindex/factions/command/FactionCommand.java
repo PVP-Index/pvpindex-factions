@@ -356,17 +356,15 @@ public abstract class FactionCommand {
     /**
      * Parse command arguments into positional arguments and long options.
      *
-     * <p>Supported forms:
+     * <p>Supported option forms:
      * <ul>
      *   <li>{@code --name=value}</li>
      *   <li>{@code --name value}</li>
      * </ul>
      *
-     * <p>Option names are normalized to lowercase.
-     *
-     * @param rawArgs           raw arguments to parse
-     * @param valuedOptionNames known long options that require a value
-     * @return parsed result with either data or an error message
+     * @param rawArgs raw argument list
+     * @param valuedOptionNames known long-option names that require values
+     * @return parsed args or parse error
      */
     protected ParsedCommandArgs parseArguments(final List<String> rawArgs, final Set<String> valuedOptionNames) {
         final Set<String> valued = valuedOptionNames.stream()
@@ -380,16 +378,11 @@ public abstract class FactionCommand {
                 positional.add(token);
                 continue;
             }
-            String body = token.substring(2);
-            String name;
-            String value = null;
-            final int eq = body.indexOf('=');
-            if (eq >= 0) {
-                name = body.substring(0, eq);
-                value = body.substring(eq + 1);
-            } else {
-                name = body;
-            }
+
+            final String body = token.substring(2);
+            final int eqIndex = body.indexOf('=');
+            String name = eqIndex >= 0 ? body.substring(0, eqIndex) : body;
+            String value = eqIndex >= 0 ? body.substring(eqIndex + 1) : null;
             name = name.toLowerCase();
             if (!valued.contains(name)) {
                 return ParsedCommandArgs.error("<red>Unknown option: <white>--" + name);
@@ -400,7 +393,7 @@ public abstract class FactionCommand {
                 }
                 value = rawArgs.get(++i);
             }
-            if (value.trim().isEmpty()) {
+            if (value == null || value.trim().isEmpty()) {
                 return ParsedCommandArgs.error("<red>Missing value for option: <white>--" + name);
             }
             options.put(name, value.trim());
