@@ -7,7 +7,9 @@ import com.pvpindex.factions.command.FactionCommand;
 import com.pvpindex.factions.command.sub.relation.CmdRelationList;
 import com.pvpindex.factions.command.sub.relation.CmdRelationWishes;
 import com.pvpindex.factions.data.model.FactionModel;
+import com.pvpindex.factions.config.NotificationsConfig;
 import com.pvpindex.factions.engine.FactionMemberNotifier;
+import com.pvpindex.factions.integration.ezcountdown.EzCountdownNotifier;
 import com.pvpindex.factions.service.FactionService;
 import com.pvpindex.factions.util.MsgUtil;
 import java.util.HashMap;
@@ -21,8 +23,21 @@ import org.bukkit.entity.Player;
 public final class CmdRelation extends FactionCommand {
 
     private final FactionService factionService;
+    private final EzCountdownNotifier ezCountdownNotifier;
+    private final NotificationsConfig notificationsConfig;
 
     public CmdRelation(final FactionService factionService) {
+        this(factionService, null, null);
+    }
+
+    public CmdRelation(final FactionService factionService, final EzCountdownNotifier ezCountdownNotifier) {
+        this(factionService, ezCountdownNotifier, null);
+    }
+
+    public CmdRelation(
+            final FactionService factionService,
+            final EzCountdownNotifier ezCountdownNotifier,
+            final NotificationsConfig notificationsConfig) {
         super("relation");
         setAliases("relationship");
         setPermission("factions.cmd.relation");
@@ -30,6 +45,8 @@ public final class CmdRelation extends FactionCommand {
         setRequiredArgs("<faction>", "<relation>");
         setRequiresPlayer(true);
         this.factionService = factionService;
+        this.ezCountdownNotifier = ezCountdownNotifier;
+        this.notificationsConfig = notificationsConfig;
         addChild(new CmdRelationList(factionService));
         addChild(new CmdRelationWishes(factionService));
     }
@@ -90,6 +107,7 @@ public final class CmdRelation extends FactionCommand {
                             "<green><white>{faction}<green> and your faction are now <white>{relation}<green>."),
                         "faction", sourceName,
                         "relation", relation.displayName()));
+                sendRelationAnnouncement(sourceName, targetName, relation);
             } else {
                 MsgUtil.sendKey(
                     player,
@@ -125,6 +143,9 @@ public final class CmdRelation extends FactionCommand {
                     "<yellow><white>{faction}<yellow> set relation to <white>{relation}<yellow>."),
                 "faction", sourceName,
                 "relation", relation.displayName()));
+        if (relation == Relation.ENEMY) {
+            sendRelationAnnouncement(sourceName, targetName, relation);
+        }
     }
 
     @Override
@@ -174,13 +195,45 @@ public final class CmdRelation extends FactionCommand {
     }
 
     private void notifyFactionMembers(final CommandContext ctx, final String factionId, final String message) {
-        FactionMemberNotifier.notifyOnlineMembers(
+        FactionMemberNotifier.notifyMembers(
             ctx.getPlugin(),
             ctx.getRepos(),
             ctx.getLogger(),
             factionId,
             member -> true,
-            online -> MsgUtil.send(online, message));
+            message);
+    }
+
+    private void sendRelationAnnouncement(
+            final String sourceName,
+            final String targetName,
+            final Relation relation) {
+        final String messageKey;
+        final String defaultText;
+        if (relation == Relation.ENEMY) {
+            messageKey = "ezcountdown.relation-enemy";
+            defaultText = "<red>\u2694 {source} declared war on {target}!";
+        } else {
+            messageKey = "ezcountdown.relation-" + relation.name().toLowerCase(java.util.Locale.ROOT);
+            defaultText = "<green>\ud83e\udd1d {source} and {target} are now " + relation.displayName() + "!";
+        }
+        final String message = MsgUtil.replace(
+            MsgUtil.message(messageKey, defaultText),
+            "source", sourceName,
+            "target", targetName);
+        final boolean useEzCountdown = ezCountdownNotifier != null
+            && ezCountdownNotifier.isEnabled()
+            && notificationsConfig != null
+            && notificationsConfig.isEzCountdownEnabled();
+        if (useEzCountdown) {
+            ezCountdownNotifier.sendAnnouncement(
+                message,
+                notificationsConfig.getEzCountdownDurationSeconds(),
+                notificationsConfig.getEzCountdownDisplayTypes());
+        } else {
+            org.bukkit.Bukkit.getOnlinePlayers()
+                .forEach(p -> MsgUtil.send(p, message));
+        }
     }
 
     private String factionDisplayName(final FactionModel faction) {

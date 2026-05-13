@@ -77,8 +77,6 @@ factions:
       min-bank-balance: 0.0
       # Skip tiny deductions below this amount.
       min-charge-amount: 0.01
-      # Notify online members when tax is charged.
-      notify-members: true
     bank:
       history:
         # Entries per page for /f bank history.

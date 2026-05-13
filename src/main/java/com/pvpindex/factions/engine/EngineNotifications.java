@@ -1,5 +1,6 @@
 package com.pvpindex.factions.engine;
 
+import com.pvpindex.factions.config.NotificationsConfig;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.model.InvitationModel;
 import com.pvpindex.factions.data.model.PlayerModel;
@@ -27,6 +28,7 @@ public final class EngineNotifications implements Listener {
     private final FactionService factionService;
     private final Repositories repos;
     private final Logger logger;
+    private final NotificationsConfig notificationsConfig;
     private Plugin plugin;
 
     public EngineNotifications(
@@ -34,10 +36,20 @@ public final class EngineNotifications implements Listener {
             final FactionService factionService,
             final Repositories repos,
             final Logger logger) {
+        this(inviteService, factionService, repos, logger, null);
+    }
+
+    public EngineNotifications(
+            final InviteService inviteService,
+            final FactionService factionService,
+            final Repositories repos,
+            final Logger logger,
+            final NotificationsConfig notificationsConfig) {
         this.inviteService = inviteService;
         this.factionService = factionService;
         this.repos = repos;
         this.logger = logger;
+        this.notificationsConfig = notificationsConfig;
     }
 
     public void register(final Plugin plugin) {
@@ -55,16 +67,25 @@ public final class EngineNotifications implements Listener {
             try {
                 final List<InvitationModel> invites =
                     inviteService.listActiveInvitesForPlayer(player.getUniqueId());
-                if (invites.isEmpty()) {
-                    return;
-                }
                 final PlayerModel model = repos.players().findOrCreate(player.getUniqueId().toString());
-                if (!model.hasInviteNotifications()) {
-                    return;
+                if (!invites.isEmpty() && model.hasInviteNotifications()) {
+                    Bukkit.getScheduler().runTask(plugin, () -> sendInviteSummary(player, invites));
                 }
-                Bukkit.getScheduler().runTask(plugin, () -> sendInviteSummary(player, invites));
+
+                final List<com.pvpindex.factions.data.model.FactionInboxEntry> inboxEntries =
+                    repos.inbox().findByPlayerId(player.getUniqueId().toString());
+                if (!inboxEntries.isEmpty()
+                        && (notificationsConfig == null || notificationsConfig.isInboxEnabled())) {
+                    repos.inbox().deleteByPlayerId(player.getUniqueId().toString());
+                    final int maxEntries = notificationsConfig == null
+                        ? 20 : notificationsConfig.getInboxMaxPerLogin();
+                    final List<com.pvpindex.factions.data.model.FactionInboxEntry> toDeliver =
+                        inboxEntries.size() > maxEntries
+                            ? inboxEntries.subList(0, maxEntries) : inboxEntries;
+                    Bukkit.getScheduler().runTask(plugin, () -> deliverInbox(player, toDeliver));
+                }
             } catch (Exception e) {
-                logger.warning("Failed to send invite notifications: " + e.getMessage());
+                logger.warning("Failed to send join notifications: " + e.getMessage());
             }
         });
     }
@@ -90,6 +111,19 @@ public final class EngineNotifications implements Listener {
             return player.getName() == null ? uuidStr : player.getName();
         } catch (Exception ignored) {
             return uuidStr == null ? "Unknown" : uuidStr;
+        }
+    }
+
+    private void deliverInbox(
+            final Player player,
+            final List<com.pvpindex.factions.data.model.FactionInboxEntry> entries) {
+        MsgUtil.sendKey(
+            player,
+            "notifications.inbox-header",
+            "<gold>Missed faction notifications (<white>{count}</white>):",
+            "count", Integer.toString(entries.size()));
+        for (final com.pvpindex.factions.data.model.FactionInboxEntry entry : entries) {
+            MsgUtil.send(player, entry.getMessage());
         }
     }
 }

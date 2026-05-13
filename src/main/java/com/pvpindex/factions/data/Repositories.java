@@ -1,8 +1,9 @@
 package com.pvpindex.factions.data;
 
 import com.github.ezframework.jaloquent.store.sql.DataSourceJdbcStore;
-import com.pvpindex.factions.data.repository.BoardRepository;
 import com.pvpindex.factions.data.repository.BankTransactionRepository;
+import com.pvpindex.factions.data.repository.BoardRepository;
+import com.pvpindex.factions.data.repository.FactionInboxRepository;
 import com.pvpindex.factions.data.repository.FactionRepository;
 import com.pvpindex.factions.data.repository.InvitationRepository;
 import com.pvpindex.factions.data.repository.PlayerRepository;
@@ -25,6 +26,7 @@ public class Repositories {
     private final InvitationRepository invitations;
     private final RankRepository ranks;
     private final BankTransactionRepository bankTransactions;
+    private final FactionInboxRepository inbox;
 
     public Repositories(final DataSourceJdbcStore store) {
         this.factions = new FactionRepository(store);
@@ -34,6 +36,7 @@ public class Repositories {
         this.invitations = new InvitationRepository(store);
         this.ranks = new RankRepository(store);
         this.bankTransactions = new BankTransactionRepository(store);
+        this.inbox = new FactionInboxRepository(store);
     }
 
     public FactionRepository factions() {
@@ -62,5 +65,9 @@ public class Repositories {
 
     public BankTransactionRepository bankTransactions() {
         return bankTransactions;
+    }
+
+    public FactionInboxRepository inbox() {
+        return inbox;
     }
 }

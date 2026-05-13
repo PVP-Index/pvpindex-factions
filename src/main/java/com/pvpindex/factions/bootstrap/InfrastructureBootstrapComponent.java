@@ -4,6 +4,7 @@ import com.pvpindex.factions.config.DatabaseConfig;
 import com.pvpindex.factions.config.FactionsConfig;
 import com.pvpindex.factions.config.GuiConfig;
 import com.pvpindex.factions.config.MessagesConfig;
+import com.pvpindex.factions.config.NotificationsConfig;
 import com.pvpindex.factions.data.DatabaseManager;
 import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.integration.essentials.EssentialsInteropFactory;
@@ -78,6 +79,12 @@ public final class InfrastructureBootstrapComponent extends AbstractBootstrapCom
         predefined.initialize();
         PredefinedConfigManager.setInstance(predefined);
         context.infra().setPredefinedConfigManager(predefined);
+        final File notifFile = new File(context.plugin().getDataFolder(), "notifications.yml");
+        if (!notifFile.exists()) {
+            context.plugin().saveResource("notifications.yml", false);
+        }
+        context.infra().setNotificationsConfig(
+            new NotificationsConfig(YamlConfiguration.loadConfiguration(notifFile)));
         return true;
     }
 

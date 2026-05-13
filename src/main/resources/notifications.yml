@@ -1,0 +1,41 @@
+# PvPIndex Factions — Notification Configuration
+# Restart required for most changes.
+
+# -------------------------------------------------------------------------
+# Inbox — offline notification delivery
+# -------------------------------------------------------------------------
+inbox:
+  # Store missed faction notifications for offline players and deliver on join.
+  enabled: true
+  # Maximum number of inbox entries to deliver per login.
+  # Entries beyond this limit are discarded to avoid chat spam.
+  max-per-login: 20
+
+# -------------------------------------------------------------------------
+# Member event notifications
+# -------------------------------------------------------------------------
+member:
+  # Notify faction members when a player joins the faction.
+  notify-player-joined: true
+
+# -------------------------------------------------------------------------
+# Economy / Bank notifications
+# -------------------------------------------------------------------------
+economy:
+  tax:
+    # Notify online members when a bank tax is charged.
+    notify-members: true
+
+# -------------------------------------------------------------------------
+# EzCountdown integration
+# -------------------------------------------------------------------------
+ezcountdown:
+  # Master toggle. When false, or when EzCountdown is not installed,
+  # faction relation announcements are sent as chat messages only.
+  enabled: true
+  # Duration (seconds) of the server-wide display notification. Must be > 0.
+  announcement-duration-seconds: 8
+  # Which EzCountdown display types to use.
+  # Valid values: ACTION_BAR, BOSS_BAR, TITLE, CHAT, SCOREBOARD
+  display-types:
+    - ACTION_BAR

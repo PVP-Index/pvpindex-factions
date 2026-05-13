@@ -23,6 +23,7 @@ softdepend:
   - EssentialsX
   - dynmap
   - EzEconomy
+  - EzCountdown
   - LWC
   - LWCX
 

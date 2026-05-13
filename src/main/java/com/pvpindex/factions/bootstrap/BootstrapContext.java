@@ -25,6 +25,7 @@ public final class BootstrapContext {
     private boolean placeholderApiEnabled;
     private boolean dynmapEnabled;
     private boolean lwcEnabled;
+    private boolean ezCountdownEnabled;
 
     public BootstrapContext(
             final PvPIndexFactions plugin,
@@ -64,4 +65,6 @@ public final class BootstrapContext {
     public void setDynmapEnabled(final boolean dynmapEnabled) { this.dynmapEnabled = dynmapEnabled; }
     public boolean isLwcEnabled() { return lwcEnabled; }
     public void setLwcEnabled(final boolean lwcEnabled) { this.lwcEnabled = lwcEnabled; }
+    public boolean isEzCountdownEnabled() { return ezCountdownEnabled; }
+    public void setEzCountdownEnabled(final boolean ezCountdownEnabled) { this.ezCountdownEnabled = ezCountdownEnabled; }
 }

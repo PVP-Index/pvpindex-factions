@@ -7,7 +7,7 @@
 
     <groupId>com.pvpindex</groupId>
     <artifactId>pvpindex-factions</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
 
     <name>PvPIndex Factions</name>
@@ -99,6 +99,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.github.ez-plugins</groupId>
+            <artifactId>EzCountdown</artifactId>
+            <version>1.4.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>us.dynmap</groupId>
             <artifactId>dynmap-api</artifactId>
             <version>3.4-beta-3</version>
@@ -144,6 +150,12 @@
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>9.1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-base</artifactId>
+            <version>3.2.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

@@ -10,6 +10,18 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Changed
 
+## [1.0.3] - 2026-05-12
+
+### Added
+
+- New `notifications.yml` config file consolidating all notification settings (inbox, member join, economy tax, EzCountdown).
+- EzCountdown relation announcements now fall back to a server-wide chat broadcast when EzCountdown is absent or disabled in config.
+
+### Changed
+
+- EzCountdown integration is now fully optional: relation announcements are delivered via chat by default and only use EzCountdown when the plugin is present and `notifications.ezcountdown.enabled` is `true`.
+- Notification settings moved from `config.yml` to `notifications.yml`: `notify-members` (economy tax) and all `integrations.ezcountdown.*` keys.
+
 ## [1.0.2] - 2026-05-11
 
 ### Added

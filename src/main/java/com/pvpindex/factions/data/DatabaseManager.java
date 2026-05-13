@@ -3,8 +3,9 @@ package com.pvpindex.factions.data;
 import com.github.ezframework.jaloquent.config.JaloquentConfig;
 import com.github.ezframework.jaloquent.store.sql.DataSourceJdbcStore;
 import com.pvpindex.factions.config.DatabaseConfig;
-import com.pvpindex.factions.data.model.BoardEntry;
 import com.pvpindex.factions.data.model.BankTransactionModel;
+import com.pvpindex.factions.data.model.BoardEntry;
+import com.pvpindex.factions.data.model.FactionInboxEntry;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.model.InvitationModel;
 import com.pvpindex.factions.data.model.PlayerModel;
@@ -123,6 +124,7 @@ public final class DatabaseManager {
             stmt.executeUpdate(createTableSql("invitations", InvitationModel.COLUMNS, "id"));
             stmt.executeUpdate(createTableSql("ranks", RankModel.COLUMNS, "id"));
             stmt.executeUpdate(createTableSql("bank_transactions", BankTransactionModel.COLUMNS, "id"));
+            stmt.executeUpdate(createTableSql("faction_inbox", FactionInboxEntry.COLUMNS, "id"));
             ensureColumn(
                 stmt,
                 logger,
@@ -167,6 +169,8 @@ public final class DatabaseManager {
         createIndex(stmt, logger, "idx_bank_tx_faction_id", "bank_transactions", "faction_id");
         createIndex(
             stmt, logger, "idx_bank_tx_faction_created_at", "bank_transactions", "faction_id, created_at");
+        // Inbox entries per player.
+        createIndex(stmt, logger, "idx_inbox_player_id", "faction_inbox", "player_id");
     }
 
     private void createIndex(
