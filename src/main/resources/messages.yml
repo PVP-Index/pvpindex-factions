@@ -124,7 +124,9 @@ relation:
   updated: "<yellow>Your relation with <yellow>{faction}</yellow> is now <yellow>{relation}</yellow>."
   cannot-set-self: "<red>You cannot set a relation with your own faction."
   set-failed: "<red>Failed to set relation."
-  pending-wish: "<yellow>Relation wish set to <white>{relation}<yellow> for <white>{faction}<yellow>. They must set the same relation to confirm."
+  pending-wish: >-
+    <yellow>Relation wish set to <white>{relation}<yellow> for
+    <white>{faction}<yellow>. They must set the same relation to confirm.
   pending-received: "<yellow><white>{faction}<yellow> requested <white>{relation}<yellow> with your faction."
   mutual-established: "<green>Mutual <white>{relation}<green> established with <white>{faction}<green>."
   mutual-established-target: "<green><white>{faction}<green> and your faction are now <white>{relation}<green>."
