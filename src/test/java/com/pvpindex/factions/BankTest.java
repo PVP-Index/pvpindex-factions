@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.pvpindex.factions.config.FactionsConfig;
+import com.pvpindex.factions.config.NotificationsConfig;
 import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.repository.FactionRepository;
@@ -42,6 +43,7 @@ class BankTest {
     @Mock private Repositories repos;
     @Mock private FactionRepository factionRepo;
     @Mock private FactionsConfig config;
+    @Mock private NotificationsConfig notificationsConfig;
     @Mock private VaultEconomy vaultEconomy;
     @Mock private Plugin plugin;
     @Mock private Player player;
@@ -62,7 +64,7 @@ class BankTest {
         setBukkitServer(mockServer);
         lenient().when(mockServer.getPluginManager()).thenReturn(mockPluginManager);
 
-        engine = new EngineEconomy(plugin, repos, config, vaultEconomy, Logger.getLogger("test"));
+        engine = new EngineEconomy(plugin, repos, config, notificationsConfig, vaultEconomy, Logger.getLogger("test"));
         faction = new FactionModel(factionId);
         faction.setBank(500.0);
         // lenient: not all tests reach the repo lookup path
@@ -70,7 +72,7 @@ class BankTest {
         lenient().when(factionRepo.find(factionId)).thenReturn(Optional.of(faction));
         lenient().when(config.isBankEnabled()).thenReturn(true);
         lenient().when(vaultEconomy.isEnabled()).thenReturn(true);
-        lenient().when(config.isTaxNotifyMembersEnabled()).thenReturn(false);
+        lenient().when(notificationsConfig.isEconomyTaxNotifyMembers()).thenReturn(false);
         lenient().when(repos.players()).thenReturn(playerRepo);
     }
 

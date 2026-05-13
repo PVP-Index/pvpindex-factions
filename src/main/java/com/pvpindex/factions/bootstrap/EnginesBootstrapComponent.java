@@ -1,6 +1,7 @@
 package com.pvpindex.factions.bootstrap;
 
 import com.pvpindex.factions.config.FactionsConfig;
+import com.pvpindex.factions.config.NotificationsConfig;
 import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.engine.EngineChat;
 import com.pvpindex.factions.engine.EngineAutoTerritory;
@@ -28,10 +29,12 @@ public final class EnginesBootstrapComponent extends AbstractBootstrapComponent 
     public boolean start(final BootstrapContext context) {
         final Repositories repos = context.infra().getRepositories();
         final FactionsConfig cfg = context.infra().getConfig();
+        final NotificationsConfig notifCfg = context.infra().getNotificationsConfig();
         final VaultEconomy vault = context.infra().getVaultEconomy();
 
         final EngineChunkChange chunkChange = new EngineChunkChange(repos, cfg, logger(context));
-        final EngineEconomy economy = new EngineEconomy(context.plugin(), repos, cfg, vault, logger(context));
+        final EngineEconomy economy = new EngineEconomy(
+            context.plugin(), repos, cfg, notifCfg, vault, logger(context));
         final AutoTerritoryModeCache autoTerritoryModeCache = new AutoTerritoryModeCache(repos, logger(context));
         context.engines().setChunkChange(chunkChange);
         context.engines().setEconomy(economy);
@@ -54,7 +57,8 @@ public final class EnginesBootstrapComponent extends AbstractBootstrapComponent 
             context.services().getInviteService(),
             context.services().getFactionService(),
             repos,
-            logger(context));
+            logger(context),
+            notifCfg);
         notifications.register(context.plugin());
 
         final EngineAutoTerritory autoTerritory =

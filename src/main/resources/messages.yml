@@ -177,3 +177,11 @@ admin:
   bypass-enabled: "<gold>[Admin] Bypass enabled."
   bypass-disabled: "<gold>[Admin] Bypass disabled."
   reload: "<green>Configuration reloaded."
+
+notifications:
+  inbox-header: "<gold>Missed faction notifications (<white>{count}</white>):"
+
+ezcountdown:
+  relation-enemy: "<red>\u2694 {source} declared war on {target}!"
+  relation-ally: "<green>\ud83e\udd1d {source} and {target} are now allies!"
+  relation-truce: "<yellow>\ud83e\udd1d {source} and {target} have called a truce!"

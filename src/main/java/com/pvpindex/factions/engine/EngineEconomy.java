@@ -2,6 +2,7 @@ package com.pvpindex.factions.engine;
 
 import com.github.ezframework.jaloquent.exception.StorageException;
 import com.pvpindex.factions.config.FactionsConfig;
+import com.pvpindex.factions.config.NotificationsConfig;
 import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.data.model.BankTransactionModel;
 import com.pvpindex.factions.data.model.FactionModel;
@@ -36,6 +37,7 @@ public class EngineEconomy {
     private final Plugin plugin;
     private final Repositories repos;
     private final FactionsConfig config;
+    private final NotificationsConfig notificationsConfig;
     private final VaultEconomy vaultEconomy;
     private final Logger logger;
     private BukkitTask taxTask;
@@ -46,9 +48,20 @@ public class EngineEconomy {
             final FactionsConfig config,
             final VaultEconomy vaultEconomy,
             final Logger logger) {
+        this(plugin, repos, config, null, vaultEconomy, logger);
+    }
+
+    public EngineEconomy(
+            final Plugin plugin,
+            final Repositories repos,
+            final FactionsConfig config,
+            final NotificationsConfig notificationsConfig,
+            final VaultEconomy vaultEconomy,
+            final Logger logger) {
         this.plugin = plugin;
         this.repos = repos;
         this.config = config;
+        this.notificationsConfig = notificationsConfig;
         this.vaultEconomy = vaultEconomy;
         this.logger = logger;
     }
@@ -417,21 +430,22 @@ public class EngineEconomy {
     }
 
     private void notifyTaxedMembers(final FactionModel faction, final double taxAmount, final double newBank) {
-        if (!config.isTaxNotifyMembersEnabled()) {
+        if (notificationsConfig == null || !notificationsConfig.isEconomyTaxNotifyMembers()) {
             return;
         }
-        FactionMemberNotifier.notifyOnlineMembers(
+        final String message = MsgUtil.replace(
+            MsgUtil.message(
+                "bank.tax-charged",
+                "<gold>Faction bank tax charged: <yellow>{amount}<gold>. New bank: <yellow>{balance}<gold>."),
+            "amount", String.format(Locale.US, "%.2f", taxAmount),
+            "balance", String.format(Locale.US, "%.2f", newBank));
+        FactionMemberNotifier.notifyMembers(
             plugin,
             repos,
             logger,
             faction.getId(),
             member -> member.hasBankTaxNotifications(),
-            online -> MsgUtil.sendKey(
-                online,
-                "bank.tax-charged",
-                "<gold>Faction bank tax charged: <yellow>{amount}<gold>. New bank: <yellow>{balance}<gold>.",
-                "amount", String.format(Locale.US, "%.2f", taxAmount),
-                "balance", String.format(Locale.US, "%.2f", newBank)));
+            message);
     }
 
     private double roundMoney(final double value) {

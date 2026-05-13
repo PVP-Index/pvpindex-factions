@@ -193,10 +193,6 @@ public class FactionsConfig {
         return cfg.getDouble("factions.economy.tax.min-charge-amount", 0.01);
     }
 
-    public boolean isTaxNotifyMembersEnabled() {
-        return cfg.getBoolean("factions.economy.tax.notify-members", true);
-    }
-
     // -------------------------------------------------------------------------
     // Fly
     // -------------------------------------------------------------------------

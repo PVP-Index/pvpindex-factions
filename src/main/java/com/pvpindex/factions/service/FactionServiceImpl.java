@@ -3,6 +3,7 @@ package com.pvpindex.factions.service;
 import com.github.ezframework.jaloquent.exception.StorageException;
 import com.pvpindex.factions.Relation;
 import com.pvpindex.factions.config.FactionsConfig;
+import com.pvpindex.factions.config.NotificationsConfig;
 import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.model.PlayerModel;
@@ -43,6 +44,7 @@ public class FactionServiceImpl implements FactionService {
     private final Plugin plugin;
     private final Repositories repos;
     private final FactionsConfig config;
+    private final NotificationsConfig notificationsConfig;
     private final Logger logger;
     private final ConcurrentHashMap<UUID, Boolean> flyStateByPlayer = new ConcurrentHashMap<>();
 
@@ -51,9 +53,19 @@ public class FactionServiceImpl implements FactionService {
             final Repositories repos,
             final FactionsConfig config,
             final Logger logger) {
+        this(plugin, repos, config, null, logger);
+    }
+
+    public FactionServiceImpl(
+            final Plugin plugin,
+            final Repositories repos,
+            final FactionsConfig config,
+            final NotificationsConfig notificationsConfig,
+            final Logger logger) {
         this.plugin = plugin;
         this.repos = repos;
         this.config = config;
+        this.notificationsConfig = notificationsConfig;
         this.logger = logger;
     }
 
@@ -558,20 +570,21 @@ public class FactionServiceImpl implements FactionService {
     }
 
     private void notifyFactionMembersOnJoin(final String factionId, final UUID joinedPlayerUuid) {
+        if (notificationsConfig != null && !notificationsConfig.isMemberNotifyPlayerJoined()) {
+            return;
+        }
         final OfflinePlayer joined = Bukkit.getOfflinePlayer(joinedPlayerUuid);
         final String joinedName = joined.getName() == null ? joinedPlayerUuid.toString() : joined.getName();
-        FactionMemberNotifier.notifyOnlineMembers(
+        final String message = MsgUtil.replace(
+            MsgUtil.message("member.player-joined", "<green>{player} joined your faction."),
+            "player", joinedName);
+        FactionMemberNotifier.notifyMembers(
             plugin,
             repos,
             logger,
             factionId,
             member -> !member.getId().equals(joinedPlayerUuid.toString()),
-            online -> MsgUtil.sendKey(
-                online,
-                "member.player-joined",
-                "<green>{player} joined your faction.",
-                "player",
-                joinedName));
+            message);
     }
 
     private void applyPredefinedSeedIfNeeded(final FactionModel faction) {

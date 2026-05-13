@@ -6,6 +6,7 @@ import com.pvpindex.factions.api.FactionsTeamsPowerService;
 import com.pvpindex.factions.api.FactionsTeamsService;
 import com.pvpindex.factions.api.FactionsTeamsWarpService;
 import com.pvpindex.factions.config.FactionsConfig;
+import com.pvpindex.factions.config.NotificationsConfig;
 import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.service.FactionServiceImpl;
 import com.pvpindex.factions.service.InviteServiceImpl;
@@ -25,9 +26,10 @@ public final class ServicesBootstrapComponent extends AbstractBootstrapComponent
     public boolean start(final BootstrapContext context) {
         final Repositories repos = context.infra().getRepositories();
         final FactionsConfig cfg = context.infra().getConfig();
+        final NotificationsConfig notifCfg = context.infra().getNotificationsConfig();
 
         final FactionServiceImpl factionImpl =
-            new FactionServiceImpl(context.plugin(), repos, cfg, logger(context));
+            new FactionServiceImpl(context.plugin(), repos, cfg, notifCfg, logger(context));
         final InviteServiceImpl inviteImpl =
             new InviteServiceImpl(factionImpl, repos, cfg, logger(context));
         final WarpServiceImpl warpImpl =
