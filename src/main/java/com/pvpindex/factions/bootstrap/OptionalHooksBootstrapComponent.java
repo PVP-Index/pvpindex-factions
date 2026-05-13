@@ -1,6 +1,7 @@
 package com.pvpindex.factions.bootstrap;
 
 import com.pvpindex.factions.integration.dynmap.DynmapLayer;
+import com.pvpindex.factions.integration.ezcountdown.EzCountdownNotifier;
 import com.pvpindex.factions.integration.placeholderapi.FactionsPlaceholders;
 import com.pvpindex.factions.metrics.BStatsMetricsManager;
 
@@ -19,6 +20,7 @@ public final class OptionalHooksBootstrapComponent extends AbstractBootstrapComp
         initBstats(context);
         initPlaceholderApi(context);
         initDynmap(context);
+        initEzCountdown(context);
         return true;
     }
 
@@ -76,5 +78,18 @@ public final class OptionalHooksBootstrapComponent extends AbstractBootstrapComp
             logger(context).warning("Failed to hook dynmap: " + e.getMessage());
             context.setDynmapEnabled(false);
         }
+    }
+
+    private void initEzCountdown(final BootstrapContext context) {
+        final EzCountdownNotifier notifier = new EzCountdownNotifier(logger(context));
+        if (!context.infra().getNotificationsConfig().isEzCountdownEnabled() || !notifier.setup()) {
+            logger(context).info("EzCountdown not found or disabled — faction announcements will use chat only.");
+            context.infra().setEzCountdownNotifier(notifier);
+            context.setEzCountdownEnabled(false);
+            return;
+        }
+        context.infra().setEzCountdownNotifier(notifier);
+        context.setEzCountdownEnabled(true);
+        logger(context).info("EzCountdown hooked — faction relation announcements enabled.");
     }
 }
