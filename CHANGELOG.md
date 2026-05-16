@@ -26,6 +26,20 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   compiled from source via BuildTools (cached after the first run).
 - `SchedulerSmokeTest` (12 tests) covering `BukkitTaskScheduler` and `FoliaTaskScheduler` paths.
 - `EngineChatListenerTest` (6 tests) covering both the Paper and Spigot chat-listener paths.
+- `TeamsApiRegistrar` interface: isolates the TeamsAPI lifecycle contract from bootstrap code,
+  carrying no TeamsAPI imports so it is safe to reference unconditionally.
+- `TeamsApiRegistrarImpl`: concrete registrar that holds every `FactionsTeams*` adapter and
+  every `TeamsAPI.register*()`/`TeamsAPI.unregister*()` call — loaded via reflection only.
+- `ServicesBootstrapComponentTest` (5 tests): verifies standalone startup when TeamsAPI is
+  absent, confirms internal services are always wired, and covers `stop()` lifecycle paths.
+
+### Fixed
+
+- **TeamsAPI startup crash**: `NoClassDefFoundError` was thrown at server startup when TeamsAPI
+  was not installed, because `ServicesBootstrapComponent` imported `FactionsTeams*` adapter
+  classes whose interfaces live in the TeamsAPI JAR. The fix moves all TeamsAPI references
+  into a new `TeamsApiRegistrarImpl` class that is loaded exclusively via `Class.forName()`
+  only after TeamsAPI has been confirmed present on the server.
 
 ## [1.0.4] - 2026-05-16
 

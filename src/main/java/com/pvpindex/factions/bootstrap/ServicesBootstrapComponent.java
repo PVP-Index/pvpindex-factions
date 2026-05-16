@@ -1,10 +1,6 @@
 package com.pvpindex.factions.bootstrap;
 
-import com.pvpindex.factions.api.FactionsTeamsClaimService;
-import com.pvpindex.factions.api.FactionsTeamsInviteService;
-import com.pvpindex.factions.api.FactionsTeamsPowerService;
-import com.pvpindex.factions.api.FactionsTeamsService;
-import com.pvpindex.factions.api.FactionsTeamsWarpService;
+import com.pvpindex.factions.api.TeamsApiRegistrar;
 import com.pvpindex.factions.config.FactionsConfig;
 import com.pvpindex.factions.config.NotificationsConfig;
 import com.pvpindex.factions.data.Repositories;
@@ -14,8 +10,15 @@ import com.pvpindex.factions.service.WarpServiceImpl;
 
 /**
  * Initializes internal services and optional TeamsAPI adapters.
+ *
+ * <p>TeamsAPI integration is fully isolated behind {@link TeamsApiRegistrar}.
+ * The concrete implementation is loaded only via {@code Class.forName()} so
+ * that this class (and therefore {@code Bootstrap}) can be loaded without
+ * TeamsAPI on the server classpath.
  */
 public final class ServicesBootstrapComponent extends AbstractBootstrapComponent {
+
+    static final String REGISTRAR_CLASS = "com.pvpindex.factions.api.TeamsApiRegistrarImpl";
 
     @Override
     public String name() {
@@ -45,32 +48,21 @@ public final class ServicesBootstrapComponent extends AbstractBootstrapComponent
             return true;
         }
 
-        final FactionsTeamsService teamsAdapter = new FactionsTeamsService(factionImpl);
-        final FactionsTeamsInviteService inviteAdapter = new FactionsTeamsInviteService(inviteImpl);
-        final FactionsTeamsWarpService warpAdapter = new FactionsTeamsWarpService(warpImpl, factionImpl);
-        final FactionsTeamsClaimService claimAdapter = new FactionsTeamsClaimService(factionImpl);
-        final FactionsTeamsPowerService powerAdapter = new FactionsTeamsPowerService(factionImpl);
-
         try {
-            com.skyblockexp.teamsapi.api.TeamsAPI.registerProvider(context.plugin(), teamsAdapter);
-            com.skyblockexp.teamsapi.api.TeamsAPI.registerInviteProvider(context.plugin(), inviteAdapter);
-            com.skyblockexp.teamsapi.api.TeamsAPI.registerWarpProvider(context.plugin(), warpAdapter);
-            com.skyblockexp.teamsapi.api.TeamsAPI.registerClaimProvider(context.plugin(), claimAdapter);
-            com.skyblockexp.teamsapi.api.TeamsAPI.registerPowerProvider(context.plugin(), powerAdapter);
-            context.setTeamsAdapter(teamsAdapter);
-            context.setInviteAdapter(inviteAdapter);
-            context.setWarpAdapter(warpAdapter);
-            context.setClaimAdapter(claimAdapter);
-            context.setPowerAdapter(powerAdapter);
-            context.setTeamsApiEnabled(true);
-            logger(context).info("TeamsAPI integration enabled.");
+            final TeamsApiRegistrar registrar =
+                (TeamsApiRegistrar) Class.forName(REGISTRAR_CLASS)
+                    .getDeclaredConstructor()
+                    .newInstance();
+            if (registrar.register(context.plugin(), factionImpl, inviteImpl, warpImpl)) {
+                context.setTeamsRegistrar(registrar);
+                context.setTeamsApiEnabled(true);
+                logger(context).info("TeamsAPI integration enabled.");
+            } else {
+                logger(context).warning("TeamsAPI provider registration failed — running standalone.");
+                context.setTeamsApiEnabled(false);
+            }
         } catch (Exception e) {
-            logger(context).warning("Failed to register TeamsAPI providers: " + e.getMessage());
-            context.setTeamsAdapter(null);
-            context.setInviteAdapter(null);
-            context.setWarpAdapter(null);
-            context.setClaimAdapter(null);
-            context.setPowerAdapter(null);
+            logger(context).warning("Failed to initialise TeamsAPI integration: " + e.getMessage());
             context.setTeamsApiEnabled(false);
         }
 
@@ -79,35 +71,10 @@ public final class ServicesBootstrapComponent extends AbstractBootstrapComponent
 
     @Override
     public void stop(final BootstrapContext context) {
-        if (context.getTeamsAdapter() != null) {
-            try {
-                com.skyblockexp.teamsapi.api.TeamsAPI.unregisterProvider(
-                    (com.skyblockexp.teamsapi.api.TeamsService) context.getTeamsAdapter());
-            } catch (Exception ignored) { }
-        }
-        if (context.getInviteAdapter() != null) {
-            try {
-                com.skyblockexp.teamsapi.api.TeamsAPI.unregisterInviteProvider(
-                    (com.skyblockexp.teamsapi.api.TeamsInviteService) context.getInviteAdapter());
-            } catch (Exception ignored) { }
-        }
-        if (context.getWarpAdapter() != null) {
-            try {
-                com.skyblockexp.teamsapi.api.TeamsAPI.unregisterWarpProvider(
-                    (com.skyblockexp.teamsapi.api.TeamsWarpService) context.getWarpAdapter());
-            } catch (Exception ignored) { }
-        }
-        if (context.getClaimAdapter() != null) {
-            try {
-                com.skyblockexp.teamsapi.api.TeamsAPI.unregisterClaimProvider(
-                    (com.skyblockexp.teamsapi.api.TeamsClaimService) context.getClaimAdapter());
-            } catch (Exception ignored) { }
-        }
-        if (context.getPowerAdapter() != null) {
-            try {
-                com.skyblockexp.teamsapi.api.TeamsAPI.unregisterPowerProvider(
-                    (com.skyblockexp.teamsapi.api.TeamsPowerService) context.getPowerAdapter());
-            } catch (Exception ignored) { }
+        final TeamsApiRegistrar registrar = context.getTeamsRegistrar();
+        if (registrar != null) {
+            registrar.unregister();
+            context.setTeamsRegistrar(null);
         }
     }
 
