@@ -10,6 +10,11 @@ nav_order: 1
 
 - `/f` (aliases: `/faction`, `/factions`)
 
+> **TeamsAPI subcommands:** When [TeamsAPI](../integrations/teamsapi.md) 1.5.0+
+> is present, `/f <name>` will also dispatch to any `TeamsSubcommand` registered
+> by other plugins via `TeamsAPI.registerSubcommand()`. These commands appear in
+> tab-completion alongside native commands.
+
 ## Admin root
 
 - `/fa` (aliases: `/factionadmin`)

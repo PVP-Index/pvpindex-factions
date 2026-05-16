@@ -35,3 +35,15 @@ Edit `database.yml`:
 - Restart server
 - Check startup logs for integration detection and DB initialization
 - Validate command registration (`/f`, `/fa`)
+
+## Plugin load order
+
+PvPIndex Factions declares `loadbefore` for the following plugins, so faction
+data is always available before they initialize:
+
+- [EzShops](https://modrinth.com/plugin/ezshops)
+- [EzAuction](https://modrinth.com/plugin/ezauction)
+- [EzRTP](https://modrinth.com/plugin/ezplugins-ezrtp)
+- [EzClean](https://modrinth.com/plugin/ezclean)
+
+No extra configuration is needed — the server handles load order automatically.
