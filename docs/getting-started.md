@@ -8,9 +8,14 @@ has_children: true
 
 ## Requirements
 
-- Paper `1.21.4`
-- Java `21+`
-- File-system write access for plugin data and database files
+| Platform | Version | Notes |
+|---|---|---|
+| Paper | 1.21.x | Recommended |
+| Folia | 1.21.x | Supported — uses Folia-native schedulers |
+| Spigot | 1.21.x | Supported — legacy compatibility mode |
+| Java | 21+ | |
+
+File-system write access is required for plugin data and database files.
 
 ## First production checklist
 
