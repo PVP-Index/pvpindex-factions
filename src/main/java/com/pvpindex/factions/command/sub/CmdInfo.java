@@ -15,9 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Bukkit;
@@ -77,7 +75,7 @@ public final class CmdInfo extends FactionCommand {
             MsgUtil.send(sender, MsgUtil.infoHeader(faction.getName()));
             MsgUtil.send(sender, "<dark_gray>------------------------------");
             MsgUtil.send(sender, "<gold> Leader: <white>" + formatLeader(faction));
-            sender.sendMessage(buildMembersLine(members, maxMembers));
+            MsgUtil.send(sender, buildMembersLine(members, maxMembers));
             MsgUtil.send(sender, "<gold> Power: <white>"
                 + String.format(Locale.ROOT, "%.1f", totalPower) + "/"
                 + String.format(Locale.ROOT, "%.1f", maxPower));
@@ -131,7 +129,7 @@ public final class CmdInfo extends FactionCommand {
             + String.format(Locale.ROOT, "%.1f", faction.getHomeZ()) + ")";
     }
 
-    private Component buildMembersLine(final List<PlayerModel> members, final int maxMembers) {
+    private String buildMembersLine(final List<PlayerModel> members, final int maxMembers) {
         final List<String> names = new ArrayList<>();
         for (final PlayerModel member : members) {
             try {
@@ -142,12 +140,11 @@ public final class CmdInfo extends FactionCommand {
             }
         }
         final String hover = names.isEmpty()
-            ? "<gray>No members"
-            : "<gold>Members:<newline><white>- " + String.join("<newline>- ", names);
-        return MiniMessage.miniMessage().deserialize(
-                "<gold> Members: <white>" + members.size() + "/" + maxMembers
-                + " <gray>(hover)")
-            .hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize(hover)));
+            ? "No members"
+            : "Members:<newline>- " + String.join("<newline>- ", names);
+        return "<hover:show_text:'<gold>" + hover + "'>"
+            + "<gold> Members: <white>" + members.size() + "/" + maxMembers
+            + " <gray>(hover)</hover>";
     }
 
     private void sendRelationInfo(final CommandSender sender, final CommandContext ctx, final FactionModel faction) {

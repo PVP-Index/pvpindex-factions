@@ -68,6 +68,19 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   and eliminating all calls to the removed `MsgUtil.parse(Component)` API from `CmdInfo` and
   `CmdMap`. The CI startup matrix was expanded to `[paper, folia, spigot]` × `[1.21.4, 1.21.11]`
   so both Spigot versions are validated on every pull request.
+- **Spigot startup crash (`HoverEventSource` via listener scan and command loading)**:
+  `NoClassDefFoundError: HoverEventSource` was thrown on Spigot 1.21.11 in two additional
+  code paths after the initial `MsgUtil` fix: (1) Bukkit's `registerEvents()` calls
+  `getDeclaredMethods()` on `Listener` classes, which loads every declared method's return type —
+  `FactionsGuiManager.parseText()` had `Component` as its return type, causing class-load failure.
+  (2) `CmdInfo.buildMembersLine()` and `CmdMap.cellComponent()` called `HoverEvent.showText()` in
+  their bodies; loading these command classes triggered loading `HoverEvent`, which required
+  missing `HoverEventSource`. Fix: removed `parseText` from `FactionsGuiManager`'s outer class
+  and moved all adventure inventory calls into a new `InventoryOps` private static inner class
+  (loaded lazily). `buildMembersLine` and `cellComponent`/`cellTag` were rewritten to return
+  `String` with MiniMessage hover/click tag syntax instead of `Component` objects, removing all
+  direct adventure API references from their method bodies. `MsgUtil.ADVENTURE` and
+  `MsgUtil.stripTags()` were made `public` to allow the GUI manager's non-adventure fallback path.
 
 ## [1.0.4] - 2026-05-16
 

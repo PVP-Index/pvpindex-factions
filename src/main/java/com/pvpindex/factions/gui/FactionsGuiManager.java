@@ -65,10 +65,6 @@ public class FactionsGuiManager implements Listener {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
-    private net.kyori.adventure.text.Component parseText(final String text) {
-        return net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(text);
-    }
-
     public boolean openDefault(final Player player) {
         if (!guiConfig.isEnabled()) {
             return false;
@@ -83,7 +79,12 @@ public class FactionsGuiManager implements Listener {
         }
         final int size = normalizeSize(section.getInt("size", 54));
         final String title = render(section.getString("title", "<gold>Factions"), player);
-        final Inventory inventory = Bukkit.createInventory(new MenuHolder(menuId), size, parseText(title));
+        final Inventory inventory;
+        if (MsgUtil.ADVENTURE) {
+            inventory = InventoryOps.create(new MenuHolder(menuId), size, title);
+        } else {
+            inventory = Bukkit.createInventory(new MenuHolder(menuId), size, MsgUtil.stripTags(title));
+        }
         final ConfigurationSection items = section.getConfigurationSection("items");
         if (items != null) {
             for (final String key : items.getKeys(false)) {
@@ -176,14 +177,26 @@ public class FactionsGuiManager implements Listener {
         final ItemStack item = new ItemStack(material == null ? Material.PAPER : material);
         final ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.displayName(parseText(render(section.getString("name", "<white>Factions"), player)));
+            final String nameStr = render(section.getString("name", "<white>Factions"), player);
             final List<String> loreRaw = section.getStringList("lore");
-            if (!loreRaw.isEmpty()) {
-                final List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
-                for (final String line : loreRaw) {
-                    lore.add(parseText(render(line, player)));
+            if (MsgUtil.ADVENTURE) {
+                InventoryOps.setName(meta, nameStr);
+                if (!loreRaw.isEmpty()) {
+                    final List<String> loreRendered = new ArrayList<>();
+                    for (final String line : loreRaw) {
+                        loreRendered.add(render(line, player));
+                    }
+                    InventoryOps.setLore(meta, loreRendered);
                 }
-                meta.lore(lore);
+            } else {
+                meta.setDisplayName(MsgUtil.stripTags(nameStr));
+                if (!loreRaw.isEmpty()) {
+                    final List<String> lorePlain = new ArrayList<>();
+                    for (final String line : loreRaw) {
+                        lorePlain.add(MsgUtil.stripTags(render(line, player)));
+                    }
+                    meta.setLore(lorePlain);
+                }
             }
             if (section.getBoolean("glow", false)) {
                 meta.setEnchantmentGlintOverride(true);
@@ -231,12 +244,33 @@ public class FactionsGuiManager implements Listener {
         return rows * 9;
     }
 
+    private static final class InventoryOps {
+        private InventoryOps() { }
+
+        static Inventory create(final InventoryHolder holder, final int size, final String miniMsg) {
+            return Bukkit.createInventory(holder, size,
+                net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(miniMsg));
+        }
+
+        static void setName(final ItemMeta meta, final String miniMsg) {
+            meta.displayName(
+                net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(miniMsg));
+        }
+
+        static void setLore(final ItemMeta meta, final List<String> lines) {
+            final List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
+            for (final String line : lines) {
+                lore.add(
+                    net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(line));
+            }
+            meta.lore(lore);
+        }
+    }
+
     private record MenuHolder(String id) implements InventoryHolder {
         @Override
         public Inventory getInventory() {
-            return Bukkit.createInventory(this, 9,
-                net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
-                    .plainText().deserialize("internal"));
+            return Bukkit.createInventory(this, 9, "internal");
         }
     }
 }

@@ -19,7 +19,7 @@ public final class MsgUtil {
      * True when Adventure-API and adventure-text-minimessage are both resolvable
      * from the plugin class loader at startup time.
      */
-    static final boolean ADVENTURE;
+    public static final boolean ADVENTURE;
 
     static {
         boolean available = false;
@@ -116,7 +116,7 @@ public final class MsgUtil {
     // String utilities
     // -------------------------------------------------------------------------
 
-    private static String stripTags(final String mm) {
+    public static String stripTags(final String mm) {
         return mm.replaceAll("<[^>]*>", "");
     }
 
