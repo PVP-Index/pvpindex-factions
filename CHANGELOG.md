@@ -30,6 +30,9 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   carrying no TeamsAPI imports so it is safe to reference unconditionally.
 - `TeamsApiRegistrarImpl`: concrete registrar that holds every `FactionsTeams*` adapter and
   every `TeamsAPI.register*()`/`TeamsAPI.unregister*()` call — loaded via reflection only.
+- `EzCountdownSender` interface and `EzCountdownNotifierImpl`: same isolation pattern for
+  EzCountdown — all `DisplayType`/`EzCountdownApi`/`Notification` references live in the impl,
+  loaded via reflection only after EzCountdown is confirmed present on the server.
 - `ServicesBootstrapComponentTest` (5 tests): verifies standalone startup when TeamsAPI is
   absent, confirms internal services are always wired, and covers `stop()` lifecycle paths.
 
@@ -40,6 +43,10 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   classes whose interfaces live in the TeamsAPI JAR. The fix moves all TeamsAPI references
   into a new `TeamsApiRegistrarImpl` class that is loaded exclusively via `Class.forName()`
   only after TeamsAPI has been confirmed present on the server.
+- **EzCountdown startup crash**: Same root cause — `EzCountdownNotifier` imported `DisplayType`,
+  `EzCountdownApi`, and `Notification` directly, causing `NoClassDefFoundError` when EzCountdown
+  was absent. Moved all EzCountdown type references into `EzCountdownNotifierImpl`, loaded via
+  reflection only after EzCountdown is confirmed present.
 
 ## [1.0.4] - 2026-05-16
 
