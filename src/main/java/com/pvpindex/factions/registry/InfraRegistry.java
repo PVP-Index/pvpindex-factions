@@ -16,6 +16,7 @@ import com.pvpindex.factions.integration.vault.VaultEconomy;
 import com.pvpindex.factions.integration.worldguard.NoopTerritoryGuard;
 import com.pvpindex.factions.integration.worldguard.TerritoryGuard;
 import com.pvpindex.factions.predefined.PredefinedConfigManager;
+import com.pvpindex.factions.scheduler.TaskScheduler;
 
 /**
  * Holds core infrastructure instances: config, database, repositories, and Vault.
@@ -38,6 +39,7 @@ public class InfraRegistry {
     private TerritoryGuard territoryGuard = new NoopTerritoryGuard();
     private LwcInterop lwcInterop = new NoopLwcInterop();
     private PredefinedConfigManager predefinedConfigManager;
+    private TaskScheduler taskScheduler;
 
     public void setConfig(final FactionsConfig config) { this.config = config; }
     public void setGuiConfig(final GuiConfig guiConfig) { this.guiConfig = guiConfig; }
@@ -55,6 +57,10 @@ public class InfraRegistry {
         this.predefinedConfigManager = predefinedConfigManager;
     }
 
+    public void setTaskScheduler(final TaskScheduler taskScheduler) {
+        this.taskScheduler = taskScheduler;
+    }
+
     public FactionsConfig getConfig() { return config; }
     public GuiConfig getGuiConfig() { return guiConfig; }
     public MessagesConfig getMessagesConfig() { return messagesConfig; }
@@ -68,4 +74,6 @@ public class InfraRegistry {
     public TerritoryGuard getTerritoryGuard() { return territoryGuard; }
     public LwcInterop getLwcInterop() { return lwcInterop; }
     public PredefinedConfigManager getPredefinedConfigManager() { return predefinedConfigManager; }
+
+    public TaskScheduler getTaskScheduler() { return taskScheduler; }
 }

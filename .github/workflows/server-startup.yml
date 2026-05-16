@@ -1,0 +1,126 @@
+name: Server Startup
+
+on:
+  pull_request:
+    branches: ["main", "develop"]
+  workflow_dispatch:
+
+concurrency:
+  group: server-startup-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  startup:
+    name: Startup smoke — ${{ matrix.platform }} 1.21.4
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [paper, folia]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Build plugin jar (tests skipped)
+        run: mvn --batch-mode --no-transfer-progress package -DskipTests
+
+      - name: Resolve latest ${{ matrix.platform }} 1.21.4 build
+        id: resolve
+        run: |
+          BUILDS_JSON=$(curl -fsSL \
+            "https://api.papermc.io/v2/projects/${{ matrix.platform }}/versions/1.21.4/builds")
+          BUILD=$(echo "$BUILDS_JSON" | jq -re '.builds[-1].build')
+          JAR="${{ matrix.platform }}-1.21.4-${BUILD}.jar"
+          echo "build=${BUILD}" >> "$GITHUB_OUTPUT"
+          echo "jar=${JAR}"     >> "$GITHUB_OUTPUT"
+
+      - name: Cache ${{ matrix.platform }} server jar
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: server-env/server.jar
+          key: ${{ matrix.platform }}-1.21.4-${{ steps.resolve.outputs.build }}
+
+      - name: Download ${{ matrix.platform }} build ${{ steps.resolve.outputs.build }}
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p server-env
+          curl -fsSL \
+            "https://api.papermc.io/v2/projects/${{ matrix.platform }}/versions/1.21.4/builds/${{ steps.resolve.outputs.build }}/downloads/${{ steps.resolve.outputs.jar }}" \
+            -o server-env/server.jar
+
+      - name: Prepare server environment
+        run: |
+          mkdir -p server-env/plugins
+          cp target/pvpindex-factions-*.jar server-env/plugins/
+          printf 'eula=true\n'                              > server-env/eula.txt
+          printf 'online-mode=false\n'                      > server-env/server.properties
+          printf 'level-type=minecraft:flat\n'             >> server-env/server.properties
+          printf 'generate-structures=false\n'             >> server-env/server.properties
+
+      - name: Start server and assert plugin enables cleanly
+        run: |
+          cd server-env
+          java -Xmx768M -Xms256M -jar server.jar nogui > server.log 2>&1 &
+          SERVER_PID=$!
+
+          echo "Server started (PID $SERVER_PID) — waiting for plugin to come online…"
+          TIMEOUT=180
+          ELAPSED=0
+          RESULT=timeout
+
+          while [ "$ELAPSED" -lt "$TIMEOUT" ]; do
+            if grep -q "PvPIndex Factions is now online\." server.log 2>/dev/null; then
+              RESULT=success
+              break
+            fi
+            if grep -q "Bootstrap phase failed" server.log 2>/dev/null; then
+              RESULT=bootstrap_failed
+              break
+            fi
+            sleep 3
+            ELAPSED=$((ELAPSED + 3))
+          done
+
+          echo "Stopping server…"
+          kill "$SERVER_PID" 2>/dev/null || true
+          wait "$SERVER_PID" 2>/dev/null || true
+
+          echo ""
+          echo "=== Full server log ==="
+          cat server.log
+
+          case "$RESULT" in
+            success)
+              echo ""
+              echo "PASS: PvPIndex Factions enabled on ${{ matrix.platform }} 1.21.4."
+              exit 0
+              ;;
+            bootstrap_failed)
+              echo ""
+              echo "FAIL: Bootstrap failure detected in server log."
+              exit 1
+              ;;
+            timeout)
+              echo ""
+              echo "FAIL: Plugin did not report online within ${TIMEOUT}s."
+              exit 1
+              ;;
+          esac
+
+      - name: Upload server log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-log-${{ matrix.platform }}
+          path: server-env/server.log
+          if-no-files-found: warn

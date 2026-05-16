@@ -9,6 +9,8 @@ import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.event.FactionBankTransactionEvent;
 import com.pvpindex.factions.event.FactionBankTransactionEvent.Type;
 import com.pvpindex.factions.integration.vault.VaultEconomy;
+import com.pvpindex.factions.scheduler.CancelableTask;
+import com.pvpindex.factions.scheduler.TaskScheduler;
 import com.pvpindex.factions.util.MsgUtil;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,7 +22,6 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitTask;
 
 /**
  * Handles faction bank operations with all known bug fixes applied:
@@ -34,13 +35,13 @@ import org.bukkit.scheduler.BukkitTask;
  */
 public class EngineEconomy {
 
-    private final Plugin plugin;
     private final Repositories repos;
     private final FactionsConfig config;
     private final NotificationsConfig notificationsConfig;
     private final VaultEconomy vaultEconomy;
     private final Logger logger;
-    private BukkitTask taxTask;
+    private final TaskScheduler taskScheduler;
+    private CancelableTask taxTask;
 
     public EngineEconomy(
             final Plugin plugin,
@@ -48,7 +49,7 @@ public class EngineEconomy {
             final FactionsConfig config,
             final VaultEconomy vaultEconomy,
             final Logger logger) {
-        this(plugin, repos, config, null, vaultEconomy, logger);
+        this(plugin, repos, config, null, vaultEconomy, null, logger);
     }
 
     public EngineEconomy(
@@ -58,28 +59,38 @@ public class EngineEconomy {
             final NotificationsConfig notificationsConfig,
             final VaultEconomy vaultEconomy,
             final Logger logger) {
-        this.plugin = plugin;
+        this(plugin, repos, config, notificationsConfig, vaultEconomy, null, logger);
+    }
+
+    public EngineEconomy(
+            final Plugin plugin,
+            final Repositories repos,
+            final FactionsConfig config,
+            final NotificationsConfig notificationsConfig,
+            final VaultEconomy vaultEconomy,
+            final TaskScheduler taskScheduler,
+            final Logger logger) {
         this.repos = repos;
         this.config = config;
         this.notificationsConfig = notificationsConfig;
         this.vaultEconomy = vaultEconomy;
+        this.taskScheduler = taskScheduler;
         this.logger = logger;
     }
 
     /**
      * Starts periodic faction bank taxation if enabled in config.
      *
-     * @param plugin owning plugin instance
+     * @param scheduler task scheduler to use for the timer
      */
-    public void startTaxScheduler(final Plugin plugin) {
+    public void startTaxScheduler(final TaskScheduler scheduler) {
         stopTaxScheduler();
         if (!config.isBankEnabled() || !config.isTaxEnabled()) {
             return;
         }
         final int intervalHours = Math.max(1, config.getTaxIntervalHours());
         final long intervalTicks = intervalHours * 60L * 60L * 20L;
-        taxTask = Bukkit.getScheduler().runTaskTimerAsynchronously(
-            plugin,
+        taxTask = scheduler.scheduleAsyncTimer(
             this::applyPeriodicTaxesSafely,
             intervalTicks,
             intervalTicks);
@@ -440,7 +451,7 @@ public class EngineEconomy {
             "amount", String.format(Locale.US, "%.2f", taxAmount),
             "balance", String.format(Locale.US, "%.2f", newBank));
         FactionMemberNotifier.notifyMembers(
-            plugin,
+            taskScheduler,
             repos,
             logger,
             faction.getId(),

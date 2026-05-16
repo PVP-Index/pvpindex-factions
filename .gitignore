@@ -12,6 +12,10 @@
 # Just because we had it in our old gitignore.
 manifest.mf
 
+# Scratch / ad-hoc test output files
+test_output.txt
+test_results.log
+
 #################### Language ####################
 # Language general ignores.
 

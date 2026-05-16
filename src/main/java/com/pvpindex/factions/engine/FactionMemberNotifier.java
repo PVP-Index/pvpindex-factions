@@ -4,6 +4,7 @@ import com.github.ezframework.jaloquent.exception.StorageException;
 import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.data.model.FactionInboxEntry;
 import com.pvpindex.factions.data.model.PlayerModel;
+import com.pvpindex.factions.scheduler.TaskScheduler;
 import com.pvpindex.factions.util.MsgUtil;
 import java.util.List;
 import java.util.UUID;
@@ -13,8 +14,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitScheduler;
 
 /**
  * Reusable helper for notifying online members of a faction.
@@ -25,7 +24,7 @@ public final class FactionMemberNotifier {
     }
 
     public static void notifyOnlineMembers(
-            final Plugin plugin,
+            final TaskScheduler scheduler,
             final Repositories repos,
             final Logger logger,
             final String factionId,
@@ -50,15 +49,10 @@ public final class FactionMemberNotifier {
                 if (online == null || !online.isOnline()) {
                     continue;
                 }
-                if (plugin == null) {
+                if (scheduler == null) {
                     notifyAction.accept(online);
                 } else {
-                    final BukkitScheduler scheduler = Bukkit.getScheduler();
-                    if (scheduler == null) {
-                        notifyAction.accept(online);
-                    } else {
-                        scheduler.runTask(plugin, () -> notifyAction.accept(online));
-                    }
+                    scheduler.runSyncForPlayer(online, () -> notifyAction.accept(online));
                 }
             }
         } catch (StorageException e) {
@@ -69,11 +63,11 @@ public final class FactionMemberNotifier {
     /**
      * Notify all members of a faction with a resolved MiniMessage string.
      *
-     * <p>Online members receive the message immediately on the main thread.
+     * <p>Online members receive the message immediately on the appropriate thread.
      * Offline members have the message persisted to their inbox for delivery
      * when they next join.
      *
-     * @param plugin    owning plugin (may be {@code null} in tests)
+     * @param scheduler task scheduler (may be {@code null} in tests — runs inline)
      * @param repos     repository container — must have a non-null {@code inbox()}
      * @param logger    logger for error reporting
      * @param factionId faction UUID string
@@ -81,7 +75,7 @@ public final class FactionMemberNotifier {
      * @param message   resolved MiniMessage string to deliver
      */
     public static void notifyMembers(
-            final Plugin plugin,
+            final TaskScheduler scheduler,
             final Repositories repos,
             final Logger logger,
             final String factionId,
@@ -109,15 +103,10 @@ public final class FactionMemberNotifier {
             }
             final Player online = Bukkit.getPlayer(memberUuid);
             if (online != null && online.isOnline()) {
-                if (plugin == null) {
+                if (scheduler == null) {
                     MsgUtil.send(online, message);
                 } else {
-                    final BukkitScheduler scheduler = Bukkit.getScheduler();
-                    if (scheduler == null) {
-                        MsgUtil.send(online, message);
-                    } else {
-                        scheduler.runTask(plugin, () -> MsgUtil.send(online, message));
-                    }
+                    scheduler.runSyncForPlayer(online, () -> MsgUtil.send(online, message));
                 }
             } else {
                 // Queue for offline delivery — run async so we don't block the caller.
@@ -133,15 +122,10 @@ public final class FactionMemberNotifier {
                         logger.log(Level.WARNING, "Failed to queue inbox entry for player " + playerId, ex);
                     }
                 };
-                if (plugin == null) {
+                if (scheduler == null) {
                     persist.run();
                 } else {
-                    final BukkitScheduler scheduler = Bukkit.getScheduler();
-                    if (scheduler == null) {
-                        persist.run();
-                    } else {
-                        scheduler.runTaskAsynchronously(plugin, persist);
-                    }
+                    scheduler.runAsync(persist);
                 }
             }
         }

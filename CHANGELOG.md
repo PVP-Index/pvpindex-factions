@@ -10,6 +10,22 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Changed
 
+## [1.0.5] - 2026-05-16
+
+### Added
+
+- Folia support: scheduler abstraction layer (`CancelableTask`, `TaskScheduler`, `PlatformDetector`,
+  `BukkitTaskScheduler`, `FoliaTaskScheduler`) routes all scheduled work through the correct
+  Bukkit or Folia scheduler at runtime.
+- `plugin.yml` now declares `folia-supported: true`.
+- Dual chat-format listener: `EngineChat` detects Paper or Spigot at startup and registers
+  `PaperChatListener` (`AsyncChatEvent` + adventure renderer) on Paper and `LegacyChatListener`
+  (`AsyncPlayerChatEvent` + `setFormat`) on Spigot.
+- GitHub Actions `server-startup` workflow: spins up a Paper and a Folia server in a matrix
+  on every pull request and validates that the plugin boots successfully.
+- `SchedulerSmokeTest` (12 tests) covering `BukkitTaskScheduler` and `FoliaTaskScheduler` paths.
+- `EngineChatListenerTest` (6 tests) covering both the Paper and Spigot chat-listener paths.
+
 ## [1.0.4] - 2026-05-16
 
 ### Added

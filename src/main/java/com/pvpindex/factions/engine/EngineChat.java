@@ -8,7 +8,9 @@ import com.pvpindex.factions.data.model.PlayerModel;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -18,13 +20,25 @@ import org.bukkit.plugin.Plugin;
 /**
  * Formats player chat messages with faction prefix and relation-coloured name.
  *
- * @deprecated {@link AsyncPlayerChatEvent} is deprecated in Paper 1.21; migrate to
- *             the new ChatEvent API when available.
+ * <p>Registers a Paper {@code AsyncChatEvent} listener on Paper servers, and falls back to the
+ * legacy {@code AsyncPlayerChatEvent} on Spigot.
  */
-@SuppressWarnings({"deprecation", "removal"})
-public final class EngineChat implements Listener {
+public final class EngineChat {
 
+    private static final boolean PAPER_CHAT;
     private static final MiniMessage MINI = MiniMessage.miniMessage();
+    private static final Component SEPARATOR = MiniMessage.miniMessage().deserialize("<gray>: <white>");
+
+    static {
+        boolean paperChat = false;
+        try {
+            Class.forName("io.papermc.paper.event.player.AsyncChatEvent");
+            paperChat = true;
+        } catch (ClassNotFoundException ignored) {
+            // Running on Spigot — fall back to legacy handler.
+        }
+        PAPER_CHAT = paperChat;
+    }
 
     private final Repositories repos;
     private final FactionsConfig config;
@@ -38,29 +52,56 @@ public final class EngineChat implements Listener {
     }
 
     public void register(final Plugin plugin) {
-        org.bukkit.Bukkit.getPluginManager().registerEvents(this, plugin);
+        if (PAPER_CHAT) {
+            org.bukkit.Bukkit.getPluginManager().registerEvents(new PaperChatListener(), plugin);
+        } else {
+            org.bukkit.Bukkit.getPluginManager().registerEvents(new LegacyChatListener(), plugin);
+        }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onChat(final AsyncPlayerChatEvent event) {
-        if (!config.isChatFormatEnabled()) {
-            return;
+    private String buildFactionTag(final Player player) throws StorageException {
+        final Optional<PlayerModel> pm = repos.players().find(player.getUniqueId().toString());
+        if (pm.isPresent() && pm.get().isInFaction()) {
+            final Optional<FactionModel> faction = repos.factions().find(pm.get().getFactionId());
+            return faction.map(FactionModel::getName)
+                .map(name -> "<gray>[<white>" + name + "<gray>]</gray> ")
+                .orElse("");
         }
-        try {
-            final Optional<PlayerModel> pm = repos.players()
-                .find(event.getPlayer().getUniqueId().toString());
-            final String factionTag;
-            if (pm.isPresent() && pm.get().isInFaction()) {
-                final Optional<FactionModel> faction = repos.factions().find(pm.get().getFactionId());
-                factionTag = faction.map(FactionModel::getName)
-                    .map(name -> "<gray>[<white>" + name + "<gray>]</gray> ")
-                    .orElse("");
-            } else {
-                factionTag = "";
+        return "";
+    }
+
+    private final class PaperChatListener implements Listener {
+
+        @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+        public void onChat(final io.papermc.paper.event.player.AsyncChatEvent event) {
+            if (!config.isChatFormatEnabled()) {
+                return;
             }
-            event.setFormat(factionTag + "%s" + "<gray>: <white>%s");
-        } catch (StorageException e) {
-            logger.log(Level.WARNING, "Failed to format chat for " + event.getPlayer().getName(), e);
+            try {
+                final String tag = buildFactionTag(event.getPlayer());
+                final Component prefix = MINI.deserialize(tag);
+                event.renderer((source, displayName, message, viewer) ->
+                    prefix.append(displayName).append(SEPARATOR).append(message));
+            } catch (StorageException e) {
+                logger.log(Level.WARNING, "Failed to format chat for " + event.getPlayer().getName(), e);
+            }
+        }
+    }
+
+    private final class LegacyChatListener implements Listener {
+
+        @SuppressWarnings({"deprecation", "removal"})
+        @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+        public void onChat(final AsyncPlayerChatEvent event) {
+            if (!config.isChatFormatEnabled()) {
+                return;
+            }
+            try {
+                final String tag = buildFactionTag(event.getPlayer());
+                event.setFormat(tag + "%s" + "<gray>: <white>%s");
+            } catch (StorageException e) {
+                logger.log(Level.WARNING, "Failed to format chat for " + event.getPlayer().getName(), e);
+            }
         }
     }
 }

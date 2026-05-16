@@ -5,6 +5,7 @@ import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.model.InvitationModel;
 import com.pvpindex.factions.data.model.PlayerModel;
 import com.pvpindex.factions.data.Repositories;
+import com.pvpindex.factions.scheduler.TaskScheduler;
 import com.pvpindex.factions.service.FactionService;
 import com.pvpindex.factions.service.InviteService;
 import com.pvpindex.factions.util.MsgUtil;
@@ -29,7 +30,7 @@ public final class EngineNotifications implements Listener {
     private final Repositories repos;
     private final Logger logger;
     private final NotificationsConfig notificationsConfig;
-    private Plugin plugin;
+    private TaskScheduler taskScheduler;
 
     public EngineNotifications(
             final InviteService inviteService,
@@ -52,24 +53,24 @@ public final class EngineNotifications implements Listener {
         this.notificationsConfig = notificationsConfig;
     }
 
-    public void register(final Plugin plugin) {
-        this.plugin = plugin;
+    public void register(final Plugin plugin, final TaskScheduler scheduler) {
+        this.taskScheduler = scheduler;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler
     public void onJoin(final PlayerJoinEvent event) {
         final Player player = event.getPlayer();
-        if (plugin == null) {
+        if (taskScheduler == null) {
             return;
         }
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        taskScheduler.runAsync(() -> {
             try {
                 final List<InvitationModel> invites =
                     inviteService.listActiveInvitesForPlayer(player.getUniqueId());
                 final PlayerModel model = repos.players().findOrCreate(player.getUniqueId().toString());
                 if (!invites.isEmpty() && model.hasInviteNotifications()) {
-                    Bukkit.getScheduler().runTask(plugin, () -> sendInviteSummary(player, invites));
+                    taskScheduler.runSyncForPlayer(player, () -> sendInviteSummary(player, invites));
                 }
 
                 final List<com.pvpindex.factions.data.model.FactionInboxEntry> inboxEntries =
@@ -82,7 +83,7 @@ public final class EngineNotifications implements Listener {
                     final List<com.pvpindex.factions.data.model.FactionInboxEntry> toDeliver =
                         inboxEntries.size() > maxEntries
                             ? inboxEntries.subList(0, maxEntries) : inboxEntries;
-                    Bukkit.getScheduler().runTask(plugin, () -> deliverInbox(player, toDeliver));
+                    taskScheduler.runSyncForPlayer(player, () -> deliverInbox(player, toDeliver));
                 }
             } catch (Exception e) {
                 logger.warning("Failed to send join notifications: " + e.getMessage());

@@ -40,6 +40,7 @@ public final class OptionalHooksBootstrapComponent extends AbstractBootstrapComp
                 context.plugin(),
                 context.infra().getRepositories(),
                 context.infra().getDatabaseConfig(),
+                context.infra().getTaskScheduler(),
                 logger(context)
             );
             manager.start(pluginId);
@@ -67,7 +68,10 @@ public final class OptionalHooksBootstrapComponent extends AbstractBootstrapComp
         }
 
         try {
-            final DynmapLayer layer = new DynmapLayer(context.infra().getRepositories(), logger(context));
+            final DynmapLayer layer = new DynmapLayer(
+                context.infra().getRepositories(),
+                context.infra().getTaskScheduler(),
+                logger(context));
             if (layer.start(context.plugin())) {
                 logger(context).info("dynmap hooked - faction territory layer enabled.");
                 context.setDynmapEnabled(true);

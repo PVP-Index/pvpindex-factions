@@ -8,6 +8,7 @@ import com.pvpindex.factions.data.model.BoardEntry;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.model.PlayerModel;
 import com.pvpindex.factions.event.FactionChunkClaimEvent;
+import com.pvpindex.factions.scheduler.TaskScheduler;
 import com.pvpindex.factions.util.MsgUtil;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -42,6 +43,7 @@ public final class LwcxInterop implements LwcInterop, Listener {
     private final Repositories repos;
     private final FactionsConfig config;
     private final Logger logger;
+    private final TaskScheduler taskScheduler;
     private final ConcurrentHashMap<String, Object> chunkLocks = new ConcurrentHashMap<>();
 
     private Plugin plugin;
@@ -50,8 +52,17 @@ public final class LwcxInterop implements LwcInterop, Listener {
     private Class<?> interactEventClass;
 
     public LwcxInterop(final Repositories repos, final FactionsConfig config, final Logger logger) {
+        this(repos, config, null, logger);
+    }
+
+    public LwcxInterop(
+            final Repositories repos,
+            final FactionsConfig config,
+            final TaskScheduler taskScheduler,
+            final Logger logger) {
         this.repos = repos;
         this.config = config;
+        this.taskScheduler = taskScheduler;
         this.logger = logger;
     }
 
@@ -168,9 +179,14 @@ public final class LwcxInterop implements LwcInterop, Listener {
         if (plugin == null || factionId == null) {
             return;
         }
-        Bukkit.getScheduler().runTaskLater(plugin,
-            () -> Bukkit.getScheduler().runTaskAsynchronously(plugin,
-                () -> cleanupChunkSync(factionId, worldName, chunkX, chunkZ)), 1L);
+        if (taskScheduler != null) {
+            taskScheduler.runSyncLater(
+                () -> taskScheduler.runAsync(() -> cleanupChunkSync(factionId, worldName, chunkX, chunkZ)), 1L);
+        } else {
+            Bukkit.getScheduler().runTaskLater(plugin,
+                () -> Bukkit.getScheduler().runTaskAsynchronously(plugin,
+                    () -> cleanupChunkSync(factionId, worldName, chunkX, chunkZ)), 1L);
+        }
     }
 
     private void cleanupChunkSync(final String factionId, final String worldName, final int chunkX, final int chunkZ) {

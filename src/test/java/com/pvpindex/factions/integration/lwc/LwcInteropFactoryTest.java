@@ -30,7 +30,7 @@ class LwcInteropFactoryTest {
     void returnsNoopWhenConfigDisabled() {
         when(config.isLwcEnabled()).thenReturn(false);
 
-        final LwcInterop interop = LwcInteropFactory.create(owner, config, repos, logger);
+        final LwcInterop interop = LwcInteropFactory.create(owner, config, repos, null, logger);
 
         assertInstanceOf(NoopLwcInterop.class, interop);
     }
@@ -43,7 +43,7 @@ class LwcInteropFactoryTest {
         when(pluginManager.getPlugin("LWC")).thenReturn(null);
         when(pluginManager.getPlugin("LWCX")).thenReturn(null);
 
-        final LwcInterop interop = LwcInteropFactory.create(owner, config, repos, logger);
+        final LwcInterop interop = LwcInteropFactory.create(owner, config, repos, null, logger);
 
         assertInstanceOf(NoopLwcInterop.class, interop);
     }
@@ -56,7 +56,7 @@ class LwcInteropFactoryTest {
         when(pluginManager.getPlugin("LWC")).thenReturn(null);
         when(pluginManager.getPlugin("LWCX")).thenReturn(lwcx);
 
-        final LwcInterop interop = LwcInteropFactory.create(owner, config, repos, logger);
+        final LwcInterop interop = LwcInteropFactory.create(owner, config, repos, null, logger);
 
         assertInstanceOf(LwcxInterop.class, interop);
     }

@@ -1,6 +1,7 @@
 package com.pvpindex.factions.integration.lwc;
 
 import com.pvpindex.factions.config.FactionsConfig;
+import com.pvpindex.factions.scheduler.TaskScheduler;
 import java.util.logging.Logger;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -17,6 +18,7 @@ public final class LwcInteropFactory {
             final Plugin plugin,
             final FactionsConfig config,
             final com.pvpindex.factions.data.Repositories repos,
+            final TaskScheduler scheduler,
             final Logger logger) {
         if (!config.isLwcEnabled()) {
             logger.info("LWC integration disabled in config.");
@@ -32,6 +34,6 @@ public final class LwcInteropFactory {
         }
 
         logger.info("LWC/LWCX detected - integration enabled.");
-        return new LwcxInterop(repos, config, logger);
+        return new LwcxInterop(repos, config, scheduler, logger);
     }
 }

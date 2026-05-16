@@ -14,6 +14,10 @@ import com.pvpindex.factions.integration.lwc.NoopLwcInterop;
 import com.pvpindex.factions.integration.vault.VaultEconomy;
 import com.pvpindex.factions.integration.worldguard.TerritoryGuardFactory;
 import com.pvpindex.factions.predefined.PredefinedConfigManager;
+import com.pvpindex.factions.scheduler.BukkitTaskScheduler;
+import com.pvpindex.factions.scheduler.FoliaTaskScheduler;
+import com.pvpindex.factions.scheduler.PlatformDetector;
+import com.pvpindex.factions.scheduler.TaskScheduler;
 import com.pvpindex.factions.util.MsgUtil;
 import java.io.File;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -31,6 +35,7 @@ public final class InfrastructureBootstrapComponent extends AbstractBootstrapCom
 
     @Override
     public boolean start(final BootstrapContext context) {
+        initScheduler(context);
         if (!initConfig(context)) {
             return false;
         }
@@ -131,9 +136,20 @@ public final class InfrastructureBootstrapComponent extends AbstractBootstrapCom
     private void initLwcInterop(final BootstrapContext context) {
         final FactionsConfig cfg = context.infra().getConfig();
         final Repositories repos = context.infra().getRepositories();
-        final LwcInterop lwcInterop = LwcInteropFactory.create(context.plugin(), cfg, repos, logger(context));
+        final TaskScheduler scheduler = context.infra().getTaskScheduler();
+        final LwcInterop lwcInterop = LwcInteropFactory.create(
+            context.plugin(), cfg, repos, scheduler, logger(context));
         context.infra().setLwcInterop(lwcInterop);
         lwcInterop.register(context.plugin());
         context.setLwcEnabled(!(lwcInterop instanceof NoopLwcInterop));
+    }
+
+    private void initScheduler(final BootstrapContext context) {
+        final TaskScheduler scheduler = PlatformDetector.isFolia()
+            ? new FoliaTaskScheduler(context.plugin())
+            : new BukkitTaskScheduler(context.plugin());
+        context.infra().setTaskScheduler(scheduler);
+        logger(context).info("Platform scheduler: "
+            + (PlatformDetector.isFolia() ? "Folia" : "Bukkit"));
     }
 }
