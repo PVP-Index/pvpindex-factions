@@ -47,6 +47,11 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   `EzCountdownApi`, and `Notification` directly, causing `NoClassDefFoundError` when EzCountdown
   was absent. Moved all EzCountdown type references into `EzCountdownNotifierImpl`, loaded via
   reflection only after EzCountdown is confirmed present.
+- **bStats shutdown race**: `HikariDataSource has been closed` errors appeared in CI when the
+  server was stopped immediately after startup. The `BStatsMetricsManager` async warm-cache and
+  refresh tasks could execute after `DatabaseManager.close()`. Added a `volatile boolean active`
+  flag; tasks check it before querying and `OptionalHooksBootstrapComponent.stop()` sets it
+  to `false` during shutdown.
 
 ## [1.0.4] - 2026-05-16
 
