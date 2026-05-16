@@ -27,6 +27,12 @@ softdepend:
   - LWC
   - LWCX
 
+loadbefore:
+  - EzShops
+  - EzAuction
+  - EzRTP
+  - EzClean
+
 commands:
   f:
     description: Factions root command.

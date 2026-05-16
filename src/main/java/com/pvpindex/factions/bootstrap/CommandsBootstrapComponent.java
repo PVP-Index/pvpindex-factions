@@ -104,9 +104,11 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         commandRegistry.register(new CmdHelp(commandRegistry));
 
         final FactionCommandExecutor executor = new FactionCommandExecutor(
-            context.plugin(), commandRegistry, repos, cfg, context.engines().getFactionsGuiManager(), logger(context));
+            context.plugin(), commandRegistry, repos, cfg, context.engines().getFactionsGuiManager(), logger(context),
+            context.isTeamsApiEnabled());
         final FactionTabCompleter tabCompleter = new FactionTabCompleter(
-            context.plugin(), commandRegistry, repos, cfg, logger(context));
+            context.plugin(), commandRegistry, repos, cfg, logger(context),
+            context.isTeamsApiEnabled());
 
         for (final String alias : new String[]{"f", "faction", "factions"}) {
             final PluginCommand cmd = context.plugin().getCommand(alias);
