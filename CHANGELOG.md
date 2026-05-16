@@ -21,8 +21,9 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - Dual chat-format listener: `EngineChat` detects Paper or Spigot at startup and registers
   `PaperChatListener` (`AsyncChatEvent` + adventure renderer) on Paper and `LegacyChatListener`
   (`AsyncPlayerChatEvent` + `setFormat`) on Spigot.
-- GitHub Actions `server-startup` workflow: spins up a Paper and a Folia server in a matrix
-  on every pull request and validates that the plugin boots successfully.
+- GitHub Actions `server-startup` workflow: spins up Paper, Folia, and Spigot servers in a
+  matrix on every pull request and validates that the plugin boots successfully. Spigot is
+  compiled from source via BuildTools (cached after the first run).
 - `SchedulerSmokeTest` (12 tests) covering `BukkitTaskScheduler` and `FoliaTaskScheduler` paths.
 - `EngineChatListenerTest` (6 tests) covering both the Paper and Spigot chat-listener paths.
 

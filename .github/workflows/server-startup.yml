@@ -13,12 +13,13 @@ jobs:
   startup:
     name: Startup smoke — ${{ matrix.platform }} 1.21.4
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    # Spigot (BuildTools) can take ~20 min on a cold cache; 25 min covers all three.
+    timeout-minutes: 25
 
     strategy:
       fail-fast: false
       matrix:
-        platform: [paper, folia]
+        platform: [paper, folia, spigot]
 
     steps:
       - uses: actions/checkout@v4
@@ -33,7 +34,9 @@ jobs:
       - name: Build plugin jar (tests skipped)
         run: mvn --batch-mode --no-transfer-progress package -DskipTests
 
+      # ── PaperMC-hosted platforms (paper / folia) ────────────────────────────
       - name: Resolve latest ${{ matrix.platform }} 1.21.4 build
+        if: matrix.platform != 'spigot'
         id: resolve
         run: |
           BUILDS_JSON=$(curl -fsSL \
@@ -44,6 +47,7 @@ jobs:
           echo "jar=${JAR}"     >> "$GITHUB_OUTPUT"
 
       - name: Cache ${{ matrix.platform }} server jar
+        if: matrix.platform != 'spigot'
         id: cache
         uses: actions/cache@v4
         with:
@@ -51,13 +55,39 @@ jobs:
           key: ${{ matrix.platform }}-1.21.4-${{ steps.resolve.outputs.build }}
 
       - name: Download ${{ matrix.platform }} build ${{ steps.resolve.outputs.build }}
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: matrix.platform != 'spigot' && steps.cache.outputs.cache-hit != 'true'
         run: |
           mkdir -p server-env
           curl -fsSL \
             "https://api.papermc.io/v2/projects/${{ matrix.platform }}/versions/1.21.4/builds/${{ steps.resolve.outputs.build }}/downloads/${{ steps.resolve.outputs.jar }}" \
             -o server-env/server.jar
 
+      # ── Spigot (BuildTools) ──────────────────────────────────────────────────
+      - name: Cache Spigot 1.21.4 jar
+        if: matrix.platform == 'spigot'
+        id: spigot-cache
+        uses: actions/cache@v4
+        with:
+          path: spigot-build/spigot-1.21.4.jar
+          key: spigot-buildtools-1.21.4
+
+      - name: Build Spigot 1.21.4 with BuildTools
+        if: matrix.platform == 'spigot' && steps.spigot-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p spigot-build
+          cd spigot-build
+          curl -fsSL \
+            "https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar" \
+            -o BuildTools.jar
+          java -jar BuildTools.jar --rev 1.21.4 --nogui
+
+      - name: Install Spigot jar into server-env
+        if: matrix.platform == 'spigot'
+        run: |
+          mkdir -p server-env
+          cp spigot-build/spigot-1.21.4.jar server-env/server.jar
+
+      # ── Common: prepare and start ────────────────────────────────────────────
       - name: Prepare server environment
         run: |
           mkdir -p server-env/plugins
