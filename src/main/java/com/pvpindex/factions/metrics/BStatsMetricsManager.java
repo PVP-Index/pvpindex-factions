@@ -45,6 +45,7 @@ public final class BStatsMetricsManager implements Listener {
     private final AtomicInteger createdFactionsSinceStartup = new AtomicInteger(0);
     private final AtomicInteger totalFactions = new AtomicInteger(0);
     private volatile Map<String, Integer> relationCounts = defaultRelationCounts();
+    private volatile boolean active = true;
 
     public BStatsMetricsManager(
         final Plugin plugin,
@@ -68,6 +69,11 @@ public final class BStatsMetricsManager implements Listener {
         this.taskScheduler = taskScheduler;
         this.logger = logger;
         this.pluginVersion = plugin.getDescription().getVersion();
+    }
+
+    /** Signals all async tasks to skip DB work. Call from {@code onDisable} or component stop. */
+    public void stop() {
+        active = false;
     }
 
     public void start(final int pluginId) {
@@ -108,6 +114,7 @@ public final class BStatsMetricsManager implements Listener {
     private void warmCacheAsync() {
         if (taskScheduler != null) {
             taskScheduler.runAsync(() -> {
+                if (!active) return;
                 try {
                     totalFactions.set(repos.factions().countAll());
                     refreshRelationCache();
@@ -117,6 +124,7 @@ public final class BStatsMetricsManager implements Listener {
             });
         } else {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                if (!active) return;
                 try {
                     totalFactions.set(repos.factions().countAll());
                     refreshRelationCache();
@@ -130,6 +138,7 @@ public final class BStatsMetricsManager implements Listener {
     private void scheduleRelationRefresh() {
         if (taskScheduler != null) {
             taskScheduler.scheduleAsyncTimer(() -> {
+                if (!active) return;
                 try {
                     refreshRelationCache();
                 } catch (StorageException e) {
@@ -138,6 +147,7 @@ public final class BStatsMetricsManager implements Listener {
             }, RELATION_REFRESH_TICKS, RELATION_REFRESH_TICKS);
         } else {
             Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+                if (!active) return;
                 try {
                     refreshRelationCache();
                 } catch (StorageException e) {

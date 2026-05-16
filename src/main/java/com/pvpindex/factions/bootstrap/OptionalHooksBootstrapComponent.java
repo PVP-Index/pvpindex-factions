@@ -10,9 +10,18 @@ import com.pvpindex.factions.metrics.BStatsMetricsManager;
  */
 public final class OptionalHooksBootstrapComponent extends AbstractBootstrapComponent {
 
+    private BStatsMetricsManager metricsManager;
+
     @Override
     public String name() {
         return "optional-hooks";
+    }
+
+    @Override
+    public void stop(final BootstrapContext context) {
+        if (metricsManager != null) {
+            metricsManager.stop();
+        }
     }
 
     @Override
@@ -36,14 +45,14 @@ public final class OptionalHooksBootstrapComponent extends AbstractBootstrapComp
         }
 
         try {
-            final BStatsMetricsManager manager = new BStatsMetricsManager(
+            metricsManager = new BStatsMetricsManager(
                 context.plugin(),
                 context.infra().getRepositories(),
                 context.infra().getDatabaseConfig(),
                 context.infra().getTaskScheduler(),
                 logger(context)
             );
-            manager.start(pluginId);
+            metricsManager.start(pluginId);
             logger(context).info("bStats metrics hooked.");
         } catch (Exception e) {
             logger(context).warning("Failed to hook bStats: " + e.getMessage());
