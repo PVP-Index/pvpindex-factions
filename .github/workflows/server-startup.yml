@@ -20,11 +20,11 @@ jobs:
       fail-fast: false
       matrix:
         platform: [paper, folia, spigot]
-        mc: ["1.21.4", "26.1.2"]
+        mc: ["1.21.4", "1.21.11"]
         include:
           - mc: "1.21.4"
             java: "21"
-          - mc: "26.1.2"
+          - mc: "1.21.11"
             java: "25"
 
     steps:
