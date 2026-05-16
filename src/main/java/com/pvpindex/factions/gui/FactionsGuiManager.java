@@ -16,7 +16,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -38,7 +37,6 @@ import org.bukkit.plugin.Plugin;
 public class FactionsGuiManager implements Listener {
 
     private static final String ROOT = "gui.menus";
-    private static final PlainTextComponentSerializer PLAIN = PlainTextComponentSerializer.plainText();
 
     private final Plugin plugin;
     private final GuiConfig guiConfig;
@@ -67,6 +65,10 @@ public class FactionsGuiManager implements Listener {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
+    private net.kyori.adventure.text.Component parseText(final String text) {
+        return net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(text);
+    }
+
     public boolean openDefault(final Player player) {
         if (!guiConfig.isEnabled()) {
             return false;
@@ -81,7 +83,7 @@ public class FactionsGuiManager implements Listener {
         }
         final int size = normalizeSize(section.getInt("size", 54));
         final String title = render(section.getString("title", "<gold>Factions"), player);
-        final Inventory inventory = Bukkit.createInventory(new MenuHolder(menuId), size, MsgUtil.parse(title));
+        final Inventory inventory = Bukkit.createInventory(new MenuHolder(menuId), size, parseText(title));
         final ConfigurationSection items = section.getConfigurationSection("items");
         if (items != null) {
             for (final String key : items.getKeys(false)) {
@@ -153,7 +155,7 @@ public class FactionsGuiManager implements Listener {
             case "SUGGEST_COMMAND" -> {
                 final String command = render(section.getString("command", "/f help"), player);
                 player.closeInventory();
-                player.sendMessage(MsgUtil.parse("<gray>Suggested: <yellow>" + command));
+                MsgUtil.send(player, "<gray>Suggested: <yellow>" + command);
             }
             case "OPEN_MENU" -> {
                 final String target = section.getString("menu", guiConfig.getDefaultMenu());
@@ -174,12 +176,12 @@ public class FactionsGuiManager implements Listener {
         final ItemStack item = new ItemStack(material == null ? Material.PAPER : material);
         final ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.displayName(MsgUtil.parse(render(section.getString("name", "<white>Factions"), player)));
+            meta.displayName(parseText(render(section.getString("name", "<white>Factions"), player)));
             final List<String> loreRaw = section.getStringList("lore");
             if (!loreRaw.isEmpty()) {
                 final List<net.kyori.adventure.text.Component> lore = new ArrayList<>();
                 for (final String line : loreRaw) {
-                    lore.add(MsgUtil.parse(render(line, player)));
+                    lore.add(parseText(render(line, player)));
                 }
                 meta.lore(lore);
             }
@@ -232,7 +234,9 @@ public class FactionsGuiManager implements Listener {
     private record MenuHolder(String id) implements InventoryHolder {
         @Override
         public Inventory getInventory() {
-            return Bukkit.createInventory(this, 9, PLAIN.deserialize("internal"));
+            return Bukkit.createInventory(this, 9,
+                net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+                    .plainText().deserialize("internal"));
         }
     }
 }

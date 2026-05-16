@@ -26,8 +26,6 @@ import org.bukkit.plugin.Plugin;
 public final class EngineChat {
 
     private static final boolean PAPER_CHAT;
-    private static final MiniMessage MINI = MiniMessage.miniMessage();
-    private static final Component SEPARATOR = MiniMessage.miniMessage().deserialize("<gray>: <white>");
 
     static {
         boolean paperChat = false;
@@ -79,9 +77,11 @@ public final class EngineChat {
             }
             try {
                 final String tag = buildFactionTag(event.getPlayer());
-                final Component prefix = MINI.deserialize(tag);
+                final MiniMessage mm = MiniMessage.miniMessage();
+                final Component prefix = mm.deserialize(tag);
+                final Component sep = mm.deserialize("<gray>: <white>");
                 event.renderer((source, displayName, message, viewer) ->
-                    prefix.append(displayName).append(SEPARATOR).append(message));
+                    prefix.append(displayName).append(sep).append(message));
             } catch (StorageException e) {
                 logger.log(Level.WARNING, "Failed to format chat for " + event.getPlayer().getName(), e);
             }

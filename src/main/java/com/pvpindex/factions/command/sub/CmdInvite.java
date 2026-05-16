@@ -77,7 +77,7 @@ public final class CmdInvite extends FactionCommand {
             try {
                 final PlayerModel targetModel = repos.players().findOrCreate(target.getUniqueId().toString());
                 if (targetModel.hasInviteNotifications()) {
-                    target.sendMessage(MsgUtil.inviteNotification(factionOpt.get().getName()));
+                    MsgUtil.send(target, MsgUtil.inviteNotification(factionOpt.get().getName()));
                 }
             } catch (StorageException ignored) {
                 target.sendMessage(MsgUtil.inviteNotification(factionOpt.get().getName()));

@@ -58,6 +58,16 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   hover-event and click-event calls from `MsgUtil`; hover/click are now built entirely through
   MiniMessage tag strings (`<hover:show_text:'...'>`, `<click:...:'...'>`), which avoids any
   direct reference to `HoverEventSource` or `ClickEvent` in plugin bytecode.
+- **Spigot startup crash (`Component` not found)**: `NoClassDefFoundError: net/kyori/adventure/text/Component`
+  was thrown at startup on Spigot 1.21.11 because several classes loaded during bootstrap
+  (`MsgUtil`, `EngineChat`, `FactionsGuiManager`) held static fields whose declared types are
+  adventure classes. The JVM resolves those field types when the declaring class is initialized,
+  which fails when adventure is not accessible from the plugin classloader. Fixed by moving all
+  adventure-typed state into private static inner classes (`MsgUtil.AdventureOps`) that the JVM
+  loads lazily, removing adventure-typed static fields from `EngineChat` and `FactionsGuiManager`,
+  and eliminating all calls to the removed `MsgUtil.parse(Component)` API from `CmdInfo` and
+  `CmdMap`. The CI startup matrix was expanded to `[paper, folia, spigot]` × `[1.21.4, 1.21.11]`
+  so both Spigot versions are validated on every pull request.
 
 ## [1.0.4] - 2026-05-16
 

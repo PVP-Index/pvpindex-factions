@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Bukkit;
@@ -52,7 +53,7 @@ public final class CmdInfo extends FactionCommand {
                 factionOpt = factionService.getFactionByPlayer(
                     ((Player) ctx.getSender()).getUniqueId());
             } else {
-                ctx.getSender().sendMessage(MsgUtil.parse("<red>Usage: " + getUsage()));
+                MsgUtil.send(ctx.getSender(), "<red>Usage: " + getUsage());
                 return;
             }
             if (factionOpt.isEmpty()) {
@@ -73,7 +74,7 @@ public final class CmdInfo extends FactionCommand {
             final double maxPower = memberCount * ctx.getConfig().getMaxPower();
 
             final CommandSender sender = ctx.getSender();
-            sender.sendMessage(MsgUtil.infoHeader(faction.getName()));
+            MsgUtil.send(sender, MsgUtil.infoHeader(faction.getName()));
             MsgUtil.send(sender, "<dark_gray>------------------------------");
             MsgUtil.send(sender, "<gold> Leader: <white>" + formatLeader(faction));
             sender.sendMessage(buildMembersLine(members, maxMembers));
@@ -143,9 +144,10 @@ public final class CmdInfo extends FactionCommand {
         final String hover = names.isEmpty()
             ? "<gray>No members"
             : "<gold>Members:<newline><white>- " + String.join("<newline>- ", names);
-        return MsgUtil.parse("<gold> Members: <white>" + members.size() + "/" + maxMembers
+        return MiniMessage.miniMessage().deserialize(
+                "<gold> Members: <white>" + members.size() + "/" + maxMembers
                 + " <gray>(hover)")
-            .hoverEvent(HoverEvent.showText(MsgUtil.parse(hover)));
+            .hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize(hover)));
     }
 
     private void sendRelationInfo(final CommandSender sender, final CommandContext ctx, final FactionModel faction) {

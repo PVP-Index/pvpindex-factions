@@ -79,12 +79,12 @@ public final class CmdHelp extends FactionCommand {
 
         if (ctx.getSender().hasPermission("factions.admin")) {
             MsgUtil.sendKey(ctx.getSender(), "help.admin-title", "<red><bold>Admin Commands</bold></red>");
-            ctx.getSender().sendMessage(MsgUtil.helpEntry("/fa help", "List admin commands."));
-            ctx.getSender().sendMessage(MsgUtil.helpEntry("/fa bypass", "Toggle protection bypass."));
-            ctx.getSender().sendMessage(MsgUtil.helpEntry("/fa claim", "Admin-claim current chunk."));
-            ctx.getSender().sendMessage(MsgUtil.helpEntry("/fa unclaim", "Admin-unclaim current chunk."));
-            ctx.getSender().sendMessage(MsgUtil.helpEntry("/fa disband <faction>", "Force-disband any faction."));
-            ctx.getSender().sendMessage(MsgUtil.helpEntry("/fa reload", "Reload plugin configuration."));
+            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry("/fa help", "List admin commands."));
+            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry("/fa bypass", "Toggle protection bypass."));
+            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry("/fa claim", "Admin-claim current chunk."));
+            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry("/fa unclaim", "Admin-unclaim current chunk."));
+            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry("/fa disband <faction>", "Force-disband any faction."));
+            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry("/fa reload", "Reload plugin configuration."));
         }
         MsgUtil.sendKey(
             ctx.getSender(),
@@ -106,7 +106,7 @@ public final class CmdHelp extends FactionCommand {
             if (cmd.getPermission() != null && !ctx.getSender().hasPermission(cmd.getPermission())) {
                 continue;
             }
-            ctx.getSender().sendMessage(MsgUtil.helpEntry(cmd.getUsage(), cmd.getDescription()));
+            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry(cmd.getUsage(), cmd.getDescription()));
         }
     }
 }

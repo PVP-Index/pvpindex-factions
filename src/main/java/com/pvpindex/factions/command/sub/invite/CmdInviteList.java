@@ -45,7 +45,7 @@ public final class CmdInviteList extends FactionCommand {
                     .map(FactionModel::getName)
                     .orElse("Unknown");
                 final String inviter = resolveInviter(invite);
-                player.sendMessage(MsgUtil.inviteListEntry(name, inviter));
+                MsgUtil.send(player, MsgUtil.inviteListEntry(name, inviter));
             }
             return;
         }

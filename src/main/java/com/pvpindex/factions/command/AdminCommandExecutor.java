@@ -47,7 +47,7 @@ public final class AdminCommandExecutor implements CommandExecutor {
         }
         final FactionCommand cmd = commandRegistry.get(args[0].toLowerCase()).orElse(null);
         if (cmd == null) {
-            sender.sendMessage(MsgUtil.unknownCommand(args[0]));
+            MsgUtil.send(sender, MsgUtil.unknownCommand(args[0]));
             return true;
         }
         final List<String> subArgs = args.length > 1

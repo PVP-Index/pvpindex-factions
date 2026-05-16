@@ -46,7 +46,7 @@ public final class CmdWarpList extends FactionCommand {
         final int end = Math.min(warps.size(), start + pageSize);
         MsgUtil.send(player, "<gold>== Faction Warps (Page " + page + ") ==");
         for (int i = start; i < end; i++) {
-            player.sendMessage(MsgUtil.warpEntry(warps.get(i).getName()));
+            MsgUtil.send(player, MsgUtil.warpEntry(warps.get(i).getName()));
         }
     }
 

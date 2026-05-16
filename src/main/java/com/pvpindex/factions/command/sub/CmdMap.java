@@ -14,6 +14,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 
 /** {@code /f map [on|off|once] [--size=<size>]}. */
@@ -123,7 +124,7 @@ public final class CmdMap extends FactionCommand {
                     .append(Component.text(" ", NamedTextColor.DARK_GRAY));
             }
             line = line.append(Component.text("| ", NamedTextColor.DARK_GRAY));
-            MsgUtil.send(player, line);
+            player.sendMessage(line);
         }
         MsgUtil.send(player, "<gray>Legend: <white>■ <gray>you, <green>■ <gray>your faction, "
             + "<yellow>■ <gray>other faction, <aqua>■ <gray>safezone, <red>■ <gray>warzone, "
@@ -141,12 +142,13 @@ public final class CmdMap extends FactionCommand {
             final int playerY,
             final String playerFactionId) {
         final Component symbol = Component.text("■");
+        final MiniMessage mm = MiniMessage.miniMessage();
         final String locationHint = "<gray>Chunk X: <white>" + x + "</white><newline>"
             + "<gray>Chunk Z: <white>" + z + "</white><newline>"
             + "<gray>Player Y: <white>" + playerY + "</white>";
         if (x == cx && z == cz) {
                 return symbol.color(NamedTextColor.WHITE)
-                    .hoverEvent(HoverEvent.showText(MsgUtil.parse("<white>Your current chunk</white><newline>"
+                    .hoverEvent(HoverEvent.showText(mm.deserialize("<white>Your current chunk</white><newline>"
                     + locationHint + "<newline><dark_gray>Click to refresh map")))
                     .clickEvent(ClickEvent.runCommand("/f map once"));
         }
@@ -155,38 +157,38 @@ public final class CmdMap extends FactionCommand {
             if (entry.isEmpty()) {
                 final String claimCmd = "/f claim at " + x + " " + z;
                 return symbol.color(NamedTextColor.DARK_GRAY)
-                    .hoverEvent(HoverEvent.showText(MsgUtil.parse("<gray>Wilderness</gray><newline>"
+                    .hoverEvent(HoverEvent.showText(mm.deserialize("<gray>Wilderness</gray><newline>"
                         + locationHint + "<newline><green>Click to claim this chunk")))
                     .clickEvent(ClickEvent.runCommand(claimCmd));
             }
             final String factionId = entry.get().getFactionId();
             if (FactionModel.SAFEZONE_ID.equals(factionId)) {
                 return symbol.color(NamedTextColor.AQUA)
-                    .hoverEvent(HoverEvent.showText(MsgUtil.parse("<aqua>Safezone</aqua><newline>"
+                    .hoverEvent(HoverEvent.showText(mm.deserialize("<aqua>Safezone</aqua><newline>"
                         + locationHint)));
             }
             if (FactionModel.WARZONE_ID.equals(factionId)) {
                 return symbol.color(NamedTextColor.RED)
-                    .hoverEvent(HoverEvent.showText(MsgUtil.parse("<red>Warzone</red><newline>"
+                    .hoverEvent(HoverEvent.showText(mm.deserialize("<red>Warzone</red><newline>"
                         + locationHint)));
             }
             final Optional<FactionModel> faction = ctx.getRepos().factions().find(factionId);
             final String factionName = faction.map(FactionModel::getName).orElse("Unknown");
             if (playerFactionId != null && playerFactionId.equals(factionId)) {
                 return symbol.color(NamedTextColor.GREEN)
-                    .hoverEvent(HoverEvent.showText(MsgUtil.parse("<green>Your faction</green><newline>"
+                    .hoverEvent(HoverEvent.showText(mm.deserialize("<green>Your faction</green><newline>"
                         + "<gray>Faction: <white>" + factionName + "</white><newline>"
                         + locationHint + "<newline><dark_gray>Click for faction info")))
                     .clickEvent(ClickEvent.suggestCommand("/f info " + factionName));
             }
             return symbol.color(NamedTextColor.YELLOW)
-                .hoverEvent(HoverEvent.showText(MsgUtil.parse("<yellow>Claimed land</yellow><newline>"
+                .hoverEvent(HoverEvent.showText(mm.deserialize("<yellow>Claimed land</yellow><newline>"
                     + "<gray>Faction: <white>" + factionName + "</white><newline>"
                     + locationHint + "<newline><dark_gray>Click for faction info")))
                 .clickEvent(ClickEvent.suggestCommand("/f info " + factionName));
         } catch (StorageException e) {
             return symbol.color(NamedTextColor.DARK_GRAY)
-                .hoverEvent(HoverEvent.showText(MsgUtil.parse("<red>Failed to load claim data</red><newline>"
+                .hoverEvent(HoverEvent.showText(mm.deserialize("<red>Failed to load claim data</red><newline>"
                     + locationHint)));
         }
     }

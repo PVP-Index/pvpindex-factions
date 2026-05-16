@@ -69,7 +69,7 @@ public final class FactionCommandExecutor implements CommandExecutor {
             if (teamsApiEnabled && dispatchTeamsSubcommand(sender, args)) {
                 return true;
             }
-            sender.sendMessage(MsgUtil.unknownCommand(args[0]));
+            MsgUtil.send(sender, MsgUtil.unknownCommand(args[0]));
             return true;
         }
         final List<String> subArgs = args.length > 1
