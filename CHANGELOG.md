@@ -10,6 +10,22 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Changed
 
+## [1.0.4] - 2026-05-16
+
+### Added
+
+- [TeamsAPI](https://modrinth.com/plugin/teams-api) 1.5.0 subcommand provider support: `/f <name>` now dispatches to any
+  `TeamsSubcommand` registered via `TeamsAPI.registerSubcommand()`, with permission
+  checks and usage-hint fallback. Tab-completion also surfaces registered subcommand
+  names and forwards argument-level completions to each subcommand's own `tabComplete()`.
+
+### Changed
+
+- Upgraded [TeamsAPI](https://modrinth.com/plugin/teams-api) dependency from `1.4.0` to `1.5.0`.
+- PvPIndex Factions now declares `loadbefore` for [EzShops](https://modrinth.com/plugin/ezshops),
+  [EzAuction](https://modrinth.com/plugin/ezauction), [EzRTP](https://modrinth.com/plugin/ezplugins-ezrtp), and
+  [EzClean](https://modrinth.com/plugin/ezclean) so those plugins always load after the faction provider is available.
+
 ## [1.0.3] - 2026-05-12
 
 ### Added
