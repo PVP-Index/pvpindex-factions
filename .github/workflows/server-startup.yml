@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   startup:
-    name: Startup smoke — ${{ matrix.platform }} 1.21.4
+    name: Startup smoke — ${{ matrix.platform }} ${{ matrix.mc }}
     runs-on: ubuntu-latest
     # Spigot (BuildTools) can take ~20 min on a cold cache; 25 min covers all three.
     timeout-minutes: 25
@@ -20,6 +20,12 @@ jobs:
       fail-fast: false
       matrix:
         platform: [paper, folia, spigot]
+        mc: ["1.21.4", "26.1.2"]
+        include:
+          - mc: "1.21.4"
+            java: "21"
+          - mc: "26.1.2"
+            java: "25"
 
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +34,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "21"
+          java-version: ${{ matrix.java }}
           cache: maven
 
       - name: Build plugin jar (tests skipped)
@@ -40,9 +46,9 @@ jobs:
         id: resolve
         run: |
           BUILDS_JSON=$(curl -fsSL \
-            "https://api.papermc.io/v2/projects/${{ matrix.platform }}/versions/1.21.4/builds")
+            "https://api.papermc.io/v2/projects/${{ matrix.platform }}/versions/${{ matrix.mc }}/builds")
           BUILD=$(echo "$BUILDS_JSON" | jq -re '.builds[-1].build')
-          JAR="${{ matrix.platform }}-1.21.4-${BUILD}.jar"
+          JAR="${{ matrix.platform }}-${{ matrix.mc }}-${BUILD}.jar"
           echo "build=${BUILD}" >> "$GITHUB_OUTPUT"
           echo "jar=${JAR}"     >> "$GITHUB_OUTPUT"
 
@@ -52,14 +58,14 @@ jobs:
         uses: actions/cache@v4
         with:
           path: server-env/server.jar
-          key: ${{ matrix.platform }}-1.21.4-${{ steps.resolve.outputs.build }}
+          key: ${{ matrix.platform }}-${{ matrix.mc }}-${{ steps.resolve.outputs.build }}
 
       - name: Download ${{ matrix.platform }} build ${{ steps.resolve.outputs.build }}
         if: matrix.platform != 'spigot' && steps.cache.outputs.cache-hit != 'true'
         run: |
           mkdir -p server-env
           curl -fsSL \
-            "https://api.papermc.io/v2/projects/${{ matrix.platform }}/versions/1.21.4/builds/${{ steps.resolve.outputs.build }}/downloads/${{ steps.resolve.outputs.jar }}" \
+            "https://api.papermc.io/v2/projects/${{ matrix.platform }}/versions/${{ matrix.mc }}/builds/${{ steps.resolve.outputs.build }}/downloads/${{ steps.resolve.outputs.jar }}" \
             -o server-env/server.jar
 
       # ── Spigot (BuildTools) ──────────────────────────────────────────────────
@@ -68,8 +74,8 @@ jobs:
         id: spigot-cache
         uses: actions/cache@v4
         with:
-          path: spigot-build/spigot-1.21.4.jar
-          key: spigot-buildtools-1.21.4
+          path: spigot-build/spigot-${{ matrix.mc }}.jar
+          key: spigot-buildtools-${{ matrix.mc }}
 
       - name: Build Spigot 1.21.4 with BuildTools
         if: matrix.platform == 'spigot' && steps.spigot-cache.outputs.cache-hit != 'true'
@@ -79,13 +85,13 @@ jobs:
           curl -fsSL \
             "https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar" \
             -o BuildTools.jar
-          java -jar BuildTools.jar --rev 1.21.4 --nogui
+          java -jar BuildTools.jar --rev ${{ matrix.mc }} --nogui
 
       - name: Install Spigot jar into server-env
         if: matrix.platform == 'spigot'
         run: |
           mkdir -p server-env
-          cp spigot-build/spigot-1.21.4.jar server-env/server.jar
+          cp spigot-build/spigot-${{ matrix.mc }}.jar server-env/server.jar
 
       # ── Common: prepare and start ────────────────────────────────────────────
       - name: Prepare server environment
@@ -151,6 +157,6 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: server-log-${{ matrix.platform }}
+          name: server-log-${{ matrix.platform }}-${{ matrix.mc }}
           path: server-env/server.log
           if-no-files-found: warn
