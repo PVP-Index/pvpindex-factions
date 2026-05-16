@@ -2,8 +2,6 @@ package com.pvpindex.factions.util;
 
 import com.pvpindex.factions.config.MessagesConfig;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
 
@@ -21,6 +19,14 @@ public final class MsgUtil {
         parse("<dark_gray>[<gold>Factions<dark_gray>] <reset>");
 
     private MsgUtil() { }
+
+    /**
+     * Escape a value for safe embedding inside a MiniMessage single-quoted tag argument.
+     * Escapes {@code \} first, then {@code '}.
+     */
+    private static String mmEscape(final String value) {
+        return value.replace("\\", "\\\\").replace("'", "\\'");
+    }
 
     public static void setMessagesConfig(final MessagesConfig config) {
         messagesConfig = config;
@@ -127,10 +133,11 @@ public final class MsgUtil {
         final String hover = replace(
             message("help.entry-hover", "<gray>{description}<newline><dark_gray>Click to suggest command"),
             "description", description);
-        return parse(line)
-            .hoverEvent(HoverEvent.showText(
-                parse(hover)))
-            .clickEvent(ClickEvent.suggestCommand(usage));
+        return parse(
+            "<hover:show_text:'" + mmEscape(hover) + "'>"
+            + "<click:suggest_command:'" + mmEscape(usage) + "'>"
+            + line
+            + "</click></hover>");
     }
 
     /**
@@ -145,9 +152,11 @@ public final class MsgUtil {
     public static Component infoHeader(final String factionName) {
         return Component.text()
             .append(parse("<gold>== "))
-            .append(parse("<yellow><bold>" + factionName)
-                .clickEvent(ClickEvent.suggestCommand("/f info " + factionName))
-                .hoverEvent(HoverEvent.showText(parse("<gray>Click to refresh info"))))
+            .append(parse(
+                "<hover:show_text:'<gray>Click to refresh info'>"
+                + "<click:suggest_command:'/f info " + mmEscape(factionName) + "'>"
+                + "<yellow><bold>" + factionName
+                + "</click></hover>"))
             .append(parse("<gold> =="))
             .build();
     }
@@ -164,10 +173,11 @@ public final class MsgUtil {
     public static Component warpEntry(final String warpName) {
         return Component.text()
             .append(parse("<yellow>  \u00BB "))
-            .append(parse("<white>" + warpName)
-                .clickEvent(ClickEvent.runCommand("/f warp " + warpName))
-                .hoverEvent(HoverEvent.showText(
-                    parse("<green>Click to teleport to <white>" + warpName))))
+            .append(parse(
+                "<hover:show_text:'<green>Click to teleport to <white>" + mmEscape(warpName) + "'>"
+                + "<click:run_command:'/f warp " + mmEscape(warpName) + "'>"
+                + "<white>" + warpName
+                + "</click></hover>"))
             .build();
     }
 
@@ -190,12 +200,16 @@ public final class MsgUtil {
         final String denyHover = message("invite.decline-hover", "<red>Simply ignore to decline");
         return Component.text()
             .append(parse(msg))
-            .append(parse("<green>[Accept]")
-                .clickEvent(ClickEvent.runCommand("/f join " + factionName))
-                .hoverEvent(HoverEvent.showText(parse(acceptHover))))
+            .append(parse(
+                "<hover:show_text:'" + mmEscape(acceptHover) + "'>"
+                + "<click:run_command:'/f join " + mmEscape(factionName) + "'>"
+                + "<green>[Accept]"
+                + "</click></hover>"))
             .append(parse("<gray> | "))
-            .append(parse("<red>[Deny]")
-                .hoverEvent(HoverEvent.showText(parse(denyHover))))
+            .append(parse(
+                "<hover:show_text:'" + mmEscape(denyHover) + "'>"
+                + "<red>[Deny]"
+                + "</hover>"))
             .build();
     }
 
@@ -218,9 +232,11 @@ public final class MsgUtil {
             "faction", factionName);
         return Component.text()
             .append(parse(line + " "))
-            .append(parse("<green>[Accept]")
-                .clickEvent(ClickEvent.runCommand("/f join " + factionName))
-                .hoverEvent(HoverEvent.showText(parse(acceptHover))))
+            .append(parse(
+                "<hover:show_text:'" + mmEscape(acceptHover) + "'>"
+                + "<click:run_command:'/f join " + mmEscape(factionName) + "'>"
+                + "<green>[Accept]"
+                + "</click></hover>"))
             .build();
     }
 
@@ -241,9 +257,11 @@ public final class MsgUtil {
         final String hover = message("general.help-hover", "<gray>Click to view all faction commands");
         return Component.text()
             .append(parse(base))
-            .append(parse("<yellow>[Help]")
-                .clickEvent(ClickEvent.runCommand("/f help"))
-                .hoverEvent(HoverEvent.showText(parse(hover))))
+            .append(parse(
+                "<hover:show_text:'" + mmEscape(hover) + "'>"
+                + "<click:run_command:'/f help'>"
+                + "<yellow>[Help]"
+                + "</click></hover>"))
             .build();
     }
 
@@ -271,8 +289,10 @@ public final class MsgUtil {
             }
             hover.append("<newline>").append(line);
         }
-        return parse(visibleText)
-            .hoverEvent(HoverEvent.showText(parse(hover.toString())))
-            .clickEvent(ClickEvent.suggestCommand("/f info " + factionName));
+        return parse(
+            "<hover:show_text:'" + mmEscape(hover.toString()) + "'>"
+            + "<click:suggest_command:'/f info " + mmEscape(factionName) + "'>"
+            + visibleText
+            + "</click></hover>");
     }
 }

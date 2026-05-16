@@ -52,6 +52,12 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   refresh tasks could execute after `DatabaseManager.close()`. Added a `volatile boolean active`
   flag; tasks check it before querying and `OptionalHooksBootstrapComponent.stop()` sets it
   to `false` during shutdown.
+- **Spigot startup crash (`HoverEventSource`)**: `NoClassDefFoundError: HoverEventSource` was
+  thrown at startup on Spigot because `MsgUtil` imported `HoverEvent`, whose superinterface
+  `HoverEventSource` is not present in Spigot 1.21.4's bundled adventure. Removed all Java API
+  hover-event and click-event calls from `MsgUtil`; hover/click are now built entirely through
+  MiniMessage tag strings (`<hover:show_text:'...'>`, `<click:...:'...'>`), which avoids any
+  direct reference to `HoverEventSource` or `ClickEvent` in plugin bytecode.
 
 ## [1.0.4] - 2026-05-16
 
