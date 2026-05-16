@@ -8,9 +8,9 @@ If you love classic Factions gameplay but need something maintainable, scalable,
 
 | Platform | Version | Notes |
 |---|---|---|
-| Paper | 1.21.x | Recommended |
-| Folia | 1.21.x | Native Folia scheduler support |
-| Spigot | 1.21.x | Legacy compatibility mode |
+| Paper | 1.21.x, 1.26.x | Recommended |
+| Folia | 1.21.x, 1.26.x | Native Folia scheduler support |
+| Spigot | 1.21.x, 1.26.x | Legacy compatibility mode |
 | Java | 21+ | |
 
 ## Vision: timeless Factions, modern backend

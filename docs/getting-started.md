@@ -10,9 +10,9 @@ has_children: true
 
 | Platform | Version | Notes |
 |---|---|---|
-| Paper | 1.21.x | Recommended |
-| Folia | 1.21.x | Supported — uses Folia-native schedulers |
-| Spigot | 1.21.x | Supported — legacy compatibility mode |
+| Paper | 1.21.x, 1.26.x | Recommended |
+| Folia | 1.21.x, 1.26.x | Supported — uses Folia-native schedulers |
+| Spigot | 1.21.x, 1.26.x | Supported — legacy compatibility mode |
 | Java | 21+ | |
 
 File-system write access is required for plugin data and database files.
