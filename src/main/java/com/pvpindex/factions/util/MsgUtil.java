@@ -122,7 +122,16 @@ public final class MsgUtil {
     // -------------------------------------------------------------------------
 
     public static String stripTags(final String mm) {
-        return mm.replaceAll("<[^>]*>", "");
+        // First pass: remove tags whose arguments are wrapped in single quotes
+        // (e.g. <hover:show_text:'text with >chars'>, <click:run_command:'/cmd'>).
+        // The simple [^>]* regex stops at the first > inside the quoted value and
+        // leaves a stray '> in the output. Match the quoted argument explicitly.
+        String result = mm.replaceAll("<[a-zA-Z_][^'<>]*'[^']*'[^>]*>", "");
+        // Second pass: remove any remaining simple and closing tags
+        // (<gold>, </hover>, <newline>, <#rrggbb>, etc.). By this point no tag
+        // content contains > so the simpler [^>]* pattern is safe.
+        result = result.replaceAll("<[^>]*>", "");
+        return result;
     }
 
     // -------------------------------------------------------------------------
