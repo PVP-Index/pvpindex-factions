@@ -24,11 +24,16 @@ public final class MsgUtil {
     static {
         boolean available = false;
         try {
-            Class.forName("net.kyori.adventure.text.Component");
+            final Class<?> component = Class.forName("net.kyori.adventure.text.Component");
             Class.forName("net.kyori.adventure.text.minimessage.MiniMessage");
+            // Verify that CommandSender actually exposes the adventure overload.
+            // Spigot ships adventure internally but does NOT add sendMessage(Component)
+            // to its CommandSender API; only Paper does. Without this check the plugin
+            // would throw NoSuchMethodError on every command on Spigot.
+            org.bukkit.command.CommandSender.class.getMethod("sendMessage", component);
             available = true;
-        } catch (ClassNotFoundException ignored) {
-            // Running on a Spigot build that does not expose Adventure to plugins.
+        } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+            // Running on a platform without full adventure support (e.g. Spigot).
         }
         ADVENTURE = available;
     }
