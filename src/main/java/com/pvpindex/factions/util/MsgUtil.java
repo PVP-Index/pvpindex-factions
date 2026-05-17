@@ -7,9 +7,12 @@ import org.bukkit.command.CommandSender;
  * Utility methods for sending MiniMessage-formatted messages and building
  * rich text strings with hover / click events.
  *
- * <p>Adventure API classes are accessed lazily through the private {@code AdventureOps}
- * inner class so that this class can be loaded on Spigot servers where Adventure may not
- * be accessible from the plugin class loader at startup time.
+ * <p>On Paper the private {@code AdventureOps} inner class deserialises MiniMessage
+ * strings to native Adventure {@code Component} objects using the server's own
+ * {@code MiniMessage} via cached {@link java.lang.invoke.MethodHandle}s, so that
+ * hover/click formatting is fully preserved.  On Spigot, {@code LegacyOps} converts
+ * MiniMessage to §-coded strings and sends them via
+ * {@code CommandSender#sendMessage(String)}.
  */
 public final class MsgUtil {
 
@@ -59,8 +62,10 @@ public final class MsgUtil {
     /**
      * Send a MiniMessage-formatted message to a {@link CommandSender}.
      *
-     * <p>When Adventure is available the message is deserialized and sent as a rich
-     * component; otherwise MiniMessage tags are stripped and the plain text is sent.
+     * <p>On Paper the message is deserialized via the server's native Adventure
+     * classes and sent as a rich component (hover / click events preserved).
+     * On Spigot the shaded Adventure copy converts the message to §-colour codes
+     * so styling is preserved even without native Adventure support.
      *
      * @param sender  recipient
      * @param message MiniMessage string
@@ -69,7 +74,7 @@ public final class MsgUtil {
         if (ADVENTURE) {
             AdventureOps.send(sender, message);
         } else {
-            sender.sendMessage(stripTags(message));
+            LegacyOps.send(sender, message);
         }
     }
 
@@ -132,6 +137,20 @@ public final class MsgUtil {
         // content contains > so the simpler [^>]* pattern is safe.
         result = result.replaceAll("<[^>]*>", "");
         return result;
+    }
+
+    /**
+     * Convert a MiniMessage string to a §-colour-code string.
+     *
+     * <p>Uses the shaded copy of Adventure's {@code LegacyComponentSerializer} so
+     * the result is safe to pass to Bukkit inventory titles and item display names
+     * on both Paper and Spigot.
+     *
+     * @param mm MiniMessage string
+     * @return legacy §-formatted string
+     */
+    public static String toLegacy(final String mm) {
+        return LegacyOps.toLegacy(mm);
     }
 
     // -------------------------------------------------------------------------
@@ -284,22 +303,100 @@ public final class MsgUtil {
     }
 
     // -------------------------------------------------------------------------
-    // Adventure inner class — only loaded when ADVENTURE == true
+    // Adventure inner classes — loaded lazily on first use
     // -------------------------------------------------------------------------
 
     /**
-     * Holds all Adventure API references. This is a separate class file so the JVM
-     * does not need to resolve Adventure types when {@link MsgUtil} is first loaded.
+     * Invokes Paper's native Adventure API via cached MethodHandles.
+     *
+     * <p>All {@code Class.forName} calls use string literals that are NOT
+     * rewritten by the Maven Shade relocator.  This ensures that Paper's
+     * native {@code net.kyori.adventure.*} classes are resolved rather than
+     * the shaded copies located at {@code com.pvpindex.lib.adventure.*}.
+     */
+    /**
+     * Paper-only send path.  Deserialises MiniMessage strings to native Adventure
+     * {@code Component} objects via a cached {@link java.lang.invoke.MethodHandle}
+     * and dispatches {@code CommandSender#sendMessage(Component)}.
+     *
+     * <p>All Adventure class names are kept as string literals so that the
+     * shade relocator does <em>not</em> rewrite them; the JVM resolves them
+     * against the server's classloader at runtime.  The vararg overload
+     * {@code MiniMessage#deserialize(String, TagResolver...)} is used because
+     * the single-argument form was removed from the MiniMessage interface in
+     * Adventure 4.20.0.
      */
     private static final class AdventureOps {
 
-        private static final net.kyori.adventure.text.minimessage.MiniMessage MINI =
-            net.kyori.adventure.text.minimessage.MiniMessage.miniMessage();
-
         private AdventureOps() { }
 
+        private static final java.lang.invoke.MethodHandle SEND_MESSAGE;
+        private static final java.lang.invoke.MethodHandle MM_DESERIALIZE;
+        private static final Object MM_INSTANCE;
+        private static final Object EMPTY_RESOLVERS;
+
+        static {
+            java.lang.invoke.MethodHandle send = null;
+            java.lang.invoke.MethodHandle deser = null;
+            Object mm = null;
+            Object emptyRes = null;
+            try {
+                final java.lang.invoke.MethodHandles.Lookup lookup =
+                    java.lang.invoke.MethodHandles.publicLookup();
+                final Class<?> comp = Class.forName("net.kyori.adventure.text.Component");
+                final Class<?> mmCls = Class.forName(
+                    "net.kyori.adventure.text.minimessage.MiniMessage");
+                final Class<?> tagResCls = Class.forName(
+                    "net.kyori.adventure.text.minimessage.tag.resolver.TagResolver");
+                mm = mmCls.getMethod("miniMessage").invoke(null);
+                emptyRes = java.lang.reflect.Array.newInstance(tagResCls, 0);
+                deser = lookup.unreflect(
+                    mmCls.getMethod("deserialize", String.class, tagResCls.arrayType()))
+                    .asFixedArity();
+                send = lookup.unreflect(
+                    CommandSender.class.getMethod("sendMessage", comp));
+            } catch (Exception ignored) { /* ADVENTURE flag guards call sites */ }
+            MM_INSTANCE = mm;
+            MM_DESERIALIZE = deser;
+            SEND_MESSAGE = send;
+            EMPTY_RESOLVERS = emptyRes;
+        }
+
         static void send(final CommandSender sender, final String miniMsg) {
-            sender.sendMessage(MINI.deserialize(miniMsg));
+            try {
+                SEND_MESSAGE.invoke(sender,
+                    MM_DESERIALIZE.invoke(MM_INSTANCE, miniMsg, EMPTY_RESOLVERS));
+            } catch (Throwable t) {
+                sender.sendMessage(MsgUtil.stripTags(miniMsg));
+            }
+        }
+    }
+
+    /**
+     * Converts MiniMessage strings to §-colour-code strings using the shaded
+     * (relocated) Adventure copy bundled inside the plugin JAR.
+     *
+     * <p>The imports here are rewritten by the shade relocator to
+     * {@code com.pvpindex.lib.adventure.*}; they are fully independent of the
+     * server's native {@code net.kyori.adventure.*} classes.  Used as the
+     * fallback sending path on Spigot and for inventory / item-name conversions
+     * on all platforms.
+     */
+    private static final class LegacyOps {
+
+        private LegacyOps() { }
+
+        private static final net.kyori.adventure.text.minimessage.MiniMessage MINI =
+            net.kyori.adventure.text.minimessage.MiniMessage.miniMessage();
+        private static final net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer LEGACY =
+            net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacySection();
+
+        static void send(final CommandSender sender, final String miniMsg) {
+            sender.sendMessage(LEGACY.serialize(MINI.deserialize(miniMsg)));
+        }
+
+        static String toLegacy(final String miniMsg) {
+            return LEGACY.serialize(MINI.deserialize(miniMsg));
         }
     }
 }

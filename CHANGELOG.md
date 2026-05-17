@@ -81,6 +81,16 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   `String` with MiniMessage hover/click tag syntax instead of `Component` objects, removing all
   direct adventure API references from their method bodies. `MsgUtil.ADVENTURE` and
   `MsgUtil.stripTags()` were made `public` to allow the GUI manager's non-adventure fallback path.
+- **Spigot messages unstyled (MiniMessage not resolved)**: On Spigot, all plugin messages were
+  displayed as plain text with MiniMessage tags stripped but no colour or formatting applied,
+  because Spigot does not include adventure at runtime and `AdventureOps` silently fell back to
+  `sender.sendMessage(String)` after `stripTags()`. Fixed by shading and relocating
+  `adventure-api`, `adventure-text-minimessage`, and `adventure-text-serializer-legacy` 4.20.0
+  into the plugin JAR under `com.pvpindex.lib.adventure`. `LegacyOps` uses the bundled copy to
+  convert MiniMessage strings to `§`-colour-coded strings for Spigot. On Paper, `AdventureOps`
+  still resolves Paper's native adventure via reflection so hover/click events are preserved.
+  `FactionsGuiManager` inventory titles and item names now go through `MsgUtil.toLegacy()` so
+  the GUI is correctly styled on both platforms.
 
 ## [1.0.4] - 2026-05-16
 
