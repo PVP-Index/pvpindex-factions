@@ -111,7 +111,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
             context.isTeamsApiEnabled());
 
         for (final String alias : new String[]{"f", "faction", "factions"}) {
-            final PluginCommand cmd = context.plugin().getCommand(alias);
+            final PluginCommand cmd = context.javaPlugin().getCommand(alias);
             if (cmd != null) {
                 cmd.setExecutor(executor);
                 cmd.setTabCompleter(tabCompleter);
@@ -132,7 +132,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
             context.plugin(), adminRegistry, repos, cfg, logger(context));
 
         for (final String alias : new String[]{"fa", "factionadmin"}) {
-            final PluginCommand cmd = context.plugin().getCommand(alias);
+            final PluginCommand cmd = context.javaPlugin().getCommand(alias);
             if (cmd != null) {
                 cmd.setExecutor(adminExecutor);
                 cmd.setTabCompleter(adminTabCompleter);

@@ -61,7 +61,7 @@ public final class CmdWarp extends FactionCommand {
                 return;
             }
             MsgUtil.send(player, "<gold>== Faction Warps ==");
-            warps.forEach(w -> player.sendMessage(MsgUtil.warpEntry(w.getName())));
+            warps.forEach(w -> MsgUtil.send(player, MsgUtil.warpEntry(w.getName())));
             return;
         }
         // Teleport to named warp

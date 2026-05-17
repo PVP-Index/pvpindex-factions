@@ -196,7 +196,7 @@ public final class CmdRelation extends FactionCommand {
 
     private void notifyFactionMembers(final CommandContext ctx, final String factionId, final String message) {
         FactionMemberNotifier.notifyMembers(
-            ctx.getPlugin(),
+            null,
             ctx.getRepos(),
             ctx.getLogger(),
             factionId,

@@ -10,6 +10,53 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Changed
 
+## [1.0.5] - 2026-05-16
+
+### Added
+
+- **Folia support**: the plugin now runs on Folia servers alongside Bukkit, Spigot, and Paper.
+  All scheduled tasks use a new scheduler abstraction that automatically picks the correct
+  Bukkit or Folia scheduler at runtime. `plugin.yml` now declares `folia-supported: true`.
+- **Correct chat formatting on Spigot**: chat-format events are now handled through the right
+  API on each platform — `AsyncChatEvent` on Paper and `AsyncPlayerChatEvent` on Spigot.
+
+### Fixed
+
+- **Plugin did not start when TeamsAPI or EzCountdown were absent**:
+  Servers without TeamsAPI or EzCountdown installed logged `NoClassDefFoundError` at startup
+  and the plugin failed to load entirely. Both integrations are now fully isolated — the plugin
+  always starts cleanly and activates each integration only when its plugin is present.
+
+- **Plugin did not start on Spigot** (`NoClassDefFoundError` at startup):
+  Several internal classes referenced Adventure API types that are absent or incompatible on
+  Spigot 1.21.4 and 1.21.11, causing the JVM to crash during class initialisation before any
+  commands or events could be registered. All Adventure-typed state has been moved into
+  lazily-loaded inner classes that Spigot never touches at startup.
+
+- **Messages showed no colour or formatting on Spigot**:
+  Plugin messages appeared as raw plain text because Spigot does not bundle Adventure at runtime.
+  The plugin now ships its own copy of Adventure (MiniMessage + legacy serialiser) so colours,
+  bold, italic, and other formatting always render correctly on Spigot.
+
+- **All commands crashed on Spigot** (`/f info`, `/f create`, and every other command):
+  Every command thrown on Spigot produced `UnsupportedOperationException: No JsonComponentSerializer
+  implementation found`, making the plugin completely unusable. The GSON serialiser is now bundled
+  in the plugin JAR, and the initialisation sequence explicitly uses the plugin classloader so that
+  Java's `ServiceLoader` locates the implementation at runtime rather than falling back to a stub
+  that throws.
+
+- **Hover tooltips did nothing on Spigot** (`/f info` member list, `/f map` territory tiles):
+  After the command crash was resolved, hover and click events were still silently dropped because
+  the Spigot message path was sending plain §-coded strings. Messages to players are now serialised
+  to JSON via the bundled GSON serialiser and delivered through the BungeeCord chat API, so hover
+  and click events work correctly on Spigot.
+
+- **Intermittent shutdown error from bStats metrics** (rare):
+  On servers that shut down shortly after startup, bStats background tasks occasionally ran after
+  the database connection was already closed, logging `HikariDataSource has been closed`. A
+  shutdown flag now prevents metrics tasks from querying the database once the plugin has stopped.
+
+
 ## [1.0.4] - 2026-05-16
 
 ### Added

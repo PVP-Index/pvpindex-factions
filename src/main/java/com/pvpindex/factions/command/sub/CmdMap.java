@@ -10,10 +10,7 @@ import com.pvpindex.factions.util.MsgUtil;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
+
 import org.bukkit.entity.Player;
 
 /** {@code /f map [on|off|once] [--size=<size>]}. */
@@ -117,13 +114,13 @@ public final class CmdMap extends FactionCommand {
         MsgUtil.send(player, "<gold> Territory Map <gray>(" + world + " @ " + cx + ", " + cz + ")");
         MsgUtil.send(player, "<gray>Use <white>/f map on</white> to keep territory titles enabled.");
         for (int z = cz - radius; z <= cz + radius; z++) {
-            Component line = Component.text("| ", NamedTextColor.DARK_GRAY);
+            final StringBuilder lineBuilder = new StringBuilder("<dark_gray>| ");
             for (int x = cx - radius; x <= cx + radius; x++) {
-                line = line.append(cellComponent(ctx, world, x, z, cx, cz, playerY, playerFactionId))
-                    .append(Component.text(" ", NamedTextColor.DARK_GRAY));
+                lineBuilder.append(cellTag(ctx, world, x, z, cx, cz, playerY, playerFactionId));
+                lineBuilder.append("<dark_gray> ");
             }
-            line = line.append(Component.text("| ", NamedTextColor.DARK_GRAY));
-            MsgUtil.send(player, line);
+            lineBuilder.append("<dark_gray>| ");
+            MsgUtil.send(player, lineBuilder.toString());
         }
         MsgUtil.send(player, "<gray>Legend: <white>■ <gray>you, <green>■ <gray>your faction, "
             + "<yellow>■ <gray>other faction, <aqua>■ <gray>safezone, <red>■ <gray>warzone, "
@@ -131,7 +128,7 @@ public final class CmdMap extends FactionCommand {
         MsgUtil.send(player, "<dark_gray>----------------------------------------");
     }
 
-    private Component cellComponent(
+    private String cellTag(
             final CommandContext ctx,
             final String world,
             final int x,
@@ -140,54 +137,49 @@ public final class CmdMap extends FactionCommand {
             final int cz,
             final int playerY,
             final String playerFactionId) {
-        final Component symbol = Component.text("■");
         final String locationHint = "<gray>Chunk X: <white>" + x + "</white><newline>"
             + "<gray>Chunk Z: <white>" + z + "</white><newline>"
             + "<gray>Player Y: <white>" + playerY + "</white>";
         if (x == cx && z == cz) {
-                return symbol.color(NamedTextColor.WHITE)
-                    .hoverEvent(HoverEvent.showText(MsgUtil.parse("<white>Your current chunk</white><newline>"
-                    + locationHint + "<newline><dark_gray>Click to refresh map")))
-                    .clickEvent(ClickEvent.runCommand("/f map once"));
+            return "<hover:show_text:'<white>Your current chunk</white><newline>"
+                + locationHint + "<newline><dark_gray>Click to refresh map'>"
+                + "<click:run_command:'/f map once'><white>\u25a0</white></click></hover>";
         }
         try {
             final Optional<BoardEntry> entry = ctx.getRepos().board().findByChunk(world, x, z);
             if (entry.isEmpty()) {
                 final String claimCmd = "/f claim at " + x + " " + z;
-                return symbol.color(NamedTextColor.DARK_GRAY)
-                    .hoverEvent(HoverEvent.showText(MsgUtil.parse("<gray>Wilderness</gray><newline>"
-                        + locationHint + "<newline><green>Click to claim this chunk")))
-                    .clickEvent(ClickEvent.runCommand(claimCmd));
+                return "<hover:show_text:'<gray>Wilderness</gray><newline>"
+                    + locationHint + "<newline><green>Click to claim this chunk'>"
+                    + "<click:run_command:'" + claimCmd
+                    + "'><dark_gray>\u25a0</dark_gray></click></hover>";
             }
             final String factionId = entry.get().getFactionId();
             if (FactionModel.SAFEZONE_ID.equals(factionId)) {
-                return symbol.color(NamedTextColor.AQUA)
-                    .hoverEvent(HoverEvent.showText(MsgUtil.parse("<aqua>Safezone</aqua><newline>"
-                        + locationHint)));
+                return "<hover:show_text:'<aqua>Safezone</aqua><newline>"
+                    + locationHint + "'><aqua>\u25a0</aqua></hover>";
             }
             if (FactionModel.WARZONE_ID.equals(factionId)) {
-                return symbol.color(NamedTextColor.RED)
-                    .hoverEvent(HoverEvent.showText(MsgUtil.parse("<red>Warzone</red><newline>"
-                        + locationHint)));
+                return "<hover:show_text:'<red>Warzone</red><newline>"
+                    + locationHint + "'><red>\u25a0</red></hover>";
             }
             final Optional<FactionModel> faction = ctx.getRepos().factions().find(factionId);
             final String factionName = faction.map(FactionModel::getName).orElse("Unknown");
             if (playerFactionId != null && playerFactionId.equals(factionId)) {
-                return symbol.color(NamedTextColor.GREEN)
-                    .hoverEvent(HoverEvent.showText(MsgUtil.parse("<green>Your faction</green><newline>"
-                        + "<gray>Faction: <white>" + factionName + "</white><newline>"
-                        + locationHint + "<newline><dark_gray>Click for faction info")))
-                    .clickEvent(ClickEvent.suggestCommand("/f info " + factionName));
-            }
-            return symbol.color(NamedTextColor.YELLOW)
-                .hoverEvent(HoverEvent.showText(MsgUtil.parse("<yellow>Claimed land</yellow><newline>"
+                return "<hover:show_text:'<green>Your faction</green><newline>"
                     + "<gray>Faction: <white>" + factionName + "</white><newline>"
-                    + locationHint + "<newline><dark_gray>Click for faction info")))
-                .clickEvent(ClickEvent.suggestCommand("/f info " + factionName));
+                    + locationHint + "<newline><dark_gray>Click for faction info'>"
+                    + "<click:suggest_command:'/f info " + factionName
+                    + "'><green>\u25a0</green></click></hover>";
+            }
+            return "<hover:show_text:'<yellow>Claimed land</yellow><newline>"
+                + "<gray>Faction: <white>" + factionName + "</white><newline>"
+                + locationHint + "<newline><dark_gray>Click for faction info'>"
+                + "<click:suggest_command:'/f info " + factionName
+                + "'><yellow>\u25a0</yellow></click></hover>";
         } catch (StorageException e) {
-            return symbol.color(NamedTextColor.DARK_GRAY)
-                .hoverEvent(HoverEvent.showText(MsgUtil.parse("<red>Failed to load claim data</red><newline>"
-                    + locationHint)));
+            return "<hover:show_text:'<red>Failed to load claim data</red><newline>"
+                + locationHint + "'><dark_gray>\u25a0</dark_gray></hover>";
         }
     }
 

@@ -1,25 +1,28 @@
 package com.pvpindex.factions.bootstrap;
 
-import com.pvpindex.factions.PvPIndexFactions;
+import com.pvpindex.factions.api.TeamsApiRegistrar;
 import com.pvpindex.factions.registry.EngineRegistry;
 import com.pvpindex.factions.registry.InfraRegistry;
 import com.pvpindex.factions.registry.ServiceRegistry;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * Shared state available to bootstrap components.
+ *
+ * <p>{@link #plugin()} returns the {@link Plugin} interface, which is safely
+ * mockable in unit tests. {@link #javaPlugin()} casts to {@link JavaPlugin}
+ * for bootstrap components that need JavaPlugin-specific methods
+ * ({@code saveDefaultConfig}, {@code saveResource}, {@code getCommand}, etc.).
  */
 public final class BootstrapContext {
 
-    private final PvPIndexFactions plugin;
+    private final Plugin plugin;
     private final InfraRegistry infraRegistry;
     private final ServiceRegistry serviceRegistry;
     private final EngineRegistry engineRegistry;
 
-    private Object teamsAdapter;
-    private Object inviteAdapter;
-    private Object warpAdapter;
-    private Object claimAdapter;
-    private Object powerAdapter;
+    private TeamsApiRegistrar teamsRegistrar;
     private boolean teamsApiEnabled;
     private boolean vaultEnabled;
     private boolean placeholderApiEnabled;
@@ -28,7 +31,7 @@ public final class BootstrapContext {
     private boolean ezCountdownEnabled;
 
     public BootstrapContext(
-            final PvPIndexFactions plugin,
+            final Plugin plugin,
             final InfraRegistry infraRegistry,
             final ServiceRegistry serviceRegistry,
             final EngineRegistry engineRegistry) {
@@ -38,21 +41,18 @@ public final class BootstrapContext {
         this.engineRegistry = engineRegistry;
     }
 
-    public PvPIndexFactions plugin() { return plugin; }
+    /** Returns the plugin as the {@link Plugin} interface — safe to mock in tests. */
+    public Plugin plugin() { return plugin; }
+
+    /** Returns the plugin cast to {@link JavaPlugin} for components that need it. */
+    public JavaPlugin javaPlugin() { return (JavaPlugin) plugin; }
+
     public InfraRegistry infra() { return infraRegistry; }
     public ServiceRegistry services() { return serviceRegistry; }
     public EngineRegistry engines() { return engineRegistry; }
 
-    public Object getTeamsAdapter() { return teamsAdapter; }
-    public void setTeamsAdapter(final Object teamsAdapter) { this.teamsAdapter = teamsAdapter; }
-    public Object getInviteAdapter() { return inviteAdapter; }
-    public void setInviteAdapter(final Object inviteAdapter) { this.inviteAdapter = inviteAdapter; }
-    public Object getWarpAdapter() { return warpAdapter; }
-    public void setWarpAdapter(final Object warpAdapter) { this.warpAdapter = warpAdapter; }
-    public Object getClaimAdapter() { return claimAdapter; }
-    public void setClaimAdapter(final Object claimAdapter) { this.claimAdapter = claimAdapter; }
-    public Object getPowerAdapter() { return powerAdapter; }
-    public void setPowerAdapter(final Object powerAdapter) { this.powerAdapter = powerAdapter; }
+    public TeamsApiRegistrar getTeamsRegistrar() { return teamsRegistrar; }
+    public void setTeamsRegistrar(final TeamsApiRegistrar teamsRegistrar) { this.teamsRegistrar = teamsRegistrar; }
     public boolean isTeamsApiEnabled() { return teamsApiEnabled; }
     public void setTeamsApiEnabled(final boolean teamsApiEnabled) { this.teamsApiEnabled = teamsApiEnabled; }
     public boolean isVaultEnabled() { return vaultEnabled; }

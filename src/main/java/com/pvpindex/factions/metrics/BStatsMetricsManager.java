@@ -7,6 +7,7 @@ import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.event.FactionCreateEvent;
 import com.pvpindex.factions.event.FactionDisbandEvent;
+import com.pvpindex.factions.scheduler.TaskScheduler;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -38,11 +39,13 @@ public final class BStatsMetricsManager implements Listener {
     private final Repositories repos;
     private final DatabaseConfig databaseConfig;
     private final Logger logger;
+    private final TaskScheduler taskScheduler;
     private final String pluginVersion;
 
     private final AtomicInteger createdFactionsSinceStartup = new AtomicInteger(0);
     private final AtomicInteger totalFactions = new AtomicInteger(0);
     private volatile Map<String, Integer> relationCounts = defaultRelationCounts();
+    private volatile boolean active = true;
 
     public BStatsMetricsManager(
         final Plugin plugin,
@@ -50,11 +53,27 @@ public final class BStatsMetricsManager implements Listener {
         final DatabaseConfig databaseConfig,
         final Logger logger
     ) {
+        this(plugin, repos, databaseConfig, null, logger);
+    }
+
+    public BStatsMetricsManager(
+        final Plugin plugin,
+        final Repositories repos,
+        final DatabaseConfig databaseConfig,
+        final TaskScheduler taskScheduler,
+        final Logger logger
+    ) {
         this.plugin = plugin;
         this.repos = repos;
         this.databaseConfig = databaseConfig;
+        this.taskScheduler = taskScheduler;
         this.logger = logger;
         this.pluginVersion = plugin.getDescription().getVersion();
+    }
+
+    /** Signals all async tasks to skip DB work. Call from {@code onDisable} or component stop. */
+    public void stop() {
+        active = false;
     }
 
     public void start(final int pluginId) {
@@ -93,24 +112,49 @@ public final class BStatsMetricsManager implements Listener {
     }
 
     private void warmCacheAsync() {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            try {
-                totalFactions.set(repos.factions().countAll());
-                refreshRelationCache();
-            } catch (StorageException e) {
-                logger.log(Level.WARNING, "Failed to warm bStats faction metrics cache", e);
-            }
-        });
+        if (taskScheduler != null) {
+            taskScheduler.runAsync(() -> {
+                if (!active) return;
+                try {
+                    totalFactions.set(repos.factions().countAll());
+                    refreshRelationCache();
+                } catch (StorageException e) {
+                    logger.log(Level.WARNING, "Failed to warm bStats faction metrics cache", e);
+                }
+            });
+        } else {
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                if (!active) return;
+                try {
+                    totalFactions.set(repos.factions().countAll());
+                    refreshRelationCache();
+                } catch (StorageException e) {
+                    logger.log(Level.WARNING, "Failed to warm bStats faction metrics cache", e);
+                }
+            });
+        }
     }
 
     private void scheduleRelationRefresh() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
-            try {
-                refreshRelationCache();
-            } catch (StorageException e) {
-                logger.log(Level.FINE, "Failed to refresh bStats relation cache", e);
-            }
-        }, RELATION_REFRESH_TICKS, RELATION_REFRESH_TICKS);
+        if (taskScheduler != null) {
+            taskScheduler.scheduleAsyncTimer(() -> {
+                if (!active) return;
+                try {
+                    refreshRelationCache();
+                } catch (StorageException e) {
+                    logger.log(Level.FINE, "Failed to refresh bStats relation cache", e);
+                }
+            }, RELATION_REFRESH_TICKS, RELATION_REFRESH_TICKS);
+        } else {
+            Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+                if (!active) return;
+                try {
+                    refreshRelationCache();
+                } catch (StorageException e) {
+                    logger.log(Level.FINE, "Failed to refresh bStats relation cache", e);
+                }
+            }, RELATION_REFRESH_TICKS, RELATION_REFRESH_TICKS);
+        }
     }
 
     private void refreshRelationCache() throws StorageException {

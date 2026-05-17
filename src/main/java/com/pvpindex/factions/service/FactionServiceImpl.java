@@ -579,7 +579,7 @@ public class FactionServiceImpl implements FactionService {
             MsgUtil.message("member.player-joined", "<green>{player} joined your faction."),
             "player", joinedName);
         FactionMemberNotifier.notifyMembers(
-            plugin,
+            null,
             repos,
             logger,
             factionId,

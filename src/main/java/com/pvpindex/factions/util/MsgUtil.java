@@ -1,63 +1,81 @@
 package com.pvpindex.factions.util;
 
 import com.pvpindex.factions.config.MessagesConfig;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
 
 /**
  * Utility methods for sending MiniMessage-formatted messages and building
- * rich Adventure {@link Component} objects with hover / click events.
+ * rich text strings with hover / click events.
+ *
+ * <p>On Paper the private {@code AdventureOps} inner class deserialises MiniMessage
+ * strings to native Adventure {@code Component} objects using the server's own
+ * {@code MiniMessage} via cached {@link java.lang.invoke.MethodHandle}s, so that
+ * hover/click formatting is fully preserved.  On Spigot, {@code LegacyOps} converts
+ * MiniMessage to §-coded strings and sends them via
+ * {@code CommandSender#sendMessage(String)}.
  */
 public final class MsgUtil {
 
-    private static final MiniMessage MINI = MiniMessage.miniMessage();
     private static volatile MessagesConfig messagesConfig;
 
-    /** Shared plugin prefix component. */
-    public static final Component PREFIX =
-        parse("<dark_gray>[<gold>Factions<dark_gray>] <reset>");
+    /**
+     * True when Adventure-API and adventure-text-minimessage are both resolvable
+     * from the plugin class loader at startup time.
+     */
+    public static final boolean ADVENTURE;
+
+    static {
+        boolean available = false;
+        try {
+            final Class<?> component = Class.forName("net.kyori.adventure.text.Component");
+            Class.forName("net.kyori.adventure.text.minimessage.MiniMessage");
+            // Verify that CommandSender actually exposes the adventure overload.
+            // Spigot ships adventure internally but does NOT add sendMessage(Component)
+            // to its CommandSender API; only Paper does. Without this check the plugin
+            // would throw NoSuchMethodError on every command on Spigot.
+            org.bukkit.command.CommandSender.class.getMethod("sendMessage", component);
+            available = true;
+        } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+            // Running on a platform without full adventure support (e.g. Spigot).
+        }
+        ADVENTURE = available;
+    }
 
     private MsgUtil() { }
+
+    /**
+     * Escape a value for safe embedding inside a MiniMessage single-quoted tag argument.
+     * Escapes {@code \} first, then {@code '}.
+     */
+    private static String mmEscape(final String value) {
+        return value.replace("\\", "\\\\").replace("'", "\\'");
+    }
 
     public static void setMessagesConfig(final MessagesConfig config) {
         messagesConfig = config;
     }
 
     // -------------------------------------------------------------------------
-    // Basic send / parse
+    // Basic send
     // -------------------------------------------------------------------------
 
     /**
-     * Parse a MiniMessage string into an Adventure {@link Component}.
-     *
-     * @param text raw MiniMessage string
-     * @return parsed component
-     */
-    public static Component parse(final String text) {
-        return MINI.deserialize(text);
-    }
-
-    /**
      * Send a MiniMessage-formatted message to a {@link CommandSender}.
+     *
+     * <p>On Paper the message is deserialized via the server's native Adventure
+     * classes and sent as a rich component (hover / click events preserved).
+     * On Spigot the shaded Adventure copy converts the message to §-colour codes
+     * so styling is preserved even without native Adventure support.
      *
      * @param sender  recipient
      * @param message MiniMessage string
      */
     public static void send(final CommandSender sender, final String message) {
-        sender.sendMessage(MINI.deserialize(message));
-    }
-
-    /**
-     * Send an Adventure {@link Component} directly to a {@link CommandSender}.
-     *
-     * @param sender    recipient
-     * @param component pre-built component
-     */
-    public static void send(final CommandSender sender, final Component component) {
-        sender.sendMessage(component);
+        if (ADVENTURE) {
+            AdventureOps.send(sender, message);
+        } else {
+            LegacyOps.send(sender, message);
+        }
     }
 
     public static void sendKey(
@@ -83,7 +101,7 @@ public final class MsgUtil {
      */
     public static void sendPrefixed(
             final CommandSender sender, final String prefix, final String message) {
-        sender.sendMessage(MINI.deserialize(prefix + message));
+        send(sender, prefix + message);
     }
 
     /**
@@ -105,21 +123,48 @@ public final class MsgUtil {
     }
 
     // -------------------------------------------------------------------------
-    // Rich Component builders (hover / click)
+    // String utilities
+    // -------------------------------------------------------------------------
+
+    public static String stripTags(final String mm) {
+        // First pass: remove tags whose arguments are wrapped in single quotes
+        // (e.g. <hover:show_text:'text with >chars'>, <click:run_command:'/cmd'>).
+        // The simple [^>]* regex stops at the first > inside the quoted value and
+        // leaves a stray '> in the output. Match the quoted argument explicitly.
+        String result = mm.replaceAll("<[a-zA-Z_][^'<>]*'[^']*'[^>]*>", "");
+        // Second pass: remove any remaining simple and closing tags
+        // (<gold>, </hover>, <newline>, <#rrggbb>, etc.). By this point no tag
+        // content contains > so the simpler [^>]* pattern is safe.
+        result = result.replaceAll("<[^>]*>", "");
+        return result;
+    }
+
+    /**
+     * Convert a MiniMessage string to a §-colour-code string.
+     *
+     * <p>Uses the shaded copy of Adventure's {@code LegacyComponentSerializer} so
+     * the result is safe to pass to Bukkit inventory titles and item display names
+     * on both Paper and Spigot.
+     *
+     * @param mm MiniMessage string
+     * @return legacy §-formatted string
+     */
+    public static String toLegacy(final String mm) {
+        return LegacyOps.toLegacy(mm);
+    }
+
+    // -------------------------------------------------------------------------
+    // Rich string builders (hover / click) – return MiniMessage strings
     // -------------------------------------------------------------------------
 
     /**
-     * Build a {@code /f help} list entry with:
-     * <ul>
-     *   <li>Click → suggest the command in the chat bar</li>
-     *   <li>Hover → show description + hint text</li>
-     * </ul>
+     * Build a {@code /f help} list entry with hover and click-to-suggest behaviour.
      *
      * @param usage       full usage string, e.g. {@code "/f create <name>"}
      * @param description short description shown on hover
-     * @return rich component ready to send
+     * @return MiniMessage string ready to pass to {@link #send}
      */
-    public static Component helpEntry(final String usage, final String description) {
+    public static String helpEntry(final String usage, final String description) {
         final String line = replace(
             message("help.entry-line", "<yellow>{usage}<gray> - {description}"),
             "usage", usage,
@@ -127,60 +172,48 @@ public final class MsgUtil {
         final String hover = replace(
             message("help.entry-hover", "<gray>{description}<newline><dark_gray>Click to suggest command"),
             "description", description);
-        return parse(line)
-            .hoverEvent(HoverEvent.showText(
-                parse(hover)))
-            .clickEvent(ClickEvent.suggestCommand(usage));
+        return "<hover:show_text:'" + mmEscape(hover) + "'>"
+            + "<click:suggest_command:'" + mmEscape(usage) + "'>"
+            + line
+            + "</click></hover>";
     }
 
     /**
-     * Build the faction-info header component.
-     *
-     * <p>The faction name is clickable — clicking it suggests
-     * {@code /f info <factionName>} to refresh the view.
+     * Build the faction-info header string.
      *
      * @param factionName display name of the faction
-     * @return rich header component
+     * @return MiniMessage string ready to pass to {@link #send}
      */
-    public static Component infoHeader(final String factionName) {
-        return Component.text()
-            .append(parse("<gold>== "))
-            .append(parse("<yellow><bold>" + factionName)
-                .clickEvent(ClickEvent.suggestCommand("/f info " + factionName))
-                .hoverEvent(HoverEvent.showText(parse("<gray>Click to refresh info"))))
-            .append(parse("<gold> =="))
-            .build();
+    public static String infoHeader(final String factionName) {
+        return "<gold>== "
+            + "<hover:show_text:'<gray>Click to refresh info'>"
+            + "<click:suggest_command:'/f info " + mmEscape(factionName) + "'>"
+            + "<yellow><bold>" + factionName
+            + "</click></hover>"
+            + "<gold> ==";
     }
 
     /**
      * Build a single warp-list entry.
      *
-     * <p>The warp name is clickable — clicking it runs
-     * {@code /f warp <warpName>} immediately.
-     *
      * @param warpName name of the warp
-     * @return rich warp entry component
+     * @return MiniMessage string ready to pass to {@link #send}
      */
-    public static Component warpEntry(final String warpName) {
-        return Component.text()
-            .append(parse("<yellow>  \u00BB "))
-            .append(parse("<white>" + warpName)
-                .clickEvent(ClickEvent.runCommand("/f warp " + warpName))
-                .hoverEvent(HoverEvent.showText(
-                    parse("<green>Click to teleport to <white>" + warpName))))
-            .build();
+    public static String warpEntry(final String warpName) {
+        return "<yellow>  \u00BB "
+            + "<hover:show_text:'<green>Click to teleport to <white>" + mmEscape(warpName) + "'>"
+            + "<click:run_command:'/f warp " + mmEscape(warpName) + "'>"
+            + "<white>" + warpName
+            + "</click></hover>";
     }
 
     /**
      * Build the invite notification sent to the invited player.
      *
-     * <p>Includes a clickable <green>[Accept]</green> button that runs
-     * {@code /f join <factionName>}.
-     *
      * @param factionName name of the inviting faction
-     * @return rich invite notification component
+     * @return MiniMessage string ready to pass to {@link #send}
      */
-    public static Component inviteNotification(final String factionName) {
+    public static String inviteNotification(final String factionName) {
         final String msg = replace(
             message("invite.received-short", "<yellow>{faction}<gray> invited you. "),
             "faction", factionName);
@@ -188,15 +221,15 @@ public final class MsgUtil {
             message("invite.accept-hover", "<green>Click to join <white>{faction}"),
             "faction", factionName);
         final String denyHover = message("invite.decline-hover", "<red>Simply ignore to decline");
-        return Component.text()
-            .append(parse(msg))
-            .append(parse("<green>[Accept]")
-                .clickEvent(ClickEvent.runCommand("/f join " + factionName))
-                .hoverEvent(HoverEvent.showText(parse(acceptHover))))
-            .append(parse("<gray> | "))
-            .append(parse("<red>[Deny]")
-                .hoverEvent(HoverEvent.showText(parse(denyHover))))
-            .build();
+        return msg
+            + "<hover:show_text:'" + mmEscape(acceptHover) + "'>"
+            + "<click:run_command:'/f join " + mmEscape(factionName) + "'>"
+            + "<green>[Accept]"
+            + "</click></hover>"
+            + "<gray> | "
+            + "<hover:show_text:'" + mmEscape(denyHover) + "'>"
+            + "<red>[Deny]"
+            + "</hover>";
     }
 
     /**
@@ -204,9 +237,9 @@ public final class MsgUtil {
      *
      * @param factionName faction name to join
      * @param inviterName inviter display name
-     * @return rich component entry
+     * @return MiniMessage string ready to pass to {@link #send}
      */
-    public static Component inviteListEntry(final String factionName, final String inviterName) {
+    public static String inviteListEntry(final String factionName, final String inviterName) {
         final String line = replace(
             message(
                 "invite.summary-line",
@@ -216,49 +249,41 @@ public final class MsgUtil {
         final String acceptHover = replace(
             message("invite.accept-hover", "<green>Click to join <white>{faction}"),
             "faction", factionName);
-        return Component.text()
-            .append(parse(line + " "))
-            .append(parse("<green>[Accept]")
-                .clickEvent(ClickEvent.runCommand("/f join " + factionName))
-                .hoverEvent(HoverEvent.showText(parse(acceptHover))))
-            .build();
+        return line + " "
+            + "<hover:show_text:'" + mmEscape(acceptHover) + "'>"
+            + "<click:run_command:'/f join " + mmEscape(factionName) + "'>"
+            + "<green>[Accept]"
+            + "</click></hover>";
     }
 
     /**
-     * Build the "unknown sub-command" error shown by the root executor.
-     *
-     * <p>Includes a clickable <yellow>[Help]</yellow> link that runs
-     * {@code /f help}.
+     * Build the "unknown sub-command" error with a clickable {@code [Help]} link.
      *
      * @param input the unrecognised token the player typed
-     * @return rich error component
+     * @return MiniMessage string ready to pass to {@link #send}
      */
-    public static Component unknownCommand(final String input) {
+    public static String unknownCommand(final String input) {
         final String base = replace(
             message("general.unknown-subcommand-detailed", "<red>Unknown command '<yellow>{input}<red>'. "),
             "input",
             input);
         final String hover = message("general.help-hover", "<gray>Click to view all faction commands");
-        return Component.text()
-            .append(parse(base))
-            .append(parse("<yellow>[Help]")
-                .clickEvent(ClickEvent.runCommand("/f help"))
-                .hoverEvent(HoverEvent.showText(parse(hover))))
-            .build();
+        return base
+            + "<hover:show_text:'" + mmEscape(hover) + "'>"
+            + "<click:run_command:'/f help'>"
+            + "<yellow>[Help]"
+            + "</click></hover>";
     }
 
     /**
-     * Build a reusable faction hover component.
-     *
-     * <p>The visible text is supplied by the caller. Hover shows faction details
-     * and click suggests {@code /f info <factionName>}.
+     * Build a reusable faction hover string.
      *
      * @param visibleText text shown in chat
      * @param factionName faction display name
      * @param detailLines optional detail lines shown on hover
-     * @return rich component with hover + click info behavior
+     * @return MiniMessage string ready to pass to {@link #send}
      */
-    public static Component factionInfoHover(
+    public static String factionInfoHover(
             final String visibleText,
             final String factionName,
             final String... detailLines) {
@@ -271,8 +296,137 @@ public final class MsgUtil {
             }
             hover.append("<newline>").append(line);
         }
-        return parse(visibleText)
-            .hoverEvent(HoverEvent.showText(parse(hover.toString())))
-            .clickEvent(ClickEvent.suggestCommand("/f info " + factionName));
+        return "<hover:show_text:'" + mmEscape(hover.toString()) + "'>"
+            + "<click:suggest_command:'/f info " + mmEscape(factionName) + "'>"
+            + visibleText
+            + "</click></hover>";
+    }
+
+    // -------------------------------------------------------------------------
+    // Adventure inner classes — loaded lazily on first use
+    // -------------------------------------------------------------------------
+
+    /**
+     * Invokes Paper's native Adventure API via cached MethodHandles.
+     *
+     * <p>All {@code Class.forName} calls use string literals that are NOT
+     * rewritten by the Maven Shade relocator.  This ensures that Paper's
+     * native {@code net.kyori.adventure.*} classes are resolved rather than
+     * the shaded copies located at {@code com.pvpindex.lib.adventure.*}.
+     */
+    /**
+     * Paper-only send path.  Deserialises MiniMessage strings to native Adventure
+     * {@code Component} objects via a cached {@link java.lang.invoke.MethodHandle}
+     * and dispatches {@code CommandSender#sendMessage(Component)}.
+     *
+     * <p>All Adventure class names are kept as string literals so that the
+     * shade relocator does <em>not</em> rewrite them; the JVM resolves them
+     * against the server's classloader at runtime.  The vararg overload
+     * {@code MiniMessage#deserialize(String, TagResolver...)} is used because
+     * the single-argument form was removed from the MiniMessage interface in
+     * Adventure 4.20.0.
+     */
+    private static final class AdventureOps {
+
+        private AdventureOps() { }
+
+        private static final java.lang.invoke.MethodHandle SEND_MESSAGE;
+        private static final java.lang.invoke.MethodHandle MM_DESERIALIZE;
+        private static final Object MM_INSTANCE;
+        private static final Object EMPTY_RESOLVERS;
+
+        static {
+            java.lang.invoke.MethodHandle send = null;
+            java.lang.invoke.MethodHandle deser = null;
+            Object mm = null;
+            Object emptyRes = null;
+            try {
+                final java.lang.invoke.MethodHandles.Lookup lookup =
+                    java.lang.invoke.MethodHandles.publicLookup();
+                final Class<?> comp = Class.forName("net.kyori.adventure.text.Component");
+                final Class<?> mmCls = Class.forName(
+                    "net.kyori.adventure.text.minimessage.MiniMessage");
+                final Class<?> tagResCls = Class.forName(
+                    "net.kyori.adventure.text.minimessage.tag.resolver.TagResolver");
+                mm = mmCls.getMethod("miniMessage").invoke(null);
+                emptyRes = java.lang.reflect.Array.newInstance(tagResCls, 0);
+                deser = lookup.unreflect(
+                    mmCls.getMethod("deserialize", String.class, tagResCls.arrayType()))
+                    .asFixedArity();
+                send = lookup.unreflect(
+                    CommandSender.class.getMethod("sendMessage", comp));
+            } catch (Exception ignored) { /* ADVENTURE flag guards call sites */ }
+            MM_INSTANCE = mm;
+            MM_DESERIALIZE = deser;
+            SEND_MESSAGE = send;
+            EMPTY_RESOLVERS = emptyRes;
+        }
+
+        static void send(final CommandSender sender, final String miniMsg) {
+            try {
+                SEND_MESSAGE.invoke(sender,
+                    MM_DESERIALIZE.invoke(MM_INSTANCE, miniMsg, EMPTY_RESOLVERS));
+            } catch (Throwable t) {
+                sender.sendMessage(MsgUtil.stripTags(miniMsg));
+            }
+        }
+    }
+
+    /**
+     * Converts MiniMessage strings to §-colour-code strings using the shaded
+     * (relocated) Adventure copy bundled inside the plugin JAR.
+     *
+     * <p>The imports here are rewritten by the shade relocator to
+     * {@code com.pvpindex.lib.adventure.*}; they are fully independent of the
+     * server's native {@code net.kyori.adventure.*} classes.  Used as the
+     * fallback sending path on Spigot and for inventory / item-name conversions
+     * on all platforms.
+     */
+    private static final class LegacyOps {
+
+        private LegacyOps() { }
+
+        private static final net.kyori.adventure.text.minimessage.MiniMessage MINI =
+            net.kyori.adventure.text.minimessage.MiniMessage.miniMessage();
+        private static final net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer LEGACY =
+            net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacySection();
+
+        /**
+         * GsonComponentSerializer, initialised with the plugin classloader as the
+         * thread-context classloader so that Adventure's ServiceLoader call finds
+         * the relocated GsonComponentSerializer.Provider inside the shaded plugin
+         * JAR rather than falling back to DummyJSONComponentSerializer.
+         */
+        private static final net.kyori.adventure.text.serializer.gson.GsonComponentSerializer GSON_SER;
+
+        static {
+            final ClassLoader pluginCl = LegacyOps.class.getClassLoader();
+            final ClassLoader prev = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader(pluginCl);
+            net.kyori.adventure.text.serializer.gson.GsonComponentSerializer gs;
+            try {
+                gs = net.kyori.adventure.text.serializer.gson.GsonComponentSerializer.gson();
+            } finally {
+                Thread.currentThread().setContextClassLoader(prev);
+            }
+            GSON_SER = gs;
+        }
+
+        static void send(final CommandSender sender, final String miniMsg) {
+            final net.kyori.adventure.text.Component component = MINI.deserialize(miniMsg);
+            if (sender instanceof org.bukkit.entity.Player player) {
+                // Deliver as BungeeCord components so hover/click events work on Spigot.
+                final String json = GSON_SER.serialize(component);
+                final net.md_5.bungee.api.chat.BaseComponent[] bcs =
+                    net.md_5.bungee.chat.ComponentSerializer.parse(json);
+                player.spigot().sendMessage(bcs);
+            } else {
+                sender.sendMessage(LEGACY.serialize(component));
+            }
+        }
+
+        static String toLegacy(final String miniMsg) {
+            return LEGACY.serialize(MINI.deserialize(miniMsg));
+        }
     }
 }

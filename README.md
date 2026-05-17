@@ -1,6 +1,6 @@
 # PvPIndex Factions
 
-A modern factions plugin for Paper 1.21.* - 26.1.*, backed by Jaloquent persistence and optional TeamsAPI integration.
+A modern factions plugin for **Paper, Folia, and Spigot 1.21.x / 1.26.x**, backed by Jaloquent persistence and optional TeamsAPI integration.
 
 > This project is a refactor of [MassiveCraft Factions](https://github.com/MassiveCraft/Factions), which is also licensed under LGPL-3.0.
 > Both projects remain open-source under the same license terms.
@@ -16,10 +16,12 @@ published through the GitHub Pages docs workflow.
 
 ## Requirements
 
-| Requirement | Version |
-|---|---|
-| Paper | 1.21.x – 26.1.x |
-| Java | 21+ |
+| Requirement | Version | Notes |
+|---|---|---|
+| Paper | 1.21.x, 1.26.x | Recommended; full feature set |
+| Folia | 1.21.x, 1.26.x | Supported — uses Folia-native schedulers |
+| Spigot | 1.21.x, 1.26.x | Supported — legacy chat listener, standard Bukkit scheduler |
+| Java | 21+ | |
 
 ## Optional Integrations
 

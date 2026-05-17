@@ -14,11 +14,14 @@ import com.pvpindex.factions.engine.EnginePower;
 import com.pvpindex.factions.engine.EngineProtection;
 import com.pvpindex.factions.gui.FactionsGuiManager;
 import com.pvpindex.factions.integration.vault.VaultEconomy;
+import com.pvpindex.factions.scheduler.TaskScheduler;
 
 /**
  * Registers listeners and long-running gameplay engines.
  */
 public final class EnginesBootstrapComponent extends AbstractBootstrapComponent {
+
+    private EnginePower powerEngine;
 
     @Override
     public String name() {
@@ -31,15 +34,16 @@ public final class EnginesBootstrapComponent extends AbstractBootstrapComponent 
         final FactionsConfig cfg = context.infra().getConfig();
         final NotificationsConfig notifCfg = context.infra().getNotificationsConfig();
         final VaultEconomy vault = context.infra().getVaultEconomy();
+        final TaskScheduler scheduler = context.infra().getTaskScheduler();
 
         final EngineChunkChange chunkChange = new EngineChunkChange(repos, cfg, logger(context));
         final EngineEconomy economy = new EngineEconomy(
-            context.plugin(), repos, cfg, notifCfg, vault, logger(context));
+            context.plugin(), repos, cfg, notifCfg, vault, scheduler, logger(context));
         final AutoTerritoryModeCache autoTerritoryModeCache = new AutoTerritoryModeCache(repos, logger(context));
         context.engines().setChunkChange(chunkChange);
         context.engines().setEconomy(economy);
         context.engines().setAutoTerritoryModeCache(autoTerritoryModeCache);
-        economy.startTaxScheduler(context.plugin());
+        economy.startTaxScheduler(scheduler);
 
         final EngineProtection protection = new EngineProtection(repos, cfg, logger(context));
         protection.register(context.plugin());
@@ -50,8 +54,8 @@ public final class EnginesBootstrapComponent extends AbstractBootstrapComponent 
         final EngineChat chat = new EngineChat(repos, cfg, logger(context));
         chat.register(context.plugin());
 
-        final EnginePower power = new EnginePower(repos, cfg, logger(context));
-        power.start(context.plugin());
+        powerEngine = new EnginePower(repos, cfg, logger(context), scheduler);
+        powerEngine.start(context.plugin());
 
         final EngineNotifications notifications = new EngineNotifications(
             context.services().getInviteService(),
@@ -59,7 +63,7 @@ public final class EnginesBootstrapComponent extends AbstractBootstrapComponent 
             repos,
             logger(context),
             notifCfg);
-        notifications.register(context.plugin());
+        notifications.register(context.plugin(), scheduler);
 
         final EngineAutoTerritory autoTerritory =
             new EngineAutoTerritory(chunkChange, context.infra().getTerritoryGuard(), autoTerritoryModeCache);
@@ -80,6 +84,9 @@ public final class EnginesBootstrapComponent extends AbstractBootstrapComponent 
 
     @Override
     public void stop(final BootstrapContext context) {
+        if (powerEngine != null) {
+            powerEngine.stop();
+        }
         final EngineEconomy economy = context.engines().getEconomy();
         if (economy != null) {
             economy.stopTaxScheduler();

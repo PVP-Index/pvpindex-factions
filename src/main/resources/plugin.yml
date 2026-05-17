@@ -2,6 +2,7 @@ name: PvPIndexFactions
 version: '${project.version}'
 main: com.pvpindex.factions.PvPIndexFactions
 api-version: '1.21'
+folia-supported: true
 description: A modern factions plugin backed by Jaloquent and optional TeamsAPI integration.
 website: https://modrinth.com/plugin/pvpindex-factions
 authors:

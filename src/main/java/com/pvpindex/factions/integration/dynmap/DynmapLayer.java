@@ -7,6 +7,7 @@ import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.event.FactionChunkClaimEvent;
 import com.pvpindex.factions.event.FactionChunkUnclaimEvent;
 import com.pvpindex.factions.event.FactionDisbandEvent;
+import com.pvpindex.factions.scheduler.TaskScheduler;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,10 +48,16 @@ public final class DynmapLayer implements Listener {
 
     private final Repositories repos;
     private final Logger logger;
+    private final TaskScheduler taskScheduler;
     private MarkerSet markerSet;
 
     public DynmapLayer(final Repositories repos, final Logger logger) {
+        this(repos, null, logger);
+    }
+
+    public DynmapLayer(final Repositories repos, final TaskScheduler taskScheduler, final Logger logger) {
         this.repos = repos;
+        this.taskScheduler = taskScheduler;
         this.logger = logger;
     }
 
@@ -84,7 +91,11 @@ public final class DynmapLayer implements Listener {
         markerSet.setHideByDefault(false);
         markerSet.setLayerPriority(5);
         // Load all existing claims one tick later so dynmap finishes its own startup
-        plugin.getServer().getScheduler().runTask(plugin, this::loadAllClaims);
+        if (taskScheduler != null) {
+            taskScheduler.runSync(this::loadAllClaims);
+        } else {
+            plugin.getServer().getScheduler().runTask(plugin, this::loadAllClaims);
+        }
         org.bukkit.Bukkit.getPluginManager().registerEvents(this, plugin);
         return true;
     }

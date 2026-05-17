@@ -6,6 +6,8 @@ import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.data.model.BoardEntry;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.model.PlayerModel;
+import com.pvpindex.factions.scheduler.CancelableTask;
+import com.pvpindex.factions.scheduler.TaskScheduler;
 import com.pvpindex.factions.util.MsgUtil;
 import java.util.List;
 import java.util.Optional;
@@ -20,37 +22,51 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Periodically ticks player power and handles power updates on login/logout.
  */
-public final class EnginePower extends BukkitRunnable implements Listener {
+public final class EnginePower implements Runnable, Listener {
 
     private final Repositories repos;
     private final FactionsConfig config;
     private final Logger logger;
-    private Plugin plugin;
+    private final TaskScheduler taskScheduler;
+    private CancelableTask timerTask;
     private final long startedAt = System.currentTimeMillis();
 
     public EnginePower(
-            final Repositories repos, final FactionsConfig config, final Logger logger) {
+            final Repositories repos,
+            final FactionsConfig config,
+            final Logger logger,
+            final TaskScheduler taskScheduler) {
         this.repos = repos;
         this.config = config;
         this.logger = logger;
+        this.taskScheduler = taskScheduler;
     }
 
     /**
-     * Schedule this engine to run every 60 seconds (1200 ticks).
+     * Schedule this engine to run every {@code powerTickIntervalSeconds} seconds
+     * and register Bukkit event listeners.
      *
-     * @param plugin owning plugin
+     * @param plugin owning plugin (used only for listener registration)
      */
     public void start(final Plugin plugin) {
-        this.plugin = plugin;
         final int intervalSeconds = Math.max(1, config.getPowerTickIntervalSeconds());
         final long intervalTicks = intervalSeconds * 20L;
-        runTaskTimerAsynchronously(plugin, intervalTicks, intervalTicks);
+        timerTask = taskScheduler.scheduleAsyncTimer(this, intervalTicks, intervalTicks);
         Bukkit.getPluginManager().registerEvents(this, plugin);
+    }
+
+    /**
+     * Cancel the periodic power tick. Call from engine shutdown.
+     */
+    public void stop() {
+        if (timerTask != null) {
+            timerTask.cancel();
+            timerTask = null;
+        }
     }
 
     @Override
@@ -67,8 +83,7 @@ public final class EnginePower extends BukkitRunnable implements Listener {
 
     @EventHandler
     public void onQuit(final PlayerQuitEvent event) {
-        Bukkit.getScheduler().runTaskAsynchronously(
-            plugin,
+        taskScheduler.runAsync(
             () -> applyPowerOnQuit(event.getPlayer().getUniqueId().toString()));
     }
 
@@ -81,8 +96,8 @@ public final class EnginePower extends BukkitRunnable implements Listener {
         final String worldName = dead.getWorld().getName();
         final int chunkX = dead.getLocation().getChunk().getX();
         final int chunkZ = dead.getLocation().getChunk().getZ();
-        Bukkit.getScheduler().runTaskAsynchronously(
-            plugin, () -> applyDeathPower(deadId, killerId, worldName, chunkX, chunkZ));
+        taskScheduler.runAsync(
+            () -> applyDeathPower(deadId, killerId, worldName, chunkX, chunkZ));
     }
 
     // -------------------------------------------------------------------------
@@ -140,7 +155,7 @@ public final class EnginePower extends BukkitRunnable implements Listener {
                 final String lossMsg = MsgUtil.replace(
                     MsgUtil.message("power.lost-on-death", "<red>You lost <yellow>{amount}<red> power on death."),
                     "amount", String.format(java.util.Locale.ROOT, "%.1f", loss));
-                Bukkit.getScheduler().runTask(plugin, () -> {
+                taskScheduler.runSync(() -> {
                     final Player deadPlayer = Bukkit.getPlayer(UUID.fromString(deadId));
                     if (deadPlayer != null) {
                         MsgUtil.send(deadPlayer, lossMsg);
@@ -161,7 +176,7 @@ public final class EnginePower extends BukkitRunnable implements Listener {
                     final String gainMsg = MsgUtil.replace(
                         MsgUtil.message("power.kill-gained", "<green>You gained <yellow>{amount}<green> power from your kill."),
                         "amount", String.format(java.util.Locale.ROOT, "%.1f", gain));
-                    Bukkit.getScheduler().runTask(plugin, () -> {
+                    taskScheduler.runSync(() -> {
                         final Player killerPlayer = Bukkit.getPlayer(UUID.fromString(killerId));
                         if (killerPlayer != null) {
                             MsgUtil.send(killerPlayer, gainMsg);

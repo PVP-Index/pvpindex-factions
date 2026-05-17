@@ -14,6 +14,10 @@ import com.pvpindex.factions.integration.lwc.NoopLwcInterop;
 import com.pvpindex.factions.integration.vault.VaultEconomy;
 import com.pvpindex.factions.integration.worldguard.TerritoryGuardFactory;
 import com.pvpindex.factions.predefined.PredefinedConfigManager;
+import com.pvpindex.factions.scheduler.BukkitTaskScheduler;
+import com.pvpindex.factions.scheduler.FoliaTaskScheduler;
+import com.pvpindex.factions.scheduler.PlatformDetector;
+import com.pvpindex.factions.scheduler.TaskScheduler;
 import com.pvpindex.factions.util.MsgUtil;
 import java.io.File;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -31,6 +35,7 @@ public final class InfrastructureBootstrapComponent extends AbstractBootstrapCom
 
     @Override
     public boolean start(final BootstrapContext context) {
+        initScheduler(context);
         if (!initConfig(context)) {
             return false;
         }
@@ -54,20 +59,20 @@ public final class InfrastructureBootstrapComponent extends AbstractBootstrapCom
     }
 
     private boolean initConfig(final BootstrapContext context) {
-        context.plugin().saveDefaultConfig();
+        context.javaPlugin().saveDefaultConfig();
         context.infra().setConfig(new FactionsConfig(context.plugin().getConfig()));
         final File guiFile = new File(context.plugin().getDataFolder(), "gui.yml");
         if (!guiFile.exists()) {
-            context.plugin().saveResource("gui.yml", false);
+            context.javaPlugin().saveResource("gui.yml", false);
         }
         context.infra().setGuiConfig(new GuiConfig(YamlConfiguration.loadConfiguration(guiFile)));
         final File dbFile = new File(context.plugin().getDataFolder(), "database.yml");
         if (!dbFile.exists()) {
-            context.plugin().saveResource("database.yml", false);
+            context.javaPlugin().saveResource("database.yml", false);
         }
         final File messagesFile = new File(context.plugin().getDataFolder(), "messages.yml");
         if (!messagesFile.exists()) {
-            context.plugin().saveResource("messages.yml", false);
+            context.javaPlugin().saveResource("messages.yml", false);
         }
         final FileConfiguration msgCfgRaw = YamlConfiguration.loadConfiguration(messagesFile);
         final MessagesConfig messagesConfig = new MessagesConfig(msgCfgRaw);
@@ -81,7 +86,7 @@ public final class InfrastructureBootstrapComponent extends AbstractBootstrapCom
         context.infra().setPredefinedConfigManager(predefined);
         final File notifFile = new File(context.plugin().getDataFolder(), "notifications.yml");
         if (!notifFile.exists()) {
-            context.plugin().saveResource("notifications.yml", false);
+            context.javaPlugin().saveResource("notifications.yml", false);
         }
         context.infra().setNotificationsConfig(
             new NotificationsConfig(YamlConfiguration.loadConfiguration(notifFile)));
@@ -131,9 +136,20 @@ public final class InfrastructureBootstrapComponent extends AbstractBootstrapCom
     private void initLwcInterop(final BootstrapContext context) {
         final FactionsConfig cfg = context.infra().getConfig();
         final Repositories repos = context.infra().getRepositories();
-        final LwcInterop lwcInterop = LwcInteropFactory.create(context.plugin(), cfg, repos, logger(context));
+        final TaskScheduler scheduler = context.infra().getTaskScheduler();
+        final LwcInterop lwcInterop = LwcInteropFactory.create(
+            context.plugin(), cfg, repos, scheduler, logger(context));
         context.infra().setLwcInterop(lwcInterop);
         lwcInterop.register(context.plugin());
         context.setLwcEnabled(!(lwcInterop instanceof NoopLwcInterop));
+    }
+
+    private void initScheduler(final BootstrapContext context) {
+        final TaskScheduler scheduler = PlatformDetector.isFolia()
+            ? new FoliaTaskScheduler(context.plugin())
+            : new BukkitTaskScheduler(context.plugin());
+        context.infra().setTaskScheduler(scheduler);
+        logger(context).info("Platform scheduler: "
+            + (PlatformDetector.isFolia() ? "Folia" : "Bukkit"));
     }
 }

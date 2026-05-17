@@ -4,11 +4,14 @@ The goal is simple: revive Factions with a timeless architecture, reliable persi
 
 If you love classic Factions gameplay but need something maintainable, scalable, and integration-ready, PvPIndex Factions is built for exactly that.
 
-## Supported versions
+## Supported platforms
 
-- Minecraft / Paper `1.21.*`
-- Paper API line `26.1.*`
-- Java `21+`
+| Platform | Version | Notes |
+|---|---|---|
+| Paper | 1.21.x, 1.26.x | Recommended |
+| Folia | 1.21.x, 1.26.x | Native Folia scheduler support |
+| Spigot | 1.21.x, 1.26.x | Legacy compatibility mode |
+| Java | 21+ | |
 
 ## Vision: timeless Factions, modern backend
 
