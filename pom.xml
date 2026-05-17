@@ -310,6 +310,19 @@
                             <pattern>net.kyori.examination</pattern>
                             <shadedPattern>com.pvpindex.lib.examination</shadedPattern>
                         </relocation>
+                        <!--
+                          adventure-text-serializer-json/gson uses net.kyori.option for its
+                          JSONOptions schema.  Paper bundles net.kyori.option on the server
+                          classpath and its classloader always delegates net.kyori.* to the
+                          server, so the shaded JSONOptions would call the server's
+                          OptionSchemaImpl and try to register keys already registered by
+                          Paper's own Adventure — causing IllegalStateException at startup.
+                          Relocating net.kyori.option gives the shaded code an isolated schema.
+                        -->
+                        <relocation>
+                            <pattern>net.kyori.option</pattern>
+                            <shadedPattern>com.pvpindex.lib.option</shadedPattern>
+                        </relocation>
                     </relocations>
                     <transformers>
                         <!--
