@@ -91,6 +91,17 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   still resolves Paper's native adventure via reflection so hover/click events are preserved.
   `FactionsGuiManager` inventory titles and item names now go through `MsgUtil.toLegacy()` so
   the GUI is correctly styled on both platforms.
+- **Spigot hover/click events lost (no JSON serializer implementation)**: On Spigot, hover and
+  click events in messages were silently lost at runtime because `JSONComponentSerializer.json()`
+  uses ServiceLoader to locate its implementation artifact (`adventure-text-serializer-gson`),
+  which was not shaded into the plugin JAR. ServiceLoader found no provider for the relocated
+  interface and fell back to `DummyJSONComponentSerializer`, which threw
+  `UnsupportedOperationException: No JsonComponentSerializer implementation found` on every
+  player message, breaking all command output. Fixed by adding `adventure-text-serializer-gson`
+  4.20.0 as a compile-scoped dependency (shaded and relocated alongside the other adventure
+  modules) and switching `LegacyOps` to `GsonComponentSerializer.gson()`, whose implementation
+  is self-contained in the same artifact. Hover and click events in MiniMessage strings are
+  now correctly preserved on Spigot via the BungeeCord chat API path.
 
 ## [1.0.4] - 2026-05-16
 

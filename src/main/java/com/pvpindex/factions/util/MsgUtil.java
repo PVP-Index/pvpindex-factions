@@ -390,13 +390,13 @@ public final class MsgUtil {
             net.kyori.adventure.text.minimessage.MiniMessage.miniMessage();
         private static final net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer LEGACY =
             net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacySection();
-        private static final net.kyori.adventure.text.serializer.json.JSONComponentSerializer JSON_SER =
-            net.kyori.adventure.text.serializer.json.JSONComponentSerializer.json();
+        private static final net.kyori.adventure.text.serializer.gson.GsonComponentSerializer GSON_SER =
+            net.kyori.adventure.text.serializer.gson.GsonComponentSerializer.gson();
 
         static void send(final CommandSender sender, final String miniMsg) {
             net.kyori.adventure.text.Component component = MINI.deserialize(miniMsg);
             if (sender instanceof org.bukkit.entity.Player player) {
-                String json = JSON_SER.serialize(component);
+                String json = GSON_SER.serialize(component);
                 net.md_5.bungee.api.chat.BaseComponent[] bcs =
                     net.md_5.bungee.chat.ComponentSerializer.parse(json);
                 player.spigot().sendMessage(bcs);
