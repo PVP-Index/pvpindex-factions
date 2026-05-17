@@ -14,94 +14,48 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
-- Folia support: scheduler abstraction layer (`CancelableTask`, `TaskScheduler`, `PlatformDetector`,
-  `BukkitTaskScheduler`, `FoliaTaskScheduler`) routes all scheduled work through the correct
-  Bukkit or Folia scheduler at runtime.
-- `plugin.yml` now declares `folia-supported: true`.
-- Dual chat-format listener: `EngineChat` detects Paper or Spigot at startup and registers
-  `PaperChatListener` (`AsyncChatEvent` + adventure renderer) on Paper and `LegacyChatListener`
-  (`AsyncPlayerChatEvent` + `setFormat`) on Spigot.
-- GitHub Actions `server-startup` workflow: spins up Paper, Folia, and Spigot servers in a
-  matrix on every pull request and validates that the plugin boots successfully. Spigot is
-  compiled from source via BuildTools (cached after the first run).
-- `SchedulerSmokeTest` (12 tests) covering `BukkitTaskScheduler` and `FoliaTaskScheduler` paths.
-- `EngineChatListenerTest` (6 tests) covering both the Paper and Spigot chat-listener paths.
-- `TeamsApiRegistrar` interface: isolates the TeamsAPI lifecycle contract from bootstrap code,
-  carrying no TeamsAPI imports so it is safe to reference unconditionally.
-- `TeamsApiRegistrarImpl`: concrete registrar that holds every `FactionsTeams*` adapter and
-  every `TeamsAPI.register*()`/`TeamsAPI.unregister*()` call — loaded via reflection only.
-- `EzCountdownSender` interface and `EzCountdownNotifierImpl`: same isolation pattern for
-  EzCountdown — all `DisplayType`/`EzCountdownApi`/`Notification` references live in the impl,
-  loaded via reflection only after EzCountdown is confirmed present on the server.
-- `ServicesBootstrapComponentTest` (5 tests): verifies standalone startup when TeamsAPI is
-  absent, confirms internal services are always wired, and covers `stop()` lifecycle paths.
+- **Folia support**: the plugin now runs on Folia servers alongside Bukkit, Spigot, and Paper.
+  All scheduled tasks use a new scheduler abstraction that automatically picks the correct
+  Bukkit or Folia scheduler at runtime. `plugin.yml` now declares `folia-supported: true`.
+- **Correct chat formatting on Spigot**: chat-format events are now handled through the right
+  API on each platform — `AsyncChatEvent` on Paper and `AsyncPlayerChatEvent` on Spigot.
 
 ### Fixed
 
-- **TeamsAPI startup crash**: `NoClassDefFoundError` was thrown at server startup when TeamsAPI
-  was not installed, because `ServicesBootstrapComponent` imported `FactionsTeams*` adapter
-  classes whose interfaces live in the TeamsAPI JAR. The fix moves all TeamsAPI references
-  into a new `TeamsApiRegistrarImpl` class that is loaded exclusively via `Class.forName()`
-  only after TeamsAPI has been confirmed present on the server.
-- **EzCountdown startup crash**: Same root cause — `EzCountdownNotifier` imported `DisplayType`,
-  `EzCountdownApi`, and `Notification` directly, causing `NoClassDefFoundError` when EzCountdown
-  was absent. Moved all EzCountdown type references into `EzCountdownNotifierImpl`, loaded via
-  reflection only after EzCountdown is confirmed present.
-- **bStats shutdown race**: `HikariDataSource has been closed` errors appeared in CI when the
-  server was stopped immediately after startup. The `BStatsMetricsManager` async warm-cache and
-  refresh tasks could execute after `DatabaseManager.close()`. Added a `volatile boolean active`
-  flag; tasks check it before querying and `OptionalHooksBootstrapComponent.stop()` sets it
-  to `false` during shutdown.
-- **Spigot startup crash (`HoverEventSource`)**: `NoClassDefFoundError: HoverEventSource` was
-  thrown at startup on Spigot because `MsgUtil` imported `HoverEvent`, whose superinterface
-  `HoverEventSource` is not present in Spigot 1.21.4's bundled adventure. Removed all Java API
-  hover-event and click-event calls from `MsgUtil`; hover/click are now built entirely through
-  MiniMessage tag strings (`<hover:show_text:'...'>`, `<click:...:'...'>`), which avoids any
-  direct reference to `HoverEventSource` or `ClickEvent` in plugin bytecode.
-- **Spigot startup crash (`Component` not found)**: `NoClassDefFoundError: net/kyori/adventure/text/Component`
-  was thrown at startup on Spigot 1.21.11 because several classes loaded during bootstrap
-  (`MsgUtil`, `EngineChat`, `FactionsGuiManager`) held static fields whose declared types are
-  adventure classes. The JVM resolves those field types when the declaring class is initialized,
-  which fails when adventure is not accessible from the plugin classloader. Fixed by moving all
-  adventure-typed state into private static inner classes (`MsgUtil.AdventureOps`) that the JVM
-  loads lazily, removing adventure-typed static fields from `EngineChat` and `FactionsGuiManager`,
-  and eliminating all calls to the removed `MsgUtil.parse(Component)` API from `CmdInfo` and
-  `CmdMap`. The CI startup matrix was expanded to `[paper, folia, spigot]` × `[1.21.4, 1.21.11]`
-  so both Spigot versions are validated on every pull request.
-- **Spigot startup crash (`HoverEventSource` via listener scan and command loading)**:
-  `NoClassDefFoundError: HoverEventSource` was thrown on Spigot 1.21.11 in two additional
-  code paths after the initial `MsgUtil` fix: (1) Bukkit's `registerEvents()` calls
-  `getDeclaredMethods()` on `Listener` classes, which loads every declared method's return type —
-  `FactionsGuiManager.parseText()` had `Component` as its return type, causing class-load failure.
-  (2) `CmdInfo.buildMembersLine()` and `CmdMap.cellComponent()` called `HoverEvent.showText()` in
-  their bodies; loading these command classes triggered loading `HoverEvent`, which required
-  missing `HoverEventSource`. Fix: removed `parseText` from `FactionsGuiManager`'s outer class
-  and moved all adventure inventory calls into a new `InventoryOps` private static inner class
-  (loaded lazily). `buildMembersLine` and `cellComponent`/`cellTag` were rewritten to return
-  `String` with MiniMessage hover/click tag syntax instead of `Component` objects, removing all
-  direct adventure API references from their method bodies. `MsgUtil.ADVENTURE` and
-  `MsgUtil.stripTags()` were made `public` to allow the GUI manager's non-adventure fallback path.
-- **Spigot messages unstyled (MiniMessage not resolved)**: On Spigot, all plugin messages were
-  displayed as plain text with MiniMessage tags stripped but no colour or formatting applied,
-  because Spigot does not include adventure at runtime and `AdventureOps` silently fell back to
-  `sender.sendMessage(String)` after `stripTags()`. Fixed by shading and relocating
-  `adventure-api`, `adventure-text-minimessage`, and `adventure-text-serializer-legacy` 4.20.0
-  into the plugin JAR under `com.pvpindex.lib.adventure`. `LegacyOps` uses the bundled copy to
-  convert MiniMessage strings to `§`-colour-coded strings for Spigot. On Paper, `AdventureOps`
-  still resolves Paper's native adventure via reflection so hover/click events are preserved.
-  `FactionsGuiManager` inventory titles and item names now go through `MsgUtil.toLegacy()` so
-  the GUI is correctly styled on both platforms.
-- **Spigot hover/click events lost (no JSON serializer implementation)**: On Spigot, hover and
-  click events in messages were silently lost at runtime because `JSONComponentSerializer.json()`
-  uses ServiceLoader to locate its implementation artifact (`adventure-text-serializer-gson`),
-  which was not shaded into the plugin JAR. ServiceLoader found no provider for the relocated
-  interface and fell back to `DummyJSONComponentSerializer`, which threw
-  `UnsupportedOperationException: No JsonComponentSerializer implementation found` on every
-  player message, breaking all command output. Fixed by adding `adventure-text-serializer-gson`
-  4.20.0 as a compile-scoped dependency (shaded and relocated alongside the other adventure
-  modules) and switching `LegacyOps` to `GsonComponentSerializer.gson()`, whose implementation
-  is self-contained in the same artifact. Hover and click events in MiniMessage strings are
-  now correctly preserved on Spigot via the BungeeCord chat API path.
+- **Plugin did not start when TeamsAPI or EzCountdown were absent**:
+  Servers without TeamsAPI or EzCountdown installed logged `NoClassDefFoundError` at startup
+  and the plugin failed to load entirely. Both integrations are now fully isolated — the plugin
+  always starts cleanly and activates each integration only when its plugin is present.
+
+- **Plugin did not start on Spigot** (`NoClassDefFoundError` at startup):
+  Several internal classes referenced Adventure API types that are absent or incompatible on
+  Spigot 1.21.4 and 1.21.11, causing the JVM to crash during class initialisation before any
+  commands or events could be registered. All Adventure-typed state has been moved into
+  lazily-loaded inner classes that Spigot never touches at startup.
+
+- **Messages showed no colour or formatting on Spigot**:
+  Plugin messages appeared as raw plain text because Spigot does not bundle Adventure at runtime.
+  The plugin now ships its own copy of Adventure (MiniMessage + legacy serialiser) so colours,
+  bold, italic, and other formatting always render correctly on Spigot.
+
+- **All commands crashed on Spigot** (`/f info`, `/f create`, and every other command):
+  Every command thrown on Spigot produced `UnsupportedOperationException: No JsonComponentSerializer
+  implementation found`, making the plugin completely unusable. The GSON serialiser is now bundled
+  in the plugin JAR, and the initialisation sequence explicitly uses the plugin classloader so that
+  Java's `ServiceLoader` locates the implementation at runtime rather than falling back to a stub
+  that throws.
+
+- **Hover tooltips did nothing on Spigot** (`/f info` member list, `/f map` territory tiles):
+  After the command crash was resolved, hover and click events were still silently dropped because
+  the Spigot message path was sending plain §-coded strings. Messages to players are now serialised
+  to JSON via the bundled GSON serialiser and delivered through the BungeeCord chat API, so hover
+  and click events work correctly on Spigot.
+
+- **Intermittent shutdown error from bStats metrics** (rare):
+  On servers that shut down shortly after startup, bStats background tasks occasionally ran after
+  the database connection was already closed, logging `HikariDataSource has been closed`. A
+  shutdown flag now prevents metrics tasks from querying the database once the plugin has stopped.
+
 
 ## [1.0.4] - 2026-05-16
 
