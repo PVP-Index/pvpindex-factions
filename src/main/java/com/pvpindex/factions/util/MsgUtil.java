@@ -390,14 +390,34 @@ public final class MsgUtil {
             net.kyori.adventure.text.minimessage.MiniMessage.miniMessage();
         private static final net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer LEGACY =
             net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacySection();
-        private static final net.kyori.adventure.text.serializer.gson.GsonComponentSerializer GSON_SER =
-            net.kyori.adventure.text.serializer.gson.GsonComponentSerializer.gson();
+
+        /**
+         * GsonComponentSerializer, initialised with the plugin classloader as the
+         * thread-context classloader so that Adventure's ServiceLoader call finds
+         * the relocated GsonComponentSerializer.Provider inside the shaded plugin
+         * JAR rather than falling back to DummyJSONComponentSerializer.
+         */
+        private static final net.kyori.adventure.text.serializer.gson.GsonComponentSerializer GSON_SER;
+
+        static {
+            final ClassLoader pluginCl = LegacyOps.class.getClassLoader();
+            final ClassLoader prev = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader(pluginCl);
+            net.kyori.adventure.text.serializer.gson.GsonComponentSerializer gs;
+            try {
+                gs = net.kyori.adventure.text.serializer.gson.GsonComponentSerializer.gson();
+            } finally {
+                Thread.currentThread().setContextClassLoader(prev);
+            }
+            GSON_SER = gs;
+        }
 
         static void send(final CommandSender sender, final String miniMsg) {
-            net.kyori.adventure.text.Component component = MINI.deserialize(miniMsg);
+            final net.kyori.adventure.text.Component component = MINI.deserialize(miniMsg);
             if (sender instanceof org.bukkit.entity.Player player) {
-                String json = GSON_SER.serialize(component);
-                net.md_5.bungee.api.chat.BaseComponent[] bcs =
+                // Deliver as BungeeCord components so hover/click events work on Spigot.
+                final String json = GSON_SER.serialize(component);
+                final net.md_5.bungee.api.chat.BaseComponent[] bcs =
                     net.md_5.bungee.chat.ComponentSerializer.parse(json);
                 player.spigot().sendMessage(bcs);
             } else {
