@@ -79,7 +79,7 @@ public final class EnginesBootstrapComponent extends AbstractBootstrapComponent 
             final String version = context.plugin().getDescription().getVersion();
             final ChainedUpdateChecker checker = ChainedUpdateChecker.builder()
                 .primary(ModrinthUpdateChecker.builder(cfg.getUpdateModrinthSlug(), version)
-                    .loaders(List.of("paper"))
+                    .loaders(List.of("paper", "folia", "spigot"))
                     .build())
                 .backup(UpdateChecker.builder(cfg.getUpdateGithubOwner(), cfg.getUpdateGithubRepo(), version).build())
                 .build();
