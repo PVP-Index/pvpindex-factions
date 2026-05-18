@@ -14,7 +14,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
-- Startup update-check integration using `ez-plugins/mc-plugin-update-notifier` with chained sources:
+- Startup update-check integration using [ez-plugins/mc-plugin-update-notifier](https://github.com/ez-plugins/mc-plugin-update-notifier) with chained sources:
   Modrinth public API as primary and GitHub public API as fallback.
   Modrinth queries loaders `paper`, `folia`, and `spigot` so the check works on all supported
   server software.
