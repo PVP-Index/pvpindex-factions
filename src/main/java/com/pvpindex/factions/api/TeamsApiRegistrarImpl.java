@@ -7,6 +7,7 @@ import com.skyblockexp.teamsapi.api.TeamsAPI;
 import com.skyblockexp.teamsapi.api.TeamsClaimService;
 import com.skyblockexp.teamsapi.api.TeamsInviteService;
 import com.skyblockexp.teamsapi.api.TeamsPowerService;
+import com.skyblockexp.teamsapi.api.TeamsRelationService;
 import com.skyblockexp.teamsapi.api.TeamsService;
 import com.skyblockexp.teamsapi.api.TeamsWarpService;
 import org.bukkit.plugin.Plugin;
@@ -27,6 +28,7 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
     private TeamsWarpService warpAdapter;
     private TeamsClaimService claimAdapter;
     private TeamsPowerService powerAdapter;
+    private TeamsRelationService relationAdapter;
 
     @Override
     public boolean register(final Plugin plugin, final FactionServiceImpl factionImpl,
@@ -36,6 +38,7 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
         warpAdapter = new FactionsTeamsWarpService(warpImpl, factionImpl);
         claimAdapter = new FactionsTeamsClaimService(factionImpl);
         powerAdapter = new FactionsTeamsPowerService(factionImpl);
+        relationAdapter = new FactionsTeamsRelationService(factionImpl);
 
         try {
             TeamsAPI.registerProvider(plugin, teamsAdapter);
@@ -43,6 +46,7 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
             TeamsAPI.registerWarpProvider(plugin, warpAdapter);
             TeamsAPI.registerClaimProvider(plugin, claimAdapter);
             TeamsAPI.registerPowerProvider(plugin, powerAdapter);
+            TeamsAPI.registerRelationProvider(plugin, relationAdapter);
             return true;
         } catch (Exception e) {
             unregister();
@@ -81,6 +85,12 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
                 TeamsAPI.unregisterPowerProvider(powerAdapter);
             } catch (Exception ignored) { }
             powerAdapter = null;
+        }
+        if (relationAdapter != null) {
+            try {
+                TeamsAPI.unregisterRelationProvider(relationAdapter);
+            } catch (Exception ignored) { }
+            relationAdapter = null;
         }
     }
 }
