@@ -215,6 +215,7 @@ public class FactionServiceImpl implements FactionService {
                 repos.invitations().deleteByFactionId(factionId);
                 repos.ranks().deleteByFactionId(factionId);
                 repos.players().clearFactionMembers(factionId);
+                clearIncomingRelations(factionId);
                 repos.factions().delete(factionId);
             });
 
@@ -703,6 +704,27 @@ public class FactionServiceImpl implements FactionService {
             }
         }
         return count;
+    }
+
+    /**
+     * Removes all references to {@code disbandedFactionId} from the
+     * {@code relations_json} of every other faction. Called inside the
+     * disband transaction to prevent stale foreign-key entries.
+     *
+     * @param disbandedFactionId the faction being disbanded
+     * @throws StorageException if a database error occurs
+     */
+    private void clearIncomingRelations(final String disbandedFactionId) throws StorageException {
+        for (final FactionModel other : repos.factions().findAll()) {
+            if (other.getId().equals(disbandedFactionId)) {
+                continue;
+            }
+            final Map<String, Relation> map = parseRelations(other.getRelationsJson());
+            if (map.remove(disbandedFactionId) != null) {
+                other.setRelationsJson(serializeRelations(map));
+                repos.factions().save(other);
+            }
+        }
     }
 
     private boolean changeMemberRank(final UUID actorUUID, final UUID targetUUID, final boolean promote) {
