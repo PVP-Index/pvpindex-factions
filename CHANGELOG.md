@@ -10,6 +10,27 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Changed
 
+## [1.0.6] - 2026-05-18
+
+### Added
+
+- **TeamsAPI 1.6 relation provider**: the plugin now implements the `TeamsRelationService`
+  interface introduced in TeamsAPI 1.6. External plugins and scripts can read and write
+  inter-faction relations (`ALLY`, `TRUCE`, `NEUTRAL`, `ENEMY`) through the standard TeamsAPI
+  surface. `TeamRelationChangeEvent` is fired on every relation change, allowing third-party
+  plugins to observe or cancel relation updates before they are persisted.
+
+### Changed
+
+- **TeamsAPI dependency updated to 1.6.1** (was 1.5.0).
+
+### Fixed
+
+- **Stale relation entries after faction disband**: when a faction was disbanded, references
+  to it stored in other factions' relation maps were not removed, leaving orphaned entries in
+  the database. Disbanding a faction now clears all incoming relation references across every
+  other faction.
+
 ## [1.0.5] - 2026-05-16
 
 ### Added
