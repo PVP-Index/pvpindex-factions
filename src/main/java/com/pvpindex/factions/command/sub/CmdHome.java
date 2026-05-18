@@ -30,15 +30,21 @@ public final class CmdHome extends FactionCommand {
         if (CommandGuards.requireFaction(player, factionService).isEmpty()) {
             return;
         }
-        final Location home = factionService.getFactionHome(player.getUniqueId()).orElse(null);
-        if (home == null || home.getWorld() == null) {
-            MsgUtil.send(player, "<red>Your faction has not set a home.");
+        if (essentialsInterop.isJailed(player)) {
+            MsgUtil.sendKey(player, "home.jailed", "<red>You cannot teleport home while jailed.");
             return;
         }
-        if (essentialsInterop.teleportToFactionHome(player, home)) {
+        final Location home = factionService.getFactionHome(player.getUniqueId()).orElse(null);
+        if (home == null || home.getWorld() == null) {
+            MsgUtil.sendKey(player, "home.no-home", "<red>Your faction has not set a home.");
+            return;
+        }
+        if (essentialsInterop.teleport(player, home,
+                () -> MsgUtil.sendKey(player, "home.teleported", "<green>Teleported to faction home."),
+                () -> MsgUtil.sendKey(player, "home.teleport-failed", "<red>Faction home teleport failed."))) {
             return;
         }
         player.teleport(home);
-        MsgUtil.send(player, "<green>Teleported to faction home.");
+        MsgUtil.sendKey(player, "home.teleported", "<green>Teleported to faction home.");
     }
 }

@@ -95,6 +95,19 @@ This page documents all shipped configuration keys with a description and a conc
 | `factions.chat.show-tag` | Show faction tag in chat formatting. | `show-tag: true` |
 | `factions.chat.tag-format` | MiniMessage format for faction chat tag. | `tag-format: "<gray>[<gold>{faction_name}</gold>]</gray> "` |
 
+### `factions.metrics.*`
+
+| Key | Description | Example |
+|---|---|---|
+| `factions.metrics.bstats.enabled` | Enable anonymous bStats metrics collection. | `bstats: { enabled: true }` |
+
+### `factions.updates.*`
+
+| Key | Description | Example |
+|---|---|---|
+| `factions.updates.enabled` | Check for new plugin versions on startup (opt-in, disabled by default). | `enabled: false` |
+| `factions.updates.notify-ops-on-join` | Notify online operators about available updates when they join. | `notify-ops-on-join: false` |
+
 ### `integrations.*`
 
 | Key | Description | Example |
@@ -103,7 +116,7 @@ This page documents all shipped configuration keys with a description and a conc
 | `integrations.worldguard` | Enable WorldGuard integration attempt. | `worldguard: true` |
 | `integrations.dynmap` | Enable dynmap integration attempt. | `dynmap: true` |
 | `integrations.placeholderapi` | Enable PlaceholderAPI integration attempt. | `placeholderapi: true` |
-| `integrations.essentialsx.enabled` | Enable EssentialsX home-interop route. | `essentialsx: { enabled: false }` |
+| `integrations.essentialsx.enabled` | Enable EssentialsX teleport routing for `/f home` and `/f warp`. Jailed players are blocked. Requires EssentialsX 2.19+. | `essentialsx: { enabled: false }` |
 | `integrations.lwc.enabled` | Master toggle for LWC/LWCX interop. | `lwc: { enabled: true }` |
 | `integrations.lwc.require-build-rights-to-create` | Block protection creation if builder lacks rights. | `lwc: { require-build-rights-to-create: true }` |
 | `integrations.lwc.remove-if-no-build-rights` | Remove stale protections when owner loses rights. | `lwc: { remove-if-no-build-rights: true }` |
@@ -182,8 +195,8 @@ This page documents all shipped configuration keys with a description and a conc
 | `invite` | Invite lifecycle and prompts | `invite.summary` |
 | `claim` | Claim/unclaim and territory text | `claim.claimed` |
 | `bank` | Bank operations and tax notices | `bank.balance` |
-| `home` | Home set/teleport messages | `home.set` |
-| `warp` | Warp flow messages | `warp.set` |
+| `home` | Home set/teleport messages | `home.set`, `home.teleported`, `home.jailed` |
+| `warp` | Warp flow messages | `warp.set`, `warp.teleported`, `warp.jailed` |
 | `relation` | Relation messages | `relation.set` |
 | `power` | Power model messages | `power.too-low-raid`, `power.lost-on-death`, `power.kill-gained`, `power.buy-success` |
 | `fly` | Fly state messages | `fly.enabled` |

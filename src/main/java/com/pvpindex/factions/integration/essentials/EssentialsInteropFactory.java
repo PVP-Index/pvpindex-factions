@@ -1,5 +1,6 @@
 package com.pvpindex.factions.integration.essentials;
 
+import com.earth2me.essentials.IEssentials;
 import com.pvpindex.factions.config.FactionsConfig;
 import java.util.logging.Logger;
 import org.bukkit.plugin.Plugin;
@@ -25,8 +26,14 @@ public final class EssentialsInteropFactory {
             logger.info("EssentialsX not found — interop disabled.");
             return new NoopEssentialsInterop();
         }
-        logger.info("EssentialsX detected — home teleport interop enabled.");
-        return new EssentialsXInterop(essentials, logger);
+        if (!(essentials instanceof IEssentials)) {
+            logger.warning("Found plugin named 'Essentials' but it does not implement IEssentials"
+                + " — interop disabled.");
+            return new NoopEssentialsInterop();
+        }
+        logger.info("EssentialsX " + essentials.getDescription().getVersion()
+            + " detected — home/warp teleport interop enabled.");
+        return new EssentialsXInterop((IEssentials) essentials, logger);
     }
 }
 

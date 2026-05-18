@@ -40,7 +40,11 @@ class CmdHomeTest extends CommandTestBase {
     void teleportsToHome() {
         final Location home = new Location(world, 10, 65, 10);
         when(factionService.getFactionHome(uuid)).thenReturn(Optional.of(home));
-        when(essentialsInterop.teleportToFactionHome(player, home)).thenReturn(false);
+        when(essentialsInterop.teleport(
+            org.mockito.ArgumentMatchers.eq(player),
+            org.mockito.ArgumentMatchers.any(Location.class),
+            org.mockito.ArgumentMatchers.any(),
+            org.mockito.ArgumentMatchers.any())).thenReturn(false);
 
         cmd.execute(ctx());
 
@@ -61,11 +65,30 @@ class CmdHomeTest extends CommandTestBase {
     void usesEssentialsInteropWhenActive() {
         final Location home = new Location(world, 10, 65, 10);
         when(factionService.getFactionHome(uuid)).thenReturn(Optional.of(home));
-        when(essentialsInterop.teleportToFactionHome(player, home)).thenReturn(true);
+        when(essentialsInterop.teleport(
+            org.mockito.ArgumentMatchers.eq(player),
+            org.mockito.ArgumentMatchers.any(Location.class),
+            org.mockito.ArgumentMatchers.any(),
+            org.mockito.ArgumentMatchers.any())).thenReturn(true);
 
         cmd.execute(ctx());
 
-        verify(essentialsInterop).teleportToFactionHome(player, home);
+        verify(essentialsInterop).teleport(
+            org.mockito.ArgumentMatchers.eq(player),
+            org.mockito.ArgumentMatchers.any(Location.class),
+            org.mockito.ArgumentMatchers.any(),
+            org.mockito.ArgumentMatchers.any());
         org.mockito.Mockito.verify(player, org.mockito.Mockito.never()).teleport(home);
+    }
+
+    @Test
+    void rejectsJailedPlayer() {
+        when(essentialsInterop.isJailed(player)).thenReturn(true);
+
+        cmd.execute(ctx());
+
+        verify(player).sendMessage(argThat(componentContains("jailed")));
+        org.mockito.Mockito.verify(player, org.mockito.Mockito.never())
+            .teleport(org.mockito.ArgumentMatchers.any(Location.class));
     }
 }

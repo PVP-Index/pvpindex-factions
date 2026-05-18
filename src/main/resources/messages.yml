@@ -108,16 +108,22 @@ bank:
 home:
   set: "<green>Faction home set to your current location."
   teleporting: "<yellow>Teleporting to faction home…"
+  teleported: "<green>Teleported to faction home."
+  teleport-failed: "<red>Faction home teleport failed."
   no-home: "<red>Your faction has not set a home."
   set-in-own-territory: "<red>Faction home must be set inside your own territory."
+  jailed: "<red>You cannot teleport home while jailed."
 
 warp:
   set: "<green>Warp <yellow>{name}</yellow> set."
   deleted: "<yellow>Warp <yellow>{name}</yellow> deleted."
   not-found: "<red>Warp <yellow>{name}</yellow> not found."
   teleporting: "<yellow>Teleporting to warp <yellow>{name}</yellow>…"
+  teleported: "<green>Teleported to warp <yellow>{name}</yellow>."
+  teleport-failed: "<red>Warp teleport failed."
   limit-reached: "<red>Your faction has reached the maximum number of warps ({max})."
   set-in-own-territory: "<red>Warps must be set inside your own territory."
+  jailed: "<red>You cannot use warps while jailed."
 
 relation:
   set: "<green>You set your relation with <yellow>{faction}</yellow> to <yellow>{relation}</yellow>."

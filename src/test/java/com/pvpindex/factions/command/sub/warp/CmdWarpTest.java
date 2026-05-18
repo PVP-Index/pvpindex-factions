@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import com.pvpindex.factions.command.CommandTestBase;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.model.WarpModel;
+import com.pvpindex.factions.integration.essentials.EssentialsInterop;
 import com.pvpindex.factions.integration.worldguard.TerritoryGuard;
 import com.pvpindex.factions.service.FactionService;
 import com.pvpindex.factions.service.WarpService;
@@ -35,6 +36,7 @@ class CmdWarpTest extends CommandTestBase {
     @Mock private FactionService factionService;
     @Mock private WarpService warpService;
     @Mock private TerritoryGuard territoryGuard;
+    @Mock private EssentialsInterop essentialsInterop;
     @Mock private FactionModel faction;
 
     private CmdWarp cmd;
@@ -43,7 +45,7 @@ class CmdWarpTest extends CommandTestBase {
 
     @BeforeEach
     void setUp() {
-        cmd = new CmdWarp(factionService, warpService, territoryGuard);
+        cmd = new CmdWarp(factionService, warpService, territoryGuard, essentialsInterop);
         when(player.getUniqueId()).thenReturn(uuid);
         when(faction.getId()).thenReturn(factionId);
     }
