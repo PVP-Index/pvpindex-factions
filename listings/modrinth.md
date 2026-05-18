@@ -4,6 +4,8 @@ The goal is simple: revive Factions with a timeless architecture, reliable persi
 
 If you love classic Factions gameplay but need something maintainable, scalable, and integration-ready, PvPIndex Factions is built for exactly that.
 
+> **TeamsAPI integration available** - PvPIndex Factions connects natively with TeamsAPI to expose faction data to other compatible plugins and services. [Download TeamsAPI on Modrinth →](https://modrinth.com/plugin/teams-api)
+
 ## Supported platforms
 
 | Platform | Version | Notes |
@@ -108,6 +110,10 @@ PvPIndex Factions runs standalone, and integrates when available:
 - dynmap
 - EssentialsX
 - LWC / LWCX
+- EzAuction (faction auctions)
+- EzShops (faction shops)
+- EzRTP (avoids faction claims)
+- EzClean (avoids faction claims)
 
 ### Integration downloads
 
@@ -119,6 +125,10 @@ PvPIndex Factions runs standalone, and integrates when available:
 - LWC: https://modrinth.com/plugin/lwc
 - Vault API: https://www.spigotmc.org/resources/vault.34315/ (official dependency page)
 - TeamsAPI: https://modrinth.com/plugin/teams-api
+- EzAuction: https://modrinth.com/plugin/ezauction
+- EzShops: https://modrinth.com/plugin/ezshops
+- EzRTP: https://modrinth.com/plugin/ezplugins-ezrtp
+- EzClean: https://modrinth.com/plugin/ezclean
 
 ## Configuration and operations
 
@@ -194,5 +204,5 @@ For setup, configuration, operations, and troubleshooting:
 ## License and attribution
 
 - LGPL-3.0
-- Derivative of MassiveCraft Factions (LGPL-3.0)
+- Derivative of [MassiveCraft Factions](https://github.com/MassiveCraft/Factions) (LGPL-3.0)
 - Refactor by PvPIndex.com team (Shadow48402, Epildev)

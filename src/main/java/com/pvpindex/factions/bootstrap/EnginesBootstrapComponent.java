@@ -1,5 +1,8 @@
 package com.pvpindex.factions.bootstrap;
 
+import com.github.ezplugins.updater.ChainedUpdateChecker;
+import com.github.ezplugins.updater.ModrinthUpdateChecker;
+import com.github.ezplugins.updater.UpdateChecker;
 import com.pvpindex.factions.config.FactionsConfig;
 import com.pvpindex.factions.config.NotificationsConfig;
 import com.pvpindex.factions.data.Repositories;
@@ -12,9 +15,12 @@ import com.pvpindex.factions.engine.EngineNotifications;
 import com.pvpindex.factions.engine.EnginePlayerMove;
 import com.pvpindex.factions.engine.EnginePower;
 import com.pvpindex.factions.engine.EngineProtection;
+import com.pvpindex.factions.engine.EngineUpdateNotifier;
 import com.pvpindex.factions.gui.FactionsGuiManager;
 import com.pvpindex.factions.integration.vault.VaultEconomy;
 import com.pvpindex.factions.scheduler.TaskScheduler;
+import com.pvpindex.factions.update.UpdateNotificationManager;
+import java.util.List;
 
 /**
  * Registers listeners and long-running gameplay engines.
@@ -68,6 +74,20 @@ public final class EnginesBootstrapComponent extends AbstractBootstrapComponent 
         final EngineAutoTerritory autoTerritory =
             new EngineAutoTerritory(chunkChange, context.infra().getTerritoryGuard(), autoTerritoryModeCache);
         autoTerritory.register(context.plugin());
+
+        if (cfg.isUpdateCheckEnabled()) {
+            final String version = context.plugin().getDescription().getVersion();
+            final ChainedUpdateChecker checker = ChainedUpdateChecker.builder()
+                .primary(ModrinthUpdateChecker.builder(cfg.getUpdateModrinthSlug(), version)
+                    .loaders(List.of("paper"))
+                    .build())
+                .backup(UpdateChecker.builder(cfg.getUpdateGithubOwner(), cfg.getUpdateGithubRepo(), version).build())
+                .build();
+            final UpdateNotificationManager updateManager = new UpdateNotificationManager(checker, logger(context));
+            updateManager.checkAsync();
+            final EngineUpdateNotifier updateNotifier = new EngineUpdateNotifier(cfg, updateManager);
+            updateNotifier.register(context.plugin());
+        }
 
         final FactionsGuiManager guiManager = new FactionsGuiManager(
             context.plugin(),

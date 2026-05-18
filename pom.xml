@@ -7,7 +7,7 @@
 
     <groupId>com.pvpindex</groupId>
     <artifactId>pvpindex-factions</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <packaging>jar</packaging>
 
     <name>PvPIndex Factions</name>
@@ -164,6 +164,12 @@
             <version>3.2.1</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.ez-plugins</groupId>
+            <artifactId>mc-plugin-update-notifier</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
         <!--
           Adventure libraries — shaded and relocated so Spigot servers get
           §-colour-code rendering via LegacyComponentSerializer.  The Paper
@@ -301,6 +307,10 @@
                         <relocation>
                             <pattern>org.bstats</pattern>
                             <shadedPattern>com.pvpindex.lib.bstats</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.github.ezplugins.updater</pattern>
+                            <shadedPattern>com.pvpindex.lib.updater</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>net.kyori.adventure</pattern>

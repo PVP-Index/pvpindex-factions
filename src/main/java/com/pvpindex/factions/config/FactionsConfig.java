@@ -282,4 +282,28 @@ public class FactionsConfig {
     public int getBstatsPluginId() {
         return cfg.getInt("factions.metrics.bstats.plugin-id", 31240);
     }
+
+    // -------------------------------------------------------------------------
+    // Updates
+    // -------------------------------------------------------------------------
+
+    public boolean isUpdateCheckEnabled() {
+        return cfg.getBoolean("factions.updates.enabled", true);
+    }
+
+    public boolean isUpdateNotifyOpsOnJoin() {
+        return cfg.getBoolean("factions.updates.notify-ops-on-join", true);
+    }
+
+    public String getUpdateModrinthSlug() {
+        return cfg.getString("factions.updates.modrinth-slug", "pvpindex-factions");
+    }
+
+    public String getUpdateGithubOwner() {
+        return cfg.getString("factions.updates.github-owner", "PVP-Index");
+    }
+
+    public String getUpdateGithubRepo() {
+        return cfg.getString("factions.updates.github-repo", "pvpindex-factions");
+    }
 }
