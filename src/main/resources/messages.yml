@@ -183,6 +183,10 @@ admin:
 notifications:
   inbox-header: "<gold>Missed faction notifications (<white>{count}</white>):"
 
+update:
+  available: "<yellow>Update available for Factions: <white>{current}</white> -> <green>{latest}</green> <gray>({source})"
+  url: "<gray>Download: <aqua><click:open_url:'{url}'>{url}</click>"
+
 ezcountdown:
   relation-enemy: "<red>\u2694 {source} declared war on {target}!"
   relation-ally: "<green>\ud83e\udd1d {source} and {target} are now allies!"

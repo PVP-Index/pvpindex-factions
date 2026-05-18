@@ -10,6 +10,29 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Changed
 
+## [1.0.7] - 2026-05-19
+
+### Added
+
+- Startup update-check integration using `ez-plugins/mc-plugin-update-notifier` with chained sources:
+  Modrinth public API as primary (`pvpindex-factions`) and GitHub public API as fallback
+  (`PVP-Index/pvpindex-factions`).
+- Operator join notification when an update is available, including clickable release URL output.
+- New update config keys:
+  - `factions.updates.enabled`
+  - `factions.updates.notify-ops-on-join`
+  - `factions.updates.modrinth-slug`
+  - `factions.updates.github-owner`
+  - `factions.updates.github-repo`
+- New message keys:
+  - `update.available`
+  - `update.url`
+
+### Changed
+
+- Update notifier library is now explicitly relocated in shading:
+  `com.github.ezplugins.updater` -> `com.pvpindex.lib.updater`, preventing runtime classpath conflicts.
+
 ## [1.0.6] - 2026-05-18
 
 ### Added

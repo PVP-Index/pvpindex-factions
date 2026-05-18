@@ -105,6 +105,12 @@ factions:
       # Enable anonymous bStats metrics collection.
       enabled: true
 
+  updates:
+    # Check for new plugin versions on startup.
+    enabled: true
+    # Notify op players about available updates when they join.
+    notify-ops-on-join: true
+
 # Soft-integration toggles. The plugin checks for the provider plugin at startup
 # and gracefully disables the integration if it is absent.
 integrations:
