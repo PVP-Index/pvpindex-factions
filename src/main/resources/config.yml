@@ -110,11 +110,6 @@ factions:
     enabled: true
     # Notify op players about available updates when they join.
     notify-ops-on-join: true
-    # Primary source (Modrinth public API).
-    modrinth-slug: "pvpindex-factions"
-    # Secondary fallback (GitHub public API).
-    github-owner: "PVP-Index"
-    github-repo: "pvpindex-factions"
 
 # Soft-integration toggles. The plugin checks for the provider plugin at startup
 # and gracefully disables the integration if it is absent.
