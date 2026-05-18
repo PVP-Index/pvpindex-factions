@@ -26,6 +26,14 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Fixed
 
+- **Plugin crashed on startup when TeamsAPI 1.5.x was installed** (`NoClassDefFoundError:
+  TeamsRelationService`): the `TeamsRelationService` interface was introduced in TeamsAPI 1.6
+  and did not exist in older installations. A direct bytecode reference to it in the registrar
+  caused the JVM bytecode verifier to fail when loading the class, crashing the plugin on
+  startup. All references to `TeamsRelationService` and its concrete adapter are now loaded via
+  reflection so that TeamsAPI 1.5.x servers start cleanly and the relation provider is silently
+  skipped when TeamsAPI < 1.6 is detected.
+
 - **Stale relation entries after faction disband**: when a faction was disbanded, references
   to it stored in other factions' relation maps were not removed, leaving orphaned entries in
   the database. Disbanding a faction now clears all incoming relation references across every

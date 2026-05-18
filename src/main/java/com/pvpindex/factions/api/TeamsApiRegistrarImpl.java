@@ -7,9 +7,9 @@ import com.skyblockexp.teamsapi.api.TeamsAPI;
 import com.skyblockexp.teamsapi.api.TeamsClaimService;
 import com.skyblockexp.teamsapi.api.TeamsInviteService;
 import com.skyblockexp.teamsapi.api.TeamsPowerService;
-import com.skyblockexp.teamsapi.api.TeamsRelationService;
 import com.skyblockexp.teamsapi.api.TeamsService;
 import com.skyblockexp.teamsapi.api.TeamsWarpService;
+import java.util.logging.Logger;
 import org.bukkit.plugin.Plugin;
 
 /**
@@ -28,7 +28,8 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
     private TeamsWarpService warpAdapter;
     private TeamsClaimService claimAdapter;
     private TeamsPowerService powerAdapter;
-    private TeamsRelationService relationAdapter;
+    /** Stored as Object to avoid a bytecode-level reference to TeamsRelationService (TeamsAPI 1.6+). */
+    private Object relationAdapter;
 
     @Override
     public boolean register(final Plugin plugin, final FactionServiceImpl factionImpl,
@@ -38,7 +39,6 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
         warpAdapter = new FactionsTeamsWarpService(warpImpl, factionImpl);
         claimAdapter = new FactionsTeamsClaimService(factionImpl);
         powerAdapter = new FactionsTeamsPowerService(factionImpl);
-        relationAdapter = new FactionsTeamsRelationService(factionImpl);
 
         try {
             TeamsAPI.registerProvider(plugin, teamsAdapter);
@@ -46,12 +46,31 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
             TeamsAPI.registerWarpProvider(plugin, warpAdapter);
             TeamsAPI.registerClaimProvider(plugin, claimAdapter);
             TeamsAPI.registerPowerProvider(plugin, powerAdapter);
-            TeamsAPI.registerRelationProvider(plugin, relationAdapter);
-            return true;
         } catch (Exception e) {
             unregister();
             return false;
         }
+
+        // TeamsRelationService was introduced in TeamsAPI 1.6. Load it via reflection so
+        // the bytecode verifier never resolves it when TeamsAPI 1.5.x is installed.
+        try {
+            final Class<?> relSvcClass =
+                    Class.forName("com.skyblockexp.teamsapi.api.TeamsRelationService");
+            final Object relAdapter =
+                    Class.forName("com.pvpindex.factions.api.FactionsTeamsRelationService")
+                            .getDeclaredConstructor(FactionServiceImpl.class)
+                            .newInstance(factionImpl);
+            TeamsAPI.class.getMethod("registerRelationProvider", Plugin.class, relSvcClass)
+                    .invoke(null, plugin, relAdapter);
+            relationAdapter = relAdapter;
+        } catch (ClassNotFoundException ignored) {
+            // TeamsAPI < 1.6 installed — relation provider not available
+        } catch (ReflectiveOperationException e) {
+            Logger.getLogger("PvPIndexFactions")
+                    .warning("Could not register TeamsAPI relation provider: " + e.getMessage());
+        }
+
+        return true;
     }
 
     @Override
@@ -88,8 +107,11 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
         }
         if (relationAdapter != null) {
             try {
-                TeamsAPI.unregisterRelationProvider(relationAdapter);
-            } catch (Exception ignored) { }
+                final Class<?> relSvcClass =
+                        Class.forName("com.skyblockexp.teamsapi.api.TeamsRelationService");
+                TeamsAPI.class.getMethod("unregisterRelationProvider", relSvcClass)
+                        .invoke(null, relationAdapter);
+            } catch (ReflectiveOperationException ignored) { }
             relationAdapter = null;
         }
     }
