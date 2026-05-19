@@ -1,5 +1,7 @@
 package com.pvpindex.factions.bootstrap;
 
+import com.pvpindex.factions.integration.discordsrv.DiscordSrvFactionListener;
+import com.pvpindex.factions.integration.discordsrv.DiscordSrvNotifier;
 import com.pvpindex.factions.integration.dynmap.DynmapLayer;
 import com.pvpindex.factions.integration.ezcountdown.EzCountdownNotifier;
 import com.pvpindex.factions.integration.placeholderapi.FactionsPlaceholders;
@@ -30,6 +32,7 @@ public final class OptionalHooksBootstrapComponent extends AbstractBootstrapComp
         initPlaceholderApi(context);
         initDynmap(context);
         initEzCountdown(context);
+        initDiscordSrv(context);
         return true;
     }
 
@@ -104,5 +107,28 @@ public final class OptionalHooksBootstrapComponent extends AbstractBootstrapComp
         context.infra().setEzCountdownNotifier(notifier);
         context.setEzCountdownEnabled(true);
         logger(context).info("EzCountdown hooked — faction relation announcements enabled.");
+    }
+
+    private void initDiscordSrv(final BootstrapContext context) {
+        if (!context.infra().getConfig().isDiscordSrvEnabled()) {
+            logger(context).info("DiscordSRV integration disabled in config.");
+            context.setDiscordSrvEnabled(false);
+            return;
+        }
+        final DiscordSrvNotifier notifier = new DiscordSrvNotifier(
+            logger(context),
+            context.infra().getConfig().getDiscordSrvChannelId());
+        if (!notifier.setup()) {
+            logger(context).info("DiscordSRV not found — faction event broadcasts disabled.");
+            context.setDiscordSrvEnabled(false);
+            return;
+        }
+        context.infra().setDiscordSrvNotifier(notifier);
+        final DiscordSrvFactionListener listener =
+            new DiscordSrvFactionListener(notifier, context.infra().getConfig());
+        context.plugin().getServer().getPluginManager()
+            .registerEvents(listener, context.plugin());
+        context.setDiscordSrvEnabled(true);
+        logger(context).info("DiscordSRV hooked — faction events will be posted to Discord.");
     }
 }

@@ -271,6 +271,59 @@ public class FactionsConfig {
         return cfg.getBoolean("integrations.lwc.remove-on-claim-change", true);
     }
 
+    public boolean isDiscordSrvEnabled() {
+        return cfg.getBoolean("integrations.discordsrv.enabled", false);
+    }
+
+    public String getDiscordSrvChannelId() {
+        return cfg.getString("integrations.discordsrv.channel-id", "");
+    }
+
+    public boolean isDiscordSrvFactionCreatedEnabled() {
+        return cfg.getBoolean("integrations.discordsrv.events.faction-created.enabled", true);
+    }
+
+    public String getDiscordSrvFactionCreatedMessage() {
+        return cfg.getString("integrations.discordsrv.events.faction-created.message",
+            "**{faction}** was founded!");
+    }
+
+    public boolean isDiscordSrvFactionDisbandedEnabled() {
+        return cfg.getBoolean("integrations.discordsrv.events.faction-disbanded.enabled", true);
+    }
+
+    public String getDiscordSrvFactionDisbandedMessage() {
+        return cfg.getString("integrations.discordsrv.events.faction-disbanded.message",
+            "**{faction}** was disbanded.");
+    }
+
+    public boolean isDiscordSrvRelationAllyEnabled() {
+        return cfg.getBoolean("integrations.discordsrv.events.relation-ally.enabled", true);
+    }
+
+    public String getDiscordSrvRelationAllyMessage() {
+        return cfg.getString("integrations.discordsrv.events.relation-ally.message",
+            ":handshake: **{source}** and **{target}** are now allies!");
+    }
+
+    public boolean isDiscordSrvRelationTruceEnabled() {
+        return cfg.getBoolean("integrations.discordsrv.events.relation-truce.enabled", true);
+    }
+
+    public String getDiscordSrvRelationTruceMessage() {
+        return cfg.getString("integrations.discordsrv.events.relation-truce.message",
+            ":white_flag: **{source}** and **{target}** agreed to a truce.");
+    }
+
+    public boolean isDiscordSrvRelationEnemyEnabled() {
+        return cfg.getBoolean("integrations.discordsrv.events.relation-enemy.enabled", true);
+    }
+
+    public String getDiscordSrvRelationEnemyMessage() {
+        return cfg.getString("integrations.discordsrv.events.relation-enemy.message",
+            ":crossed_swords: **{source}** declared war on **{target}**!");
+    }
+
     // -------------------------------------------------------------------------
     // Metrics
     // -------------------------------------------------------------------------

@@ -152,6 +152,7 @@ jobs:
             teams-api(optional)
             dynmap(optional)
             ezeconomy(optional)
+            discordsrv(optional)
           loaders: |
             paper
             spigot

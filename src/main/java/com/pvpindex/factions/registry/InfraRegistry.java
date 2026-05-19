@@ -7,6 +7,7 @@ import com.pvpindex.factions.config.MessagesConfig;
 import com.pvpindex.factions.config.NotificationsConfig;
 import com.pvpindex.factions.data.DatabaseManager;
 import com.pvpindex.factions.data.Repositories;
+import com.pvpindex.factions.integration.discordsrv.DiscordSrvNotifier;
 import com.pvpindex.factions.integration.essentials.EssentialsInterop;
 import com.pvpindex.factions.integration.essentials.NoopEssentialsInterop;
 import com.pvpindex.factions.integration.ezcountdown.EzCountdownNotifier;
@@ -36,6 +37,7 @@ public class InfraRegistry {
     private VaultEconomy vaultEconomy;
     private EzCountdownNotifier ezCountdownNotifier;
     private EssentialsInterop essentialsInterop = new NoopEssentialsInterop();
+    private DiscordSrvNotifier discordSrvNotifier;
     private TerritoryGuard territoryGuard = new NoopTerritoryGuard();
     private LwcInterop lwcInterop = new NoopLwcInterop();
     private PredefinedConfigManager predefinedConfigManager;
@@ -51,6 +53,7 @@ public class InfraRegistry {
     public void setVaultEconomy(final VaultEconomy economy) { this.vaultEconomy = economy; }
     public void setEzCountdownNotifier(final EzCountdownNotifier notifier) { this.ezCountdownNotifier = notifier; }
     public void setEssentialsInterop(final EssentialsInterop interop) { this.essentialsInterop = interop; }
+    public void setDiscordSrvNotifier(final DiscordSrvNotifier notifier) { this.discordSrvNotifier = notifier; }
     public void setTerritoryGuard(final TerritoryGuard territoryGuard) { this.territoryGuard = territoryGuard; }
     public void setLwcInterop(final LwcInterop lwcInterop) { this.lwcInterop = lwcInterop; }
     public void setPredefinedConfigManager(final PredefinedConfigManager predefinedConfigManager) {
@@ -71,6 +74,7 @@ public class InfraRegistry {
     public VaultEconomy getVaultEconomy() { return vaultEconomy; }
     public EzCountdownNotifier getEzCountdownNotifier() { return ezCountdownNotifier; }
     public EssentialsInterop getEssentialsInterop() { return essentialsInterop; }
+    public DiscordSrvNotifier getDiscordSrvNotifier() { return discordSrvNotifier; }
     public TerritoryGuard getTerritoryGuard() { return territoryGuard; }
     public LwcInterop getLwcInterop() { return lwcInterop; }
     public PredefinedConfigManager getPredefinedConfigManager() { return predefinedConfigManager; }
