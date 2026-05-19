@@ -103,4 +103,12 @@ public interface FactionService {
 
     /** Demote a member one rank step downward (owner cannot be demoted). */
     boolean demoteMember(UUID actorUUID, UUID targetUUID);
+
+    /**
+     * Directly add {@code playerUUID} to {@code factionId} without requiring a
+     * pending invite. Used by the open-faction join path.
+     *
+     * @return {@code true} if the player was successfully added.
+     */
+    boolean joinFaction(String factionId, UUID playerUUID);
 }

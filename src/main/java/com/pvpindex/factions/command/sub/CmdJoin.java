@@ -1,10 +1,12 @@
 package com.pvpindex.factions.command.sub;
 
+import com.pvpindex.factions.FactionFlag;
 import com.pvpindex.factions.command.CommandContext;
 import com.pvpindex.factions.command.FactionCommand;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.model.InvitationModel;
 import com.pvpindex.factions.service.FactionService;
+import com.pvpindex.factions.service.FlagService;
 import com.pvpindex.factions.service.InviteService;
 import com.pvpindex.factions.util.MsgUtil;
 import java.util.List;
@@ -19,10 +21,12 @@ public final class CmdJoin extends FactionCommand {
 
     private final FactionService factionService;
     private final InviteService inviteService;
+    private final FlagService flagService;
 
     public CmdJoin(
             final FactionService factionService,
-            final InviteService inviteService) {
+            final InviteService inviteService,
+            final FlagService flagService) {
         super("join");
         setPermission("factions.cmd.join");
         setDescription("Accept an invite and join a faction.");
@@ -30,6 +34,7 @@ public final class CmdJoin extends FactionCommand {
         setRequiresPlayer(true);
         this.factionService = factionService;
         this.inviteService = inviteService;
+        this.flagService = flagService;
     }
 
     @Override
@@ -58,8 +63,18 @@ public final class CmdJoin extends FactionCommand {
             MsgUtil.send(player, "<red>Faction not found.");
             return;
         }
+        final FactionModel faction = factionOpt.get();
+        // Open faction: join directly without needing an invite
+        if (flagService != null && flagService.getFlag(faction, FactionFlag.OPEN)) {
+            if (factionService.joinFaction(faction.getId(), player.getUniqueId())) {
+                MsgUtil.send(player, "<green>You joined <white>" + faction.getName() + "<green>!");
+            } else {
+                MsgUtil.send(player, "<red>Could not join that faction.");
+            }
+            return;
+        }
         final Optional<FactionModel> joined = inviteService.acceptInvite(
-            factionOpt.get().getId(), player.getUniqueId());
+            faction.getId(), player.getUniqueId());
         if (joined.isPresent()) {
             MsgUtil.send(player, "<green>You joined <white>" + joined.get().getName() + "<green>!");
         } else {

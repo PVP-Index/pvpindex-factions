@@ -42,7 +42,7 @@ class CmdJoinTest extends CommandTestBase {
 
     @BeforeEach
     void setUp() {
-        cmd = new CmdJoin(factionService, inviteService);
+        cmd = new CmdJoin(factionService, inviteService, null);
         when(player.getUniqueId()).thenReturn(uuid);
         when(faction.getId()).thenReturn(factionId);
         when(faction.getName()).thenReturn("Alpha");

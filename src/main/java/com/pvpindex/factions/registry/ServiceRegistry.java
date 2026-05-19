@@ -1,6 +1,7 @@
 package com.pvpindex.factions.registry;
 
 import com.pvpindex.factions.service.FactionService;
+import com.pvpindex.factions.service.FlagService;
 import com.pvpindex.factions.service.InviteService;
 import com.pvpindex.factions.service.WarpService;
 
@@ -15,6 +16,7 @@ public class ServiceRegistry {
     private FactionService factionService;
     private InviteService inviteService;
     private WarpService warpService;
+    private FlagService flagService;
 
     public void setFactionService(final FactionService service) {
         this.factionService = service;
@@ -28,7 +30,12 @@ public class ServiceRegistry {
         this.warpService = service;
     }
 
+    public void setFlagService(final FlagService service) {
+        this.flagService = service;
+    }
+
     public FactionService getFactionService() { return factionService; }
     public InviteService getInviteService() { return inviteService; }
     public WarpService getWarpService() { return warpService; }
+    public FlagService getFlagService() { return flagService; }
 }

@@ -130,6 +130,17 @@ warp:
   set-in-own-territory: "<red>Warps must be set inside your own territory."
   jailed: "<red>You cannot use warps while jailed."
 
+flag:
+  list-header: "<gold><bold>Faction Flags — {faction}</bold></gold>"
+  entry-on: "<gray>  {flag}: <green>ON</green>{edit_note}"
+  entry-off: "<gray>  {flag}: <red>OFF</red>{edit_note}"
+  set-on: "<green>Flag '<white>{flag}</white>' is now <green>ON</green>."
+  set-off: "<red>Flag '<white>{flag}</white>' is now <red>OFF</red>."
+  invalid: "<red>Unknown flag '<white>{flag}</white>'. Valid: pvp, friendly-fire, explosions, fire-spread, open"
+  not-editable: "<red>Flag '<white>{flag}</white>' is locked by the server administrator."
+  officer-required: "<red>Only officers or above can change faction flags."
+  admin-override: "<gray>[Admin] Set '<white>{flag}</white>' for <white>{faction}</white>."
+
 relation:
   set: "<green>You set your relation with <yellow>{faction}</yellow> to <yellow>{relation}</yellow>."
   updated: "<yellow>Your relation with <yellow>{faction}</yellow> is now <yellow>{relation}</yellow>."

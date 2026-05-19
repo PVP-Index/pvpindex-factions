@@ -9,6 +9,7 @@ import com.pvpindex.factions.command.sub.CmdCreate;
 import com.pvpindex.factions.command.sub.CmdDemote;
 import com.pvpindex.factions.command.sub.CmdDesc;
 import com.pvpindex.factions.command.sub.CmdDisband;
+import com.pvpindex.factions.command.sub.CmdFlag;
 import com.pvpindex.factions.command.sub.CmdFly;
 import com.pvpindex.factions.command.sub.CmdGui;
 import com.pvpindex.factions.command.sub.CmdHelp;
@@ -33,6 +34,7 @@ import com.pvpindex.factions.command.sub.CmdUnsetHome;
 import com.pvpindex.factions.command.sub.admin.CmdAdminBypass;
 import com.pvpindex.factions.command.sub.admin.CmdAdminClaim;
 import com.pvpindex.factions.command.sub.admin.CmdAdminDisband;
+import com.pvpindex.factions.command.sub.admin.CmdAdminFlag;
 import com.pvpindex.factions.command.sub.admin.CmdAdminHelp;
 import com.pvpindex.factions.command.sub.admin.CmdAdminReload;
 import com.pvpindex.factions.command.sub.admin.CmdAdminSafezone;
@@ -49,6 +51,7 @@ import com.pvpindex.factions.engine.EngineChunkChange;
 import com.pvpindex.factions.engine.EngineEconomy;
 import com.pvpindex.factions.registry.CommandRegistry;
 import com.pvpindex.factions.service.FactionService;
+import com.pvpindex.factions.service.FlagService;
 import com.pvpindex.factions.service.InviteService;
 import com.pvpindex.factions.service.WarpService;
 import org.bukkit.command.PluginCommand;
@@ -70,6 +73,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         final FactionService factionSvc = context.services().getFactionService();
         final InviteService inviteSvc = context.services().getInviteService();
         final WarpService warpSvc = context.services().getWarpService();
+        final FlagService flagSvc = context.services().getFlagService();
         final EngineChunkChange chunkChange = context.engines().getChunkChange();
         final EngineEconomy economy = context.engines().getEconomy();
         final com.pvpindex.factions.engine.AutoTerritoryModeCache autoModeCache =
@@ -80,7 +84,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         commandRegistry.register(new CmdDisband(factionSvc));
         commandRegistry.register(new CmdInfo(factionSvc));
         commandRegistry.register(new CmdInvite(factionSvc, inviteSvc, repos));
-        commandRegistry.register(new CmdJoin(factionSvc, inviteSvc));
+        commandRegistry.register(new CmdJoin(factionSvc, inviteSvc, flagSvc));
         commandRegistry.register(new CmdLeave(factionSvc));
         commandRegistry.register(new CmdKick(factionSvc));
         commandRegistry.register(new CmdClaim(chunkChange, context.infra().getTerritoryGuard(), autoModeCache));
@@ -107,6 +111,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         commandRegistry.register(new CmdRename(factionSvc));
         commandRegistry.register(new CmdDesc(factionSvc));
         commandRegistry.register(new CmdTop(factionSvc));
+        commandRegistry.register(new CmdFlag(factionSvc, flagSvc));
         commandRegistry.register(new CmdHelp(commandRegistry));
 
         final FactionCommandExecutor executor = new FactionCommandExecutor(
@@ -133,6 +138,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         adminRegistry.register(new CmdAdminSafezone());
         adminRegistry.register(new CmdAdminWarzone());
         adminRegistry.register(new CmdAdminShield());
+        adminRegistry.register(new CmdAdminFlag(factionSvc, flagSvc));
         adminRegistry.register(new CmdAdminHelp(adminRegistry));
 
         final AdminCommandExecutor adminExecutor = new AdminCommandExecutor(
