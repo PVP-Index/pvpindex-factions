@@ -8,6 +8,12 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
+### Changed
+
+## [1.0.9] - 2026-05-19
+
+### Added
+
 - **Audit log** (`/f audit`, `/fa audit <faction>`):
   - Records key faction actions: chunk claims/unclaims, relation changes, member kicks, promotions, demotions, and bank deposits/withdrawals/transfers.
   - `/f audit [page] [--action=<action>]` lets officers and above page through their faction's history with optional action-type filtering.
@@ -15,7 +21,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   - Page size is configurable via `factions.audit.page-size` in `config.yml` (default: 10).
   - New permission `factions.cmd.audit` (default: true); included as a child of `factions.admin`.
 
-### Changed
+  ![Faction audit log](https://i.ibb.co/Q3vFWYDq/image.png)
 
 ## [1.0.8] - 2026-05-19
 

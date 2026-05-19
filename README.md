@@ -106,6 +106,7 @@ Checkstyle enforces UTF-8 encoding, no star imports, no trailing whitespace, and
 | `factions.fly.disable-on-threat` | `true` | Cancel flight when an enemy enters the chunk |
 | `factions.fly.require-own-territory` | `true` | Restrict flight to own faction's territory |
 | `factions.chat.show-tag` | `true` | Prepend faction tag in global chat |
+| `factions.audit.page-size` | `10` | Entries per page for `/f audit` and `/fa audit` |
 
 ---
 
@@ -159,6 +160,7 @@ Admin commands use `/fa` (aliases: `/factionadmin`) and require the `factions.ad
 | `bank withdraw <amount>` | Withdraw money from the faction bank |
 | `bank transfer <faction> <amount>` | Transfer money to another faction's bank |
 | `bank history` | View recent bank transactions |
+| `audit [page] [--action=<action>]` | View the faction audit log (officer or above) |
 | `power` | Show your current power |
 | `powerhistory [player] [page]` | View power change history (alias: `phist`) |
 
@@ -177,6 +179,7 @@ Admin commands use `/fa` (aliases: `/factionadmin`) and require the `factions.ad
 | `shield <faction> <start-hour> <duration-hours>` | Set a daily UTC war shield window |
 | `shield <faction> clear` | Remove a faction's war shield |
 | `flag <faction> <flag> [on\|off]` | Override any faction flag regardless of editability config. |
+| `audit <faction> [page] [--action=<action>]` | View the audit log for any faction. |
 
 ---
 

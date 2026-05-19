@@ -86,6 +86,13 @@ You keep the Factions gameplay loop, but gain a modern operational foundation.
 - Officers manage flags in-game with `/f flag set`; defaults and editability configurable per-flag
 - Admins override any flag via `/fa flag` regardless of the player-editable setting
 
+### Audit log
+
+- Officers and above can page through their faction's action history with `/f audit [page] [--action=<action>]`
+- Staff can view any faction's history with `/fa audit <faction> [page] [--action=<action>]`
+- Tracks claims, unclaims, relation changes, kicks, promotions, demotions, and bank transactions
+- Page size configurable via `factions.audit.page-size` in `config.yml`
+
 ### Power and war mechanics
 
 - Configurable power model with per-player max, regen rate, loss on death, and grace period
@@ -201,11 +208,15 @@ Flag autocomplete:
 
 ![Flag autocomplete](https://i.ibb.co/FLz53n5r/image.png)
 
+Audit log:
+
+![Faction audit log](https://i.ibb.co/Q3vFWYDq/image.png)
+
 ## Commands at a glance
 
 - Player root: `/f` (`/faction`, `/factions`)
 - Admin root: `/fa` (`/factionadmin`)
-- Highlights: `/f create`, `/f invite`, `/f join`, `/f claim`, `/f unclaim`, `/f map`, `/f info`, `/f top`, `/f bank`, `/f warp`
+- Highlights: `/f create`, `/f invite`, `/f join`, `/f claim`, `/f unclaim`, `/f map`, `/f info`, `/f top`, `/f bank`, `/f warp`, `/f audit`
 
 ## Designed for migration-minded communities
 

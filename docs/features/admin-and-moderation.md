@@ -21,6 +21,8 @@ Core actions:
 - `/fa warzone [one|square|circle|remove] [radius]`
 - `/fa shield <faction> <start-hour (0-23)> <duration-hours>`
 - `/fa shield <faction> clear`
+- `/fa flag <faction> <flag> [on|off]`
+- `/fa audit <faction> [page] [--action=<action>]`
 
 Permissions:
 
