@@ -146,13 +146,20 @@ jobs:
             ${{ github.event.inputs.prerelease == 'true' && 'beta' || 'release' }}
           changelog: ${{ steps.changelog.outputs.notes }}
           dependencies: |
+            teams-api(optional)
             placeholderapi(optional)
             worldguard(optional)
             worldedit(optional)
-            teams-api(optional)
             dynmap(optional)
-            ezeconomy(optional)
             discordsrv(optional)
+            essentialsx(optional)
+            lwc(optional)
+            ezeconomy(optional)
+            ezcountdown(optional)
+            ezauction(optional)
+            ezshops(optional)
+            ezclean(optional)
+            ezplugins-rtp(optional)
           loaders: |
             paper
             spigot

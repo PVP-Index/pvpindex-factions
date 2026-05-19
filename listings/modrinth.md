@@ -115,7 +115,6 @@ PvPIndex Factions runs standalone, and integrates when available:
 - EzRTP (avoids faction claims)
 - EzClean (avoids faction claims)
 - DiscordSRV (faction event broadcasts to Discord)
-- DiscordSRV (faction event broadcasts to Discord)
 
 ### Integration downloads
 
