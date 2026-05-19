@@ -10,6 +10,8 @@ Faction flags are per-faction boolean toggles that control gameplay behavior ins
 faction's claimed territory or for its members. Officers and above can manage flags
 in-game; admins can override any flag regardless of config.
 
+![Faction Flags overview](https://i.ibb.co/qF7gtGBZ/image.png)
+
 ## Commands
 
 | Command | Description | Permission |
@@ -18,6 +20,10 @@ in-game; admins can override any flag regardless of config.
 | `/f flag list` | Explicit alias for the above. | `factions.cmd.flag` |
 | `/f flag set <flag> [on\|off]` | Toggle (no third arg) or set a specific value. | `factions.cmd.flag.set` |
 | `/fa flag <faction> <flag> [on\|off]` | Admin override -- bypasses `player-editable` config. | `factions.admin` |
+
+![/f flag set autocomplete](https://i.ibb.co/FLz53n5r/image.png)
+
+![Set flag state](https://i.ibb.co/DD16mXCM/image.png)
 
 ## Built-in Flags
 
