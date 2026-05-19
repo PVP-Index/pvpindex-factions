@@ -26,6 +26,25 @@ factions:
     gain-on-kill:
       enabled: true
       amount: 2.0
+      # Scale the kill reward by the power ratio between victim and killer.
+      # Killing a more powerful enemy gives up to max-factor × base reward;
+      # killing a weaker enemy gives as little as min-factor × base reward.
+      scale:
+        enabled: false
+        min-factor: 0.25
+        max-factor: 2.0
+    # Players offline longer than this threshold are excluded from the faction
+    # max-land calculation. Their stored power is unchanged; only the land-cap
+    # computation skips them. Discourages dead factions from holding territory.
+    inactive-exclusion:
+      enabled: false
+      days: 7
+    # Multiply power loss for consecutive deaths within a short window.
+    # Streak 0 = first death (no penalty). Streak 1 = loss × multiplier, etc.
+    death-streak:
+      enabled: false
+      window-seconds: 600
+      multiplier: 1.5
     # Optional opt-in: allow players to purchase additional personal power with money.
     buy:
       enabled: false
@@ -124,6 +143,25 @@ factions:
     enabled: false
     # Require ENEMY relation before a faction can overclaim the other's land.
     require-enemy-relation: true
+    # Block overclaiming when the defending faction has zero members currently online.
+    # Prevents pure offline raiding.
+    offline-protection:
+      enabled: false
+
+  raidable:
+    # Notify faction members (and optionally the entire server) when their faction
+    # transitions between raidable and safe during a power tick.
+    broadcast:
+      enabled: true
+      server-wide: false
+
+  war:
+    # Daily time-of-day protection window. When active, the faction's land cannot be
+    # overclaimed. The window is specified in UTC hours (0–23).
+    shield:
+      enabled: false
+      # Maximum window length an admin may assign to a single faction.
+      max-duration-hours: 8
 
 # Soft-integration toggles. The plugin checks for the provider plugin at startup
 # and gracefully disables the integration if it is absent.

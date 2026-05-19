@@ -21,6 +21,9 @@ public class BankTransactionModel extends Model {
 
     public BankTransactionModel(final String id) {
         super(id);
+        // Ensure NOT NULL database columns always have explicit values on first save.
+        setAmount(0.0);
+        setCreatedAt(0L);
     }
 
     public String getFactionId() { return getAs("faction_id", String.class, ""); }

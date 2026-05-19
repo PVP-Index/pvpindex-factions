@@ -1,5 +1,6 @@
 package com.pvpindex.factions.command.sub;
 
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -8,6 +9,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 
 import com.pvpindex.factions.Relation;
 import com.pvpindex.factions.command.CommandTestBase;
@@ -25,16 +27,18 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.pvpindex.factions.command.StorageTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class CmdRelationTest extends CommandTestBase {
+
 
     @Mock private FactionService factionService;
     @Mock private FactionModel sourceFaction;
@@ -42,8 +46,10 @@ class CmdRelationTest extends CommandTestBase {
     @Mock private EzCountdownNotifier ezCountdownNotifier;
     @Mock private NotificationsConfig notificationsConfig;
 
+
     private CmdRelation cmd;
     private final UUID uuid = UUID.randomUUID();
+
 
     @BeforeEach
     void setUp() throws Exception {
@@ -54,6 +60,7 @@ class CmdRelationTest extends CommandTestBase {
         serverField.set(null, mockServer);
     }
 
+
     @AfterEach
     void tearDown() throws Exception {
         final Field serverField = org.bukkit.Bukkit.class.getDeclaredField("server");
@@ -61,7 +68,8 @@ class CmdRelationTest extends CommandTestBase {
         serverField.set(null, null);
     }
 
-    @Test
+
+    @StorageTest
     void setsRelation() {
         when(player.getUniqueId()).thenReturn(uuid);
         when(factionService.getFactionByPlayer(uuid)).thenReturn(Optional.of(sourceFaction));
@@ -72,12 +80,15 @@ class CmdRelationTest extends CommandTestBase {
         when(factionService.getFactionByName("Beta")).thenReturn(Optional.of(targetFaction));
         when(factionService.setRelation(uuid, "Beta", Relation.ALLY)).thenReturn(Optional.of(Relation.ALLY));
 
+
         cmd.execute(ctx("Beta", "ally"));
+
 
         verify(player).sendMessage(argThat(componentContains("set to")));
     }
 
-    @Test
+
+    @StorageTest
     void tabCompletesRelationTypeAfterFactionName() {
         final List<String> completions = cmd.tabComplete(ctx("Beta", ""));
         assertTrue(completions.contains("ally"));
@@ -86,7 +97,8 @@ class CmdRelationTest extends CommandTestBase {
         assertTrue(completions.contains("enemy"));
     }
 
-    @Test
+
+    @StorageTest
     @SuppressWarnings("unchecked")
     void enemyAnnouncementBroadcastsChatWhenNoEzCountdown() {
         // cmd uses no EzCountdownNotifier (single-arg constructor) — must fall back to chat
@@ -94,6 +106,7 @@ class CmdRelationTest extends CommandTestBase {
         when(org.bukkit.Bukkit.getServer().getOnlinePlayers())
             .thenReturn((Collection) List.of(onlinePlayer));
 
+
         when(player.getUniqueId()).thenReturn(uuid);
         when(factionService.getFactionByPlayer(uuid)).thenReturn(Optional.of(sourceFaction));
         when(factionService.isOfficerOrAbove(uuid)).thenReturn(true);
@@ -104,21 +117,26 @@ class CmdRelationTest extends CommandTestBase {
         when(factionService.getFactionByName("Beta")).thenReturn(Optional.of(targetFaction));
         when(factionService.setRelation(uuid, "Beta", Relation.ENEMY)).thenReturn(Optional.of(Relation.ENEMY));
 
+
         cmd.execute(ctx("Beta", "enemy"));
+
 
         verify(onlinePlayer).sendMessage(any(Component.class));
     }
 
-    @Test
+
+    @StorageTest
     @SuppressWarnings("unchecked")
     void enemyAnnouncementBroadcastsChatWhenEzCountdownDisabledInConfig() {
         cmd = new CmdRelation(factionService, ezCountdownNotifier, notificationsConfig);
         when(ezCountdownNotifier.isEnabled()).thenReturn(true);
         when(notificationsConfig.isEzCountdownEnabled()).thenReturn(false);
 
+
         final Player onlinePlayer = mock(Player.class);
         when(org.bukkit.Bukkit.getServer().getOnlinePlayers())
             .thenReturn((Collection) List.of(onlinePlayer));
+
 
         when(player.getUniqueId()).thenReturn(uuid);
         when(factionService.getFactionByPlayer(uuid)).thenReturn(Optional.of(sourceFaction));
@@ -130,13 +148,16 @@ class CmdRelationTest extends CommandTestBase {
         when(factionService.getFactionByName("Beta")).thenReturn(Optional.of(targetFaction));
         when(factionService.setRelation(uuid, "Beta", Relation.ENEMY)).thenReturn(Optional.of(Relation.ENEMY));
 
+
         cmd.execute(ctx("Beta", "enemy"));
+
 
         verify(onlinePlayer).sendMessage(any(Component.class));
         verify(ezCountdownNotifier, never()).sendAnnouncement(any(), anyLong(), any());
     }
 
-    @Test
+
+    @StorageTest
     void enemyAnnouncementUsesEzCountdownWhenAvailableAndEnabled() {
         cmd = new CmdRelation(factionService, ezCountdownNotifier, notificationsConfig);
         when(ezCountdownNotifier.isEnabled()).thenReturn(true);
@@ -144,6 +165,7 @@ class CmdRelationTest extends CommandTestBase {
         when(notificationsConfig.getEzCountdownDurationSeconds()).thenReturn(8L);
         when(notificationsConfig.getEzCountdownDisplayTypes()).thenReturn(List.of("ACTION_BAR"));
 
+
         when(player.getUniqueId()).thenReturn(uuid);
         when(factionService.getFactionByPlayer(uuid)).thenReturn(Optional.of(sourceFaction));
         when(factionService.isOfficerOrAbove(uuid)).thenReturn(true);
@@ -154,7 +176,9 @@ class CmdRelationTest extends CommandTestBase {
         when(factionService.getFactionByName("Beta")).thenReturn(Optional.of(targetFaction));
         when(factionService.setRelation(uuid, "Beta", Relation.ENEMY)).thenReturn(Optional.of(Relation.ENEMY));
 
+
         cmd.execute(ctx("Beta", "enemy"));
+
 
         verify(ezCountdownNotifier).sendAnnouncement(
             argThat(s -> s.contains("Alpha") && s.contains("Beta")),

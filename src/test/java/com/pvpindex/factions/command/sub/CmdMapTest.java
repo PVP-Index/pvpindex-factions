@@ -1,9 +1,11 @@
 package com.pvpindex.factions.command.sub;
 
+
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 
 import com.github.ezframework.jaloquent.exception.StorageException;
 import com.pvpindex.factions.command.CommandTestBase;
@@ -24,17 +26,19 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.pvpindex.factions.command.StorageTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @DisplayName("CmdMap - /f map [on|off|once]")
 class CmdMapTest extends CommandTestBase {
+
 
     @Mock private PlayerRepository playerRepository;
     @Mock private BoardRepository boardRepository;
@@ -43,8 +47,10 @@ class CmdMapTest extends CommandTestBase {
     @Mock private Chunk chunk;
     @Mock private World world;
 
+
     private CmdMap cmd;
     private final UUID uuid = UUID.randomUUID();
+
 
     @BeforeEach
     void setUp() throws StorageException {
@@ -65,19 +71,23 @@ class CmdMapTest extends CommandTestBase {
         when(boardRepository.findByChunk("world", 10, 20)).thenReturn(Optional.empty());
     }
 
-    @Test
+
+    @StorageTest
     @DisplayName("map on persists territory title preference")
     void mapOnEnablesTerritoryTitles() throws StorageException {
         final PlayerModel model = new PlayerModel(uuid.toString());
         when(playerRepository.findOrCreate(uuid.toString())).thenReturn(model);
 
+
         cmd.execute(ctx("on"));
+
 
         verify(playerRepository).save(model);
         verify(player).sendMessage(argThat(componentContains("enabled")));
     }
 
-    @Test
+
+    @StorageTest
     @DisplayName("map once renders stable symbol legend")
     void mapOnceShowsStableLegendSymbol() {
         cmd.execute(ctx("once"));
@@ -85,14 +95,16 @@ class CmdMapTest extends CommandTestBase {
         verify(player, atLeastOnce()).sendMessage(argThat(componentContains("■")));
     }
 
-    @Test
+
+    @StorageTest
     @DisplayName("map once default radius uses configured radius")
     void mapOnceDefaultRadiusUsesConfigValue() {
         cmd.execute(ctx("once"));
         verify(player, atLeastOnce()).sendMessage(argThat((Component c) -> hasClaimAtClickFor(c, 8, 20)));
     }
 
-    @Test
+
+    @StorageTest
     @DisplayName("map once supports --size argument")
     void mapOnceSupportsSizeArgument() {
         cmd.execute(ctx("once", "--size=1"));
@@ -100,14 +112,16 @@ class CmdMapTest extends CommandTestBase {
         verify(player, atLeastOnce()).sendMessage(argThat((Component c) -> hasClaimAtClickFor(c, 11, 20)));
     }
 
-    @Test
+
+    @StorageTest
     @DisplayName("map once no longer shows z-row suffix")
     void mapOnceNoLongerShowsZRowSuffix() {
         cmd.execute(ctx("once"));
         verify(player, atLeastOnce()).sendMessage(argThat(componentNotContains("z=")));
     }
 
-    @Test
+
+    @StorageTest
     @DisplayName("map hover text includes explicit Y and Z labels")
     void mapHoverIncludesYAndZLabels() {
         cmd.execute(ctx("once"));
@@ -115,7 +129,8 @@ class CmdMapTest extends CommandTestBase {
         verify(player, atLeastOnce()).sendMessage(argThat((Component c) -> hasHoverText(c, "Player Y: 64")));
     }
 
-    @Test
+
+    @StorageTest
     @DisplayName("map tiles include hover and click interactions")
     void mapTilesAreInteractive() throws StorageException {
         final String factionId = UUID.randomUUID().toString();
@@ -126,17 +141,21 @@ class CmdMapTest extends CommandTestBase {
         when(boardRepository.findByChunk("world", 11, 20)).thenReturn(Optional.of(boardEntry));
         when(factionRepository.find(factionId)).thenReturn(Optional.of(faction));
 
+
         cmd.execute(ctx("once"));
+
 
         verify(player, atLeastOnce()).sendMessage(argThat((Component c) -> hasInteractiveEvent(c)));
     }
 
-    @Test
+
+    @StorageTest
     @DisplayName("wilderness tile click runs claim-at command")
     void wildernessTileRunsClaimAt() {
         cmd.execute(ctx("once"));
         verify(player, atLeastOnce()).sendMessage(argThat((Component c) -> hasClaimAtClick(c)));
     }
+
 
     private boolean hasInteractiveEvent(final Component component) {
         if (component.clickEvent() != null || component.hoverEvent() != null) {
@@ -149,6 +168,7 @@ class CmdMapTest extends CommandTestBase {
         }
         return false;
     }
+
 
     private boolean hasClaimAtClick(final Component component) {
         final ClickEvent click = component.clickEvent();
@@ -163,6 +183,7 @@ class CmdMapTest extends CommandTestBase {
         }
         return false;
     }
+
 
     private boolean hasClaimAtClickFor(final Component component, final int x, final int z) {
         final ClickEvent click = component.clickEvent();
@@ -179,6 +200,7 @@ class CmdMapTest extends CommandTestBase {
         return false;
     }
 
+
     private boolean hasHoverText(final Component component, final String text) {
         final HoverEvent<?> hover = component.hoverEvent();
         if (hover != null && hover.value() instanceof Component hoverComponent) {
@@ -194,6 +216,7 @@ class CmdMapTest extends CommandTestBase {
         }
         return false;
     }
+
 
     private static org.mockito.ArgumentMatcher<Component> componentNotContains(final String text) {
         return comp -> !net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer

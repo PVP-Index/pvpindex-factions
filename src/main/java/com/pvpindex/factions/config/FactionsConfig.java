@@ -87,6 +87,50 @@ public class FactionsConfig {
         return cfg.getDouble("factions.power.gain-on-kill.amount", 2.0);
     }
 
+    // -------------------------------------------------------------------------
+    // Kill scaling (F3)
+    // -------------------------------------------------------------------------
+
+    public boolean isKillScaleEnabled() {
+        return cfg.getBoolean("factions.power.gain-on-kill.scale.enabled", false);
+    }
+
+    public double getKillScaleMinFactor() {
+        return cfg.getDouble("factions.power.gain-on-kill.scale.min-factor", 0.25);
+    }
+
+    public double getKillScaleMaxFactor() {
+        return cfg.getDouble("factions.power.gain-on-kill.scale.max-factor", 2.0);
+    }
+
+    // -------------------------------------------------------------------------
+    // Inactive member exclusion (F1)
+    // -------------------------------------------------------------------------
+
+    public boolean isPowerInactiveExclusionEnabled() {
+        return cfg.getBoolean("factions.power.inactive-exclusion.enabled", false);
+    }
+
+    public int getPowerInactiveDays() {
+        return cfg.getInt("factions.power.inactive-exclusion.days", 7);
+    }
+
+    // -------------------------------------------------------------------------
+    // Death streak multiplier (F2)
+    // -------------------------------------------------------------------------
+
+    public boolean isDeathStreakEnabled() {
+        return cfg.getBoolean("factions.power.death-streak.enabled", false);
+    }
+
+    public int getDeathStreakWindowSeconds() {
+        return cfg.getInt("factions.power.death-streak.window-seconds", 600);
+    }
+
+    public double getDeathStreakMultiplier() {
+        return cfg.getDouble("factions.power.death-streak.multiplier", 1.5);
+    }
+
     public boolean isPowerBuyEnabled() {
         return cfg.getBoolean("factions.power.buy.enabled", false);
     }
@@ -358,6 +402,35 @@ public class FactionsConfig {
 
     public boolean isOverclaimRequireEnemyRelation() {
         return cfg.getBoolean("factions.overclaiming.require-enemy-relation", true);
+    }
+
+    /** When {@code true}, factions with zero members online cannot have their land overclaimed. */
+    public boolean isOfflineProtectionEnabled() {
+        return cfg.getBoolean("factions.overclaiming.offline-protection.enabled", false);
+    }
+
+    // -------------------------------------------------------------------------
+    // Raidable broadcast (F4)
+    // -------------------------------------------------------------------------
+
+    public boolean isRaidableBroadcastEnabled() {
+        return cfg.getBoolean("factions.raidable.broadcast.enabled", true);
+    }
+
+    public boolean isRaidableBroadcastServerWide() {
+        return cfg.getBoolean("factions.raidable.broadcast.server-wide", false);
+    }
+
+    // -------------------------------------------------------------------------
+    // War shield (F6)
+    // -------------------------------------------------------------------------
+
+    public boolean isWarShieldEnabled() {
+        return cfg.getBoolean("factions.war.shield.enabled", false);
+    }
+
+    public int getWarShieldMaxDurationHours() {
+        return cfg.getInt("factions.war.shield.max-duration-hours", 8);
     }
 
     // -------------------------------------------------------------------------

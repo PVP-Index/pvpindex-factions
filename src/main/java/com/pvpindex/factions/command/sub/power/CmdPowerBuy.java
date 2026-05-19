@@ -91,6 +91,7 @@ public final class CmdPowerBuy extends FactionCommand {
 
             pm.setPower(pm.getPower() + actualAmount);
             repos.players().save(pm);
+            repos.powerHistory().record(playerId, actualAmount, "BUY", pm.getPower());
 
             MsgUtil.sendKey(player, "power.buy-success",
                 "<green>You purchased <yellow>{amount}<green> power for <yellow>{cost}<green>.",

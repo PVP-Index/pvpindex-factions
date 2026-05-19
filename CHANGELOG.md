@@ -64,9 +64,61 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
     overclaim so third-party plugins can observe the event.
   - New `messages.yml` keys: `claim.overclaimed`, `claim.overclaimed-victim`,
     `claim.enemy-not-raidable`.
+- **Power and war improvements** — six optional, independently toggleable features that
+  improve PvP/raiding pacing. All are disabled by default:
+  - **F1 — Inactive member exclusion** (`factions.power.inactive-exclusion.enabled: false`):
+    members who have been offline longer than `inactive-exclusion.days` do not contribute to
+    the faction's max-land calculation. Their stored power is unchanged; only the land-cap
+    computation skips them, discouraging dead factions from holding territory indefinitely.
+  - **F2 — Death streak multiplier** (`factions.power.death-streak.enabled: false`):
+    consecutive deaths within a rolling `window-seconds` window each multiply the power loss
+    by `multiplier^streak`. After the window expires the streak resets. A separate
+    `power.death-streak-penalty` message is sent on streak deaths.
+    Persisted in two new `PlayerModel` columns: `last_death_at`, `death_streak`.
+  - **F3 — Scaled kill rewards** (`factions.power.gain-on-kill.scale.enabled: false`):
+    kill power gain is multiplied by `clamp(victimPower / killerPower, min-factor, max-factor)`.
+    Rewarding high-risk kills and reducing farming incentive.
+  - **F4 — Raidable state broadcast** (`factions.raidable.broadcast.enabled: true`):
+    after each power tick, the engine detects factions that cross the raidable threshold and
+    notifies members. Optional `server-wide: true` broadcasts to all online players.
+    The raidable flag is persisted in a new `FactionModel` column: `is_raidable`.
+  - **F5 — Offline protection** (`factions.overclaiming.offline-protection.enabled: false`):
+    blocks overclaiming when all members of the defending faction are currently offline,
+    preventing pure offline raiding.
+  - **F6 — War shield** (`factions.war.shield.enabled: false`):
+    a faction may be assigned a daily UTC protection window by an admin using the new
+    `/fa shield <faction> <start-hour> <duration-hours>` command. During the window the
+    faction's land cannot be overclaimed. Persisted in two new `FactionModel` columns:
+    `shield_start_hour`, `shield_duration_hours`.
+  - New admin command: `/fa shield <faction> <clear|<start-hour (0-23)> <duration-hours>>`.
+  - New permission: `factions.cmd.shield` (default `op`, child of `factions.admin`).
+  - New `config.yml` keys:
+    - `factions.power.inactive-exclusion.enabled` / `.days`
+    - `factions.power.death-streak.enabled` / `.window-seconds` / `.multiplier`
+    - `factions.power.gain-on-kill.scale.enabled` / `.min-factor` / `.max-factor`
+    - `factions.raidable.broadcast.enabled` / `.server-wide`
+    - `factions.overclaiming.offline-protection.enabled`
+    - `factions.war.shield.enabled` / `.max-duration-hours`
+  - New `messages.yml` keys: `power.death-streak-penalty`, `raidable.*`, `shield.*`,
+    `claim.enemy-offline-protected`, `claim.shield-active`.
+- **`/f powerhistory [<player>] [<page>]`** (`alias: phist`):
+  shows a paginated log of significant power changes (death, kill, and purchase events).
+  Players can view their own history without any extra permission.
+  Viewing another player's history requires `factions.cmd.power.history.other` (default `op`).
+  All message templates are configurable in `messages.yml` under `power.history-*`.
+- **TeamsAPI 1.8.0 power history provider**: when TeamsAPI 1.8.0+ is present the plugin
+  registers a `TeamsPowerHistoryService` implementation that exposes all recorded power-change
+  events through the standard TeamsAPI surface.
+  Consumer plugins can read player and team history, filter by time range, add external
+  entries, and remove or clear records without touching the database directly.
+  The provider is registered reflectively so servers running TeamsAPI 1.7.x or earlier
+  start cleanly and the provider is silently skipped.
+  New permissions: `factions.cmd.power.history` (default `true`),
+  `factions.cmd.power.history.other` (default `op`).
 
 ### Changed
 
+- **TeamsAPI dependency updated to 1.8.0** (was 1.7.0).
 - Update notifier library is now explicitly relocated in shading:
   `com.github.ezplugins.updater` -> `com.pvpindex.lib.updater`, preventing runtime classpath conflicts.
 - Update check is **disabled by default** (`factions.updates.enabled: false`). Opt in by setting it

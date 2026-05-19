@@ -59,9 +59,22 @@ permissions:
       factions.bypass: true
       factions.cmd.claim.other: true
       factions.cmd.disband.other: true
+      factions.cmd.shield: true
 
   factions.bypass:
     description: Bypass faction territory protection (build, interact, PvP).
+    default: op
+
+  factions.cmd.shield:
+    description: Set or clear a faction's daily war shield window.
+    default: op
+
+  factions.cmd.power.history:
+    description: View your own power change history.
+    default: true
+
+  factions.cmd.power.history.other:
+    description: View another player's power change history.
     default: op
 
   # Faction lifecycle

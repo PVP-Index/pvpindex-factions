@@ -1,8 +1,10 @@
 package com.pvpindex.factions.command.sub;
 
+
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 
 import com.pvpindex.factions.command.CommandTestBase;
 import com.pvpindex.factions.data.model.FactionModel;
@@ -12,21 +14,25 @@ import java.util.Optional;
 import java.util.UUID;
 import org.bukkit.Location;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.pvpindex.factions.command.StorageTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+
 @ExtendWith(MockitoExtension.class)
 class CmdSetHomeTest extends CommandTestBase {
+
 
     @Mock private FactionService factionService;
     @Mock private TerritoryGuard territoryGuard;
     @Mock private FactionModel faction;
     @Mock private Location location;
 
+
     private CmdSetHome cmd;
     private final UUID uuid = UUID.randomUUID();
+
 
     @BeforeEach
     void setUp() {
@@ -38,7 +44,8 @@ class CmdSetHomeTest extends CommandTestBase {
         when(factionService.isOfficerOrAbove(uuid)).thenReturn(true);
     }
 
-    @Test
+
+    @StorageTest
     void setsHome() {
         when(factionService.setFactionHome(uuid, location)).thenReturn(true);
         cmd.execute(ctx());

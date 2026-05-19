@@ -1,10 +1,12 @@
 package com.pvpindex.factions.command.sub.bank;
 
+
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 
 import com.pvpindex.factions.command.CommandTestBase;
 import com.pvpindex.factions.data.model.FactionModel;
@@ -13,21 +15,25 @@ import com.pvpindex.factions.service.FactionService;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.pvpindex.factions.command.StorageTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+
 @ExtendWith(MockitoExtension.class)
 class CmdBankTransferTest extends CommandTestBase {
+
 
     @Mock private FactionService factionService;
     @Mock private EngineEconomy economy;
     @Mock private FactionModel source;
     @Mock private FactionModel target;
 
+
     private CmdBankTransfer cmd;
     private final UUID actor = UUID.randomUUID();
+
 
     @BeforeEach
     void setUp() {
@@ -39,7 +45,8 @@ class CmdBankTransferTest extends CommandTestBase {
         when(target.getId()).thenReturn("B");
     }
 
-    @Test
+
+    @StorageTest
     void transferSuccess() {
         when(factionService.getFactionByName("Beta")).thenReturn(Optional.of(target));
         when(target.getName()).thenReturn("Beta");
@@ -48,7 +55,8 @@ class CmdBankTransferTest extends CommandTestBase {
         verify(player).sendMessage(argThat(componentContains("Transferred")));
     }
 
-    @Test
+
+    @StorageTest
     void transferShorthand() {
         when(factionService.getFactionByName("Beta")).thenReturn(Optional.of(target));
         when(target.getName()).thenReturn("Beta");
@@ -57,7 +65,8 @@ class CmdBankTransferTest extends CommandTestBase {
         verify(player).sendMessage(argThat(componentContains("Transferred")));
     }
 
-    @Test
+
+    @StorageTest
     void transferInvalidAmount() {
         when(factionService.getFactionByName("Beta")).thenReturn(Optional.of(target));
         cmd.execute(ctx("Beta", "nope"));
