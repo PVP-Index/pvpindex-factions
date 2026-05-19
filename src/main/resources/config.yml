@@ -130,3 +130,24 @@ integrations:
     remove-if-no-build-rights: true
     # Remove alien protections after successful chunk ownership changes.
     remove-on-claim-change: true
+  discordsrv:
+    # Set to true to broadcast faction events to a Discord channel via DiscordSRV.
+    enabled: false
+    # Discord text-channel ID to post to. Leave empty to use DiscordSRV's main linked channel.
+    channel-id: ""
+    events:
+      faction-created:
+        enabled: true
+        message: "**{faction}** was founded!"
+      faction-disbanded:
+        enabled: true
+        message: "**{faction}** was disbanded."
+      relation-ally:
+        enabled: true
+        message: ":handshake: **{source}** and **{target}** are now allies!"
+      relation-truce:
+        enabled: true
+        message: ":white_flag: **{source}** and **{target}** agreed to a truce."
+      relation-enemy:
+        enabled: true
+        message: ":crossed_swords: **{source}** declared war on **{target}**!"

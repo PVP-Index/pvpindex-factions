@@ -25,6 +25,21 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - New message keys:
   - `update.available`
   - `update.url`
+- **DiscordSRV integration** (`integrations.discordsrv.enabled: true`):
+  - Faction create, disband, ally, truce, and enemy-declared events are broadcast to a
+    Discord channel via DiscordSRV (pure reflection — no hard compile-time dependency).
+  - Per-event toggles and Discord-markdown message templates are configurable in `config.yml`
+    under `integrations.discordsrv.events.*`.
+  - `channel-id` key routes messages to a specific text channel; leave empty to use DiscordSRV's
+    main linked channel.
+  - New config keys:
+    - `integrations.discordsrv.enabled` (default `false`)
+    - `integrations.discordsrv.channel-id` (default `""`)
+    - `integrations.discordsrv.events.faction-created.enabled` / `.message`
+    - `integrations.discordsrv.events.faction-disbanded.enabled` / `.message`
+    - `integrations.discordsrv.events.relation-ally.enabled` / `.message`
+    - `integrations.discordsrv.events.relation-truce.enabled` / `.message`
+    - `integrations.discordsrv.events.relation-enemy.enabled` / `.message`
 - **EssentialsX integration overhaul** (`integrations.essentialsx.enabled: true`):
   - `/f warp` teleports now route through EssentialsX alongside `/f home`.
   - EssentialsX `/back` location is recorded before every teleport so players can return with `/back`.

@@ -29,6 +29,7 @@ public final class BootstrapContext {
     private boolean dynmapEnabled;
     private boolean lwcEnabled;
     private boolean ezCountdownEnabled;
+    private boolean discordSrvEnabled;
 
     public BootstrapContext(
             final Plugin plugin,
@@ -67,4 +68,6 @@ public final class BootstrapContext {
     public void setLwcEnabled(final boolean lwcEnabled) { this.lwcEnabled = lwcEnabled; }
     public boolean isEzCountdownEnabled() { return ezCountdownEnabled; }
     public void setEzCountdownEnabled(final boolean ezCountdownEnabled) { this.ezCountdownEnabled = ezCountdownEnabled; }
+    public boolean isDiscordSrvEnabled() { return discordSrvEnabled; }
+    public void setDiscordSrvEnabled(final boolean discordSrvEnabled) { this.discordSrvEnabled = discordSrvEnabled; }
 }

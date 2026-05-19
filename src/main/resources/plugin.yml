@@ -23,6 +23,7 @@ softdepend:
   - Essentials
   - EssentialsX
   - dynmap
+  - DiscordSRV
   - EzEconomy
   - EzCountdown
   - LWC

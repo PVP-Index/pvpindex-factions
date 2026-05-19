@@ -6,9 +6,11 @@ import com.pvpindex.factions.command.CommandGuards;
 import com.pvpindex.factions.command.FactionCommand;
 import com.pvpindex.factions.command.sub.relation.CmdRelationList;
 import com.pvpindex.factions.command.sub.relation.CmdRelationWishes;
-import com.pvpindex.factions.data.model.FactionModel;
+import com.pvpindex.factions.config.FactionsConfig;
 import com.pvpindex.factions.config.NotificationsConfig;
+import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.engine.FactionMemberNotifier;
+import com.pvpindex.factions.integration.discordsrv.DiscordSrvNotifier;
 import com.pvpindex.factions.integration.ezcountdown.EzCountdownNotifier;
 import com.pvpindex.factions.service.FactionService;
 import com.pvpindex.factions.util.MsgUtil;
@@ -25,19 +27,30 @@ public final class CmdRelation extends FactionCommand {
     private final FactionService factionService;
     private final EzCountdownNotifier ezCountdownNotifier;
     private final NotificationsConfig notificationsConfig;
+    private final DiscordSrvNotifier discordSrvNotifier;
+    private final FactionsConfig factionsConfig;
 
     public CmdRelation(final FactionService factionService) {
-        this(factionService, null, null);
+        this(factionService, null, null, null, null);
     }
 
     public CmdRelation(final FactionService factionService, final EzCountdownNotifier ezCountdownNotifier) {
-        this(factionService, ezCountdownNotifier, null);
+        this(factionService, ezCountdownNotifier, null, null, null);
     }
 
     public CmdRelation(
             final FactionService factionService,
             final EzCountdownNotifier ezCountdownNotifier,
             final NotificationsConfig notificationsConfig) {
+        this(factionService, ezCountdownNotifier, notificationsConfig, null, null);
+    }
+
+    public CmdRelation(
+            final FactionService factionService,
+            final EzCountdownNotifier ezCountdownNotifier,
+            final NotificationsConfig notificationsConfig,
+            final DiscordSrvNotifier discordSrvNotifier,
+            final FactionsConfig factionsConfig) {
         super("relation");
         setAliases("relationship");
         setPermission("factions.cmd.relation");
@@ -47,6 +60,8 @@ public final class CmdRelation extends FactionCommand {
         this.factionService = factionService;
         this.ezCountdownNotifier = ezCountdownNotifier;
         this.notificationsConfig = notificationsConfig;
+        this.discordSrvNotifier = discordSrvNotifier;
+        this.factionsConfig = factionsConfig;
         addChild(new CmdRelationList(factionService));
         addChild(new CmdRelationWishes(factionService));
     }
@@ -233,6 +248,25 @@ public final class CmdRelation extends FactionCommand {
         } else {
             org.bukkit.Bukkit.getOnlinePlayers()
                 .forEach(p -> MsgUtil.send(p, message));
+        }
+
+        if (discordSrvNotifier != null && discordSrvNotifier.isEnabled() && factionsConfig != null) {
+            final String template;
+            final boolean enabled;
+            if (relation == Relation.ENEMY) {
+                enabled = factionsConfig.isDiscordSrvRelationEnemyEnabled();
+                template = factionsConfig.getDiscordSrvRelationEnemyMessage();
+            } else if (relation == Relation.ALLY) {
+                enabled = factionsConfig.isDiscordSrvRelationAllyEnabled();
+                template = factionsConfig.getDiscordSrvRelationAllyMessage();
+            } else {
+                enabled = factionsConfig.isDiscordSrvRelationTruceEnabled();
+                template = factionsConfig.getDiscordSrvRelationTruceMessage();
+            }
+            if (enabled) {
+                discordSrvNotifier.sendMessage(
+                    template.replace("{source}", sourceName).replace("{target}", targetName));
+            }
         }
     }
 

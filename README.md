@@ -37,6 +37,7 @@ The plugin starts without any of these. Each integration is enabled only when th
 | dynmap | Render faction territory on the dynmap web map |
 | EzEconomy | Alternative economy provider |
 | LWC / LWCX | Remove stale chest protections when chunk ownership changes |
+| DiscordSRV | Broadcast faction create/disband and relation changes to a Discord channel |
 
 ---
 
