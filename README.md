@@ -185,11 +185,12 @@ Admin commands use `/fa` (aliases: `/factionadmin`) and require the `factions.ad
 
 ## Permissions
 
-| Node | Description |
-|---|---|
-| `factions.admin` | Access to all `/fa` admin commands |
+| Node | Default | Description |
+|---|---|---|
+| `factions.admin` | op | Access to all `/fa` admin commands |
+| `factions.cmd.audit` | op | View the faction audit log (`/f audit`) |
 
-All player-facing `/f` commands are available without an explicit permission node.
+Most other `/f` commands default to `true` (all players). Grant `factions.cmd.audit` explicitly to non-op roles that should have access.
 
 ---
 
