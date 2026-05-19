@@ -1,6 +1,7 @@
 package com.pvpindex.factions.data;
 
 import com.github.ezframework.jaloquent.store.sql.DataSourceJdbcStore;
+import com.pvpindex.factions.data.repository.AuditLogRepository;
 import com.pvpindex.factions.data.repository.BankTransactionRepository;
 import com.pvpindex.factions.data.repository.BoardRepository;
 import com.pvpindex.factions.data.repository.FactionInboxRepository;
@@ -29,6 +30,7 @@ public class Repositories {
     private final BankTransactionRepository bankTransactions;
     private final PowerHistoryRepository powerHistory;
     private final FactionInboxRepository inbox;
+    private final AuditLogRepository auditLogs;
 
     public Repositories(final DataSourceJdbcStore store) {
         this.factions = new FactionRepository(store);
@@ -40,6 +42,7 @@ public class Repositories {
         this.bankTransactions = new BankTransactionRepository(store);
         this.powerHistory = new PowerHistoryRepository(store);
         this.inbox = new FactionInboxRepository(store);
+        this.auditLogs = new AuditLogRepository(store);
     }
 
     public FactionRepository factions() {
@@ -76,5 +79,9 @@ public class Repositories {
 
     public FactionInboxRepository inbox() {
         return inbox;
+    }
+
+    public AuditLogRepository auditLogs() {
+        return auditLogs;
     }
 }

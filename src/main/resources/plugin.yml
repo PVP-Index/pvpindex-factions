@@ -61,6 +61,7 @@ permissions:
       factions.cmd.disband.other: true
       factions.cmd.shield: true
       factions.cmd.flag.set: true
+      factions.cmd.audit: true
 
   factions.bypass:
     description: Bypass faction territory protection (build, interact, PvP).
@@ -143,6 +144,10 @@ permissions:
 
   factions.cmd.flag.set:
     description: Toggle or set a faction flag (officer or above).
+    default: true
+
+  factions.cmd.audit:
+    description: View the faction audit log (officer or above).
     default: true
 
   factions.cmd.leave:

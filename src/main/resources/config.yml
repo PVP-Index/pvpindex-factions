@@ -106,6 +106,10 @@ factions:
       # Entries per page for /f warp list.
       page-size: 8
 
+  audit:
+    # Entries per page for /f audit and /fa audit.
+    page-size: 10
+
   fly:
     enabled: true
     # Cancel faction flight when an enemy enters the chunk.

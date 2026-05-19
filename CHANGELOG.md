@@ -8,6 +8,13 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
+- **Audit log** (`/f audit`, `/fa audit <faction>`):
+  - Records key faction actions: chunk claims/unclaims, relation changes, member kicks, promotions, demotions, and bank deposits/withdrawals/transfers.
+  - `/f audit [page] [--action=<action>]` lets officers and above page through their faction's history with optional action-type filtering.
+  - `/fa audit <faction> [page] [--action=<action>]` gives staff the same view for any faction; console-friendly.
+  - Page size is configurable via `factions.audit.page-size` in `config.yml` (default: 10).
+  - New permission `factions.cmd.audit` (default: true); included as a child of `factions.admin`.
+
 ### Changed
 
 ## [1.0.8] - 2026-05-19
@@ -21,18 +28,23 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
     - `explosions`: allow explosions to destroy terrain in territory (default: `false`)
     - `fire-spread`: allow fire to spread in territory (default: `false`)
     - `open`: allow anyone to join without a pending invite (default: `false`)
+
+  ![Set flag state](https://i.ibb.co/DD16mXCM/image.png)
+
   - `/f flag` with no arguments shows the current flag list; `/f flag list` is an explicit alias.
+
+  ![Faction Flags overview](https://i.ibb.co/qF7gtGBZ/image.png)
+
   - `/f flag set <flag>` toggles; `/f flag set <flag> on|off` sets a specific value.
+  
+  ![Flag autocomplete](https://i.ibb.co/FLz53n5r/image.png)
+
   - `/fa flag <faction> <flag> [on|off]` lets admins override any flag regardless of the
     `player-editable` config setting.
   - Flag defaults and player-editability are configurable per-flag under `factions.flags.*`.
   - New permissions: `factions.cmd.flag` (default `true`), `factions.cmd.flag.set` (default `true`,
     officer check enforced by command logic).
   - New `messages.yml` keys: `flag.*`.
-
-  ![Faction Flags overview](https://i.ibb.co/qF7gtGBZ/image.png)
-  ![Set flag state](https://i.ibb.co/DD16mXCM/image.png)
-  ![Flag autocomplete](https://i.ibb.co/FLz53n5r/image.png)
 
 - **WorldGuard region sync** (`integrations.worldguard-sync-regions: false`, opt-in):
   - When enabled, every faction-claimed chunk is mirrored as a `ProtectedCuboidRegion` in
