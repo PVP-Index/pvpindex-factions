@@ -5,6 +5,7 @@ import com.pvpindex.factions.command.FactionCommand;
 import com.pvpindex.factions.command.CommandGuards;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.model.WarpModel;
+import com.pvpindex.factions.integration.essentials.EssentialsInterop;
 import com.pvpindex.factions.integration.worldguard.TerritoryGuard;
 import com.pvpindex.factions.service.FactionService;
 import com.pvpindex.factions.service.WarpService;
@@ -28,11 +29,13 @@ public final class CmdWarp extends FactionCommand {
     private final FactionService factionService;
     private final WarpService warpService;
     private final TerritoryGuard territoryGuard;
+    private final EssentialsInterop essentialsInterop;
 
     public CmdWarp(
             final FactionService factionService,
             final WarpService warpService,
-            final TerritoryGuard territoryGuard) {
+            final TerritoryGuard territoryGuard,
+            final EssentialsInterop essentialsInterop) {
         super("warp");
         setPermission("factions.cmd.warp");
         setDescription("Teleport to or manage faction warps.");
@@ -40,6 +43,7 @@ public final class CmdWarp extends FactionCommand {
         this.factionService = factionService;
         this.warpService = warpService;
         this.territoryGuard = territoryGuard;
+        this.essentialsInterop = essentialsInterop;
         addChild(new CmdWarpSet(factionService, warpService, territoryGuard));
         addChild(new CmdWarpDelete(factionService, warpService));
         addChild(new CmdWarpList(factionService, warpService));
@@ -51,6 +55,10 @@ public final class CmdWarp extends FactionCommand {
         final Player player = (Player) ctx.getSender();
         final Optional<FactionModel> factionOpt = CommandGuards.requireFaction(player, factionService);
         if (factionOpt.isEmpty()) {
+            return;
+        }
+        if (essentialsInterop.isJailed(player)) {
+            MsgUtil.sendKey(player, "warp.jailed", "<red>You cannot use warps while jailed.");
             return;
         }
         if (ctx.getArgs().isEmpty()) {
@@ -77,8 +85,15 @@ public final class CmdWarp extends FactionCommand {
             MsgUtil.send(player, "<red>Warp world not loaded.");
             return;
         }
+        if (essentialsInterop.teleport(player, dest,
+                () -> MsgUtil.sendKey(player, "warp.teleported",
+                    "<green>Teleported to warp <yellow>{name}</yellow>.", "name", warpName),
+                () -> MsgUtil.sendKey(player, "warp.teleport-failed", "<red>Warp teleport failed."))) {
+            return;
+        }
         player.teleport(dest);
-        MsgUtil.send(player, "<green>Teleported to warp '" + warpName + "'.");
+        MsgUtil.sendKey(player, "warp.teleported",
+            "<green>Teleported to warp <yellow>{name}</yellow>.", "name", warpName);
     }
 
     /**

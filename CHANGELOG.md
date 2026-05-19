@@ -14,24 +14,38 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
-- Startup update-check integration using `ez-plugins/mc-plugin-update-notifier` with chained sources:
-  Modrinth public API as primary (`pvpindex-factions`) and GitHub public API as fallback
-  (`PVP-Index/pvpindex-factions`).
+- Startup update-check integration using [ez-plugins/mc-plugin-update-notifier](https://github.com/ez-plugins/mc-plugin-update-notifier) with chained sources:
+  Modrinth public API as primary and GitHub public API as fallback.
+  Modrinth queries loaders `paper`, `folia`, and `spigot` so the check works on all supported
+  server software.
 - Operator join notification when an update is available, including clickable release URL output.
 - New update config keys:
-  - `factions.updates.enabled`
-  - `factions.updates.notify-ops-on-join`
-  - `factions.updates.modrinth-slug`
-  - `factions.updates.github-owner`
-  - `factions.updates.github-repo`
+  - `factions.updates.enabled` (default `false` — opt-in)
+  - `factions.updates.notify-ops-on-join` (default `false`)
 - New message keys:
   - `update.available`
   - `update.url`
+- **EssentialsX integration overhaul** (`integrations.essentialsx.enabled: true`):
+  - `/f warp` teleports now route through EssentialsX alongside `/f home`.
+  - EssentialsX `/back` location is recorded before every teleport so players can return with `/back`.
+  - Jailed players are blocked from `/f home` and `/f warp` with a message.
+  - Detected EssentialsX version is logged at startup.
+  - New `messages.yml` keys: `home.teleported`, `home.teleport-failed`, `home.jailed`,
+    `warp.teleported`, `warp.teleport-failed`, `warp.jailed`.
 
 ### Changed
 
 - Update notifier library is now explicitly relocated in shading:
   `com.github.ezplugins.updater` -> `com.pvpindex.lib.updater`, preventing runtime classpath conflicts.
+- Update check is **disabled by default** (`factions.updates.enabled: false`). Opt in by setting it
+  to `true`.
+- `factions.updates.modrinth-slug`, `factions.updates.github-owner`, and
+  `factions.updates.github-repo` are no longer exposed as config keys; the values are hardcoded
+  in the plugin and the config entries are ignored if present.
+- EssentialsX interop now uses the compile-time EssentialsX API instead of reflection, making
+  it resilient to future EssentialsX API changes and easier to diagnose when something breaks.
+- Plugin validates that the plugin named `Essentials` actually implements `IEssentials` before
+  enabling the integration; logs a warning and falls back to noop if not.
 
 ## [1.0.6] - 2026-05-18
 

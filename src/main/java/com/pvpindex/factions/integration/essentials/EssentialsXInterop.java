@@ -1,62 +1,61 @@
 package com.pvpindex.factions.integration.essentials;
 
-import com.pvpindex.factions.util.MsgUtil;
-import java.lang.reflect.Method;
+import com.earth2me.essentials.IEssentials;
+import com.earth2me.essentials.User;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.plugin.Plugin;
 
-/** EssentialsX implementation that uses async teleport API via reflection. */
+/** EssentialsX implementation backed by the compile-time EssentialsX API. */
 public final class EssentialsXInterop implements EssentialsInterop {
 
-    private final Plugin essentialsPlugin;
+    private final IEssentials essentials;
     private final Logger logger;
 
-    public EssentialsXInterop(final Plugin essentialsPlugin, final Logger logger) {
-        this.essentialsPlugin = essentialsPlugin;
+    public EssentialsXInterop(final IEssentials essentials, final Logger logger) {
+        this.essentials = essentials;
         this.logger = logger;
     }
 
     @Override
-    public boolean teleportToFactionHome(final Player player, final Location home) {
-        try {
-            final Method getUser = essentialsPlugin.getClass().getMethod("getUser", Player.class);
-            final Object user = getUser.invoke(essentialsPlugin, player);
-            if (user == null) {
-                return false;
-            }
-
-            final Method getAsyncTeleport = user.getClass().getMethod("getAsyncTeleport");
-            final Object asyncTeleport = getAsyncTeleport.invoke(user);
-            if (asyncTeleport == null) {
-                return false;
-            }
-
-            final CompletableFuture<Boolean> future = new CompletableFuture<>();
-            final Method now = asyncTeleport.getClass().getMethod(
-                "now",
-                Location.class,
-                boolean.class,
-                PlayerTeleportEvent.TeleportCause.class,
-                CompletableFuture.class
-            );
-            now.invoke(asyncTeleport, home, true, PlayerTeleportEvent.TeleportCause.COMMAND, future);
-            future.whenComplete((ok, err) -> {
-                if (err != null || !Boolean.TRUE.equals(ok)) {
-                    MsgUtil.send(player, "<red>Faction home teleport failed.");
-                    return;
-                }
-                MsgUtil.send(player, "<green>Teleported to faction home.");
-            });
-            return true;
-        } catch (ReflectiveOperationException e) {
-            logger.log(Level.FINE, "EssentialsX interop unavailable, falling back to native teleport.", e);
+    public boolean teleport(final Player player, final Location destination,
+            final Runnable onSuccess, final Runnable onFailure) {
+        final User user = essentials.getUser(player);
+        if (user == null) {
             return false;
         }
+        // Record current position so EssentialsX /back works after this teleport.
+        user.setLastLocation();
+        final CompletableFuture<Boolean> future = new CompletableFuture<>();
+        user.getAsyncTeleport().now(
+            destination, true, PlayerTeleportEvent.TeleportCause.COMMAND, future);
+        future.whenComplete((ok, err) -> {
+            if (err != null) {
+                logger.warning("EssentialsX async teleport threw: " + err.getMessage());
+                onFailure.run();
+                return;
+            }
+            if (Boolean.TRUE.equals(ok)) {
+                onSuccess.run();
+            } else {
+                onFailure.run();
+            }
+        });
+        return true;
+    }
+
+    @Override
+    public boolean isJailed(final Player player) {
+        final User user = essentials.getUser(player);
+        return user != null && user.isJailed();
+    }
+
+    @Override
+    public boolean isVanished(final Player player) {
+        final User user = essentials.getUser(player);
+        return user != null && user.isVanished();
     }
 }
 

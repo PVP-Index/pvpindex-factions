@@ -87,7 +87,8 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         commandRegistry.register(new CmdFly(factionSvc));
         commandRegistry.register(new CmdRelation(factionSvc, context.infra().getEzCountdownNotifier(),
             context.infra().getNotificationsConfig()));
-        commandRegistry.register(new CmdWarp(factionSvc, warpSvc, context.infra().getTerritoryGuard()));
+        commandRegistry.register(new CmdWarp(factionSvc, warpSvc, context.infra().getTerritoryGuard(),
+            context.infra().getEssentialsInterop()));
         commandRegistry.register(new CmdBank(factionSvc, economy));
         commandRegistry.register(new CmdPower(context.infra().getVaultEconomy(), cfg, repos));
         commandRegistry.register(new CmdList(factionSvc));
