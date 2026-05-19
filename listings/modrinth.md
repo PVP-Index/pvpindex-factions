@@ -114,6 +114,8 @@ PvPIndex Factions runs standalone, and integrates when available:
 - EzShops (faction shops)
 - EzRTP (avoids faction claims)
 - EzClean (avoids faction claims)
+- DiscordSRV (faction event broadcasts to Discord)
+- DiscordSRV (faction event broadcasts to Discord)
 
 ### Integration downloads
 
@@ -129,6 +131,7 @@ PvPIndex Factions runs standalone, and integrates when available:
 - EzShops: https://modrinth.com/plugin/ezshops
 - EzRTP: https://modrinth.com/plugin/ezplugins-ezrtp
 - EzClean: https://modrinth.com/plugin/ezclean
+- DiscordSRV: https://modrinth.com/plugin/discordsrv
 
 ## Configuration and operations
 
