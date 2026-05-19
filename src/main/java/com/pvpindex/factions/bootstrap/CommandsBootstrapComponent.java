@@ -35,7 +35,9 @@ import com.pvpindex.factions.command.sub.admin.CmdAdminClaim;
 import com.pvpindex.factions.command.sub.admin.CmdAdminDisband;
 import com.pvpindex.factions.command.sub.admin.CmdAdminHelp;
 import com.pvpindex.factions.command.sub.admin.CmdAdminReload;
+import com.pvpindex.factions.command.sub.admin.CmdAdminSafezone;
 import com.pvpindex.factions.command.sub.admin.CmdAdminUnclaim;
+import com.pvpindex.factions.command.sub.admin.CmdAdminWarzone;
 import com.pvpindex.factions.command.sub.bank.CmdBank;
 import com.pvpindex.factions.command.sub.power.CmdPower;
 import com.pvpindex.factions.command.sub.warp.CmdWarp;
@@ -125,6 +127,8 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         adminRegistry.register(new CmdAdminUnclaim());
         adminRegistry.register(new CmdAdminDisband(factionSvc));
         adminRegistry.register(new CmdAdminReload());
+        adminRegistry.register(new CmdAdminSafezone());
+        adminRegistry.register(new CmdAdminWarzone());
         adminRegistry.register(new CmdAdminHelp(adminRegistry));
 
         final AdminCommandExecutor adminExecutor = new AdminCommandExecutor(

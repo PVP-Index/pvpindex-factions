@@ -111,6 +111,20 @@ factions:
     # Notify op players about available updates when they join.
     notify-ops-on-join: true
 
+  zones:
+    safe-zone:
+      # No PvP, no building. Only admins can assign chunks with /fa safezone.
+      enabled: true
+    war-zone:
+      # PvP always on, no building. Only admins can assign chunks with /fa warzone.
+      enabled: true
+
+  overclaiming:
+    # When enabled, enemies can claim land from factions whose power dropped below their claim count.
+    enabled: false
+    # Require ENEMY relation before a faction can overclaim the other's land.
+    require-enemy-relation: true
+
 # Soft-integration toggles. The plugin checks for the provider plugin at startup
 # and gracefully disables the integration if it is absent.
 integrations:

@@ -10,6 +10,7 @@ import com.pvpindex.factions.data.model.PlayerModel;
 import com.pvpindex.factions.event.FactionChunkClaimEvent;
 import com.pvpindex.factions.event.FactionChunkUnclaimEvent;
 import com.pvpindex.factions.util.MsgUtil;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -80,12 +81,47 @@ public class EngineChunkChange {
                 }
                 final FactionModel faction = factionOpt.get();
 
-                // 3. Check chunk is not already claimed
+                // 3. Check chunk is not already claimed — or attempt an overclaim
                 final Optional<BoardEntry> existing = repos.board().findByChunk(
                     chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
+                FactionModel victimFaction = null;
                 if (existing.isPresent()) {
-                    MsgUtil.send(player, "<red>This chunk is already claimed.");
-                    return false;
+                    final String existingFactionId = existing.get().getFactionId();
+                    if (!config.isOverclaimingEnabled()) {
+                        MsgUtil.send(player, "<red>This chunk is already claimed.");
+                        return false;
+                    }
+                    if (FactionModel.SAFEZONE_ID.equals(existingFactionId)
+                            || FactionModel.WARZONE_ID.equals(existingFactionId)) {
+                        MsgUtil.send(player, "<red>This chunk is already claimed.");
+                        return false;
+                    }
+                    if (existingFactionId.equals(factionId)) {
+                        MsgUtil.send(player, "<red>This chunk is already claimed by your faction.");
+                        return false;
+                    }
+                    if (config.isOverclaimRequireEnemyRelation()
+                            && getRelation(faction, existingFactionId) != Relation.ENEMY) {
+                        MsgUtil.send(player,
+                            "<red>You can only overclaim land from factions you are at war with.");
+                        return false;
+                    }
+                    final Optional<FactionModel> victimOpt = repos.factions().find(existingFactionId);
+                    if (victimOpt.isPresent()) {
+                        final FactionModel candidate = victimOpt.get();
+                        final int victimLand = repos.board().countByFactionId(existingFactionId);
+                        final int victimMaxLand = computeMaxLand(candidate, existingFactionId);
+                        if (victimLand <= victimMaxLand) {
+                            MsgUtil.send(player, MsgUtil.replace(
+                                MsgUtil.message("claim.enemy-not-raidable",
+                                    "<red>{faction} still has enough power"
+                                    + " — you cannot overclaim their land yet."),
+                                "faction", candidate.getName()));
+                            return false;
+                        }
+                        victimFaction = candidate;
+                    }
+                    // victimFaction null means victim row is gone — allow the claim to clean it up
                 }
 
                 // 4. Power / land check (Bug fixes #1 and #5 — real-time, no cache)
@@ -97,7 +133,8 @@ public class EngineChunkChange {
                 }
 
                 // 5. Border check (Bug fix #2 — correct adjacency logic)
-                if (!isValidBorder(chunk, factionId, faction)) {
+                // Skipped when overclaiming — any underpowered enemy chunk is fair game.
+                if (victimFaction == null && !isValidBorder(chunk, factionId, faction)) {
                     MsgUtil.send(player, "<red>You may only claim land that borders your own territory or wilderness.");
                     return false;
                 }
@@ -105,7 +142,7 @@ public class EngineChunkChange {
                 // 6. Fire cancellable plugin event
                 final FactionChunkClaimEvent event = new FactionChunkClaimEvent(
                     faction, player.getUniqueId(),
-                    chunk.getWorld().getName(), chunk.getX(), chunk.getZ());
+                    chunk.getWorld().getName(), chunk.getX(), chunk.getZ(), victimFaction);
                 Bukkit.getPluginManager().callEvent(event);
                 if (event.isCancelled()) {
                     return false;
@@ -113,6 +150,32 @@ public class EngineChunkChange {
 
                 // 7. Persist
                 repos.board().claimChunk(chunk.getWorld().getName(), chunk.getX(), chunk.getZ(), factionId);
+
+                // Notify parties on overclaim
+                if (victimFaction != null) {
+                    MsgUtil.send(player, MsgUtil.replace(
+                        MsgUtil.message("claim.overclaimed",
+                            "<green>You overclaimed a chunk from <yellow>{faction}<green>!"),
+                        "faction", victimFaction.getName()));
+                    final String victimFactionId = victimFaction.getId();
+                    final int remaining = repos.board().countByFactionId(victimFactionId);
+                    final String victimMsg = MsgUtil.replace(
+                        MsgUtil.replace(
+                            MsgUtil.message("claim.overclaimed-victim",
+                                "<red><yellow>{attacker}<red> overclaimed a chunk from your territory!"
+                                + " <yellow>{remaining}<red> chunk(s) remain."),
+                            "attacker", faction.getName()),
+                        "remaining", String.valueOf(remaining));
+                    final List<PlayerModel> victimMembers =
+                        repos.players().findByFactionId(victimFactionId);
+                    for (final PlayerModel memberPm : victimMembers) {
+                        final Player memberPlayer = Bukkit.getPlayer(
+                            java.util.UUID.fromString(memberPm.getId()));
+                        if (memberPlayer != null) {
+                            MsgUtil.send(memberPlayer, victimMsg);
+                        }
+                    }
+                }
                 return true;
             } catch (StorageException e) {
                 logger.log(Level.SEVERE, "Failed to claim chunk " + chunkKey, e);

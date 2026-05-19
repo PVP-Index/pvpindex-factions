@@ -138,9 +138,11 @@ public final class EnginePower implements Runnable, Listener {
                 return;
             }
 
-            // Skip power changes in safezone territory.
+            // Skip power changes in safezone territory when safe zones are active.
             final Optional<BoardEntry> claim = repos.board().findByChunk(worldName, chunkX, chunkZ);
-            if (claim.isPresent() && FactionModel.SAFEZONE_ID.equals(claim.get().getFactionId())) {
+            if (config.isSafeZoneEnabled()
+                    && claim.isPresent()
+                    && FactionModel.SAFEZONE_ID.equals(claim.get().getFactionId())) {
                 return;
             }
 

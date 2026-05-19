@@ -1,6 +1,7 @@
 package com.pvpindex.factions.event;
 
 import com.pvpindex.factions.data.model.FactionModel;
+import java.util.Optional;
 import java.util.UUID;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -17,15 +18,25 @@ public final class FactionChunkClaimEvent extends Event implements Cancellable {
     private final String worldName;
     private final int chunkX;
     private final int chunkZ;
+    /** Non-null only when this claim is an overclaim of another faction's chunk. */
+    private final FactionModel overclaimedFromFaction;
 
     public FactionChunkClaimEvent(
             final FactionModel faction, final UUID playerUUID,
             final String worldName, final int chunkX, final int chunkZ) {
+        this(faction, playerUUID, worldName, chunkX, chunkZ, null);
+    }
+
+    public FactionChunkClaimEvent(
+            final FactionModel faction, final UUID playerUUID,
+            final String worldName, final int chunkX, final int chunkZ,
+            final FactionModel overclaimedFromFaction) {
         this.faction = faction;
         this.playerUUID = playerUUID;
         this.worldName = worldName;
         this.chunkX = chunkX;
         this.chunkZ = chunkZ;
+        this.overclaimedFromFaction = overclaimedFromFaction;
     }
 
     public FactionModel getFaction() {
@@ -46,6 +57,13 @@ public final class FactionChunkClaimEvent extends Event implements Cancellable {
 
     public int getChunkZ() {
         return chunkZ;
+    }
+
+    /**
+     * Returns the faction whose chunk was taken over, or empty for a regular (first-time) claim.
+     */
+    public Optional<FactionModel> getOverclaimedFromFaction() {
+        return Optional.ofNullable(overclaimedFromFaction);
     }
 
     @Override
