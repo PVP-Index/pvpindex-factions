@@ -162,6 +162,7 @@ jobs:
             ezplugins-rtp(optional)
           loaders: |
             paper
+            folia
             spigot
             bukkit
           game-versions: ">=1.21"
