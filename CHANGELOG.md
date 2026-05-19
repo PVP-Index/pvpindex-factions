@@ -19,7 +19,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   - `/f audit [page] [--action=<action>]` lets officers and above page through their faction's history with optional action-type filtering.
   - `/fa audit <faction> [page] [--action=<action>]` gives staff the same view for any faction; console-friendly.
   - Page size is configurable via `factions.audit.page-size` in `config.yml` (default: 10).
-  - New permission `factions.cmd.audit` (default: true); included as a child of `factions.admin`.
+  - New permission `factions.cmd.audit` (default: op); included as a child of `factions.admin`.
 
   ![Faction audit log](https://i.ibb.co/Q3vFWYDq/image.png)
 

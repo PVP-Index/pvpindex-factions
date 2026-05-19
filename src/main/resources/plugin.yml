@@ -148,7 +148,7 @@ permissions:
 
   factions.cmd.audit:
     description: View the faction audit log (officer or above).
-    default: true
+    default: op
 
   factions.cmd.leave:
     description: Leave the current faction.

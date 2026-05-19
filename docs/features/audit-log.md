@@ -42,7 +42,7 @@ in-game. Staff can view the audit log for any faction.
 
 | Node | Default | Description |
 |---|---|---|
-| `factions.cmd.audit` | `true` | Access to `/f audit`. Enforced at officer rank in-game. |
+| `factions.cmd.audit` | `op` | Access to `/f audit`. Enforced at officer rank in-game. |
 | `factions.admin` | op | Access to `/fa audit <faction>`. |
 
 ## Operational notes
