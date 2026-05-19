@@ -80,6 +80,12 @@ This page documents all shipped configuration keys with a description and a conc
 |---|---|---|
 | `factions.warp.list.page-size` | Entries per page for `/f warp list`. | `warp: { list: { page-size: 8 } }` |
 
+### `factions.audit.*`
+
+| Key | Description | Example |
+|---|---|---|
+| `factions.audit.page-size` | Entries per page for `/f audit` and `/fa audit`. | `audit: { page-size: 10 }` |
+
 ### `factions.fly.*`
 
 | Key | Description | Example |

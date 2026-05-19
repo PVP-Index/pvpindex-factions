@@ -20,5 +20,6 @@ Examples:
 - `factions.cmd.unclaim`
 - `factions.cmd.notify`
 - `factions.cmd.bank.history`
+- `factions.cmd.audit`
 
 Reference source of truth: `src/main/resources/plugin.yml`.

@@ -1,6 +1,7 @@
 package com.pvpindex.factions.service;
 
 import com.github.ezframework.jaloquent.exception.StorageException;
+import com.pvpindex.factions.FactionAuditAction;
 import com.pvpindex.factions.Relation;
 import com.pvpindex.factions.config.FactionsConfig;
 import com.pvpindex.factions.config.NotificationsConfig;
@@ -47,6 +48,11 @@ public class FactionServiceImpl implements FactionService {
     private final NotificationsConfig notificationsConfig;
     private final Logger logger;
     private final ConcurrentHashMap<UUID, Boolean> flyStateByPlayer = new ConcurrentHashMap<>();
+    private AuditService auditService = AuditService.NOOP;
+
+    public void setAuditService(final AuditService service) {
+        this.auditService = service != null ? service : AuditService.NOOP;
+    }
 
     public FactionServiceImpl(
             final Plugin plugin,
@@ -310,6 +316,7 @@ public class FactionServiceImpl implements FactionService {
             targetPm.get().setFactionId(null);
             targetPm.get().setRankId(null);
             repos.players().save(targetPm.get());
+            auditService.record(actorFaction, actorUUID, FactionAuditAction.MEMBER_KICK, resolveName(targetUUID));
             return true;
         } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to kick " + targetUUID + " by " + actorUUID, e);
@@ -384,6 +391,8 @@ public class FactionServiceImpl implements FactionService {
             sourceMap.put(target.getId(), relation);
             source.setRelationsJson(serializeRelations(sourceMap));
             repos.factions().save(source);
+            auditService.record(source.getId(), actorUUID, FactionAuditAction.RELATION_CHANGE,
+                relation.name() + " with " + target.getName());
 
             // Enemies and neutral relations are always mirrored for consistency.
             if (relation == Relation.ENEMY || relation == Relation.NEUTRAL) {
@@ -766,10 +775,18 @@ public class FactionServiceImpl implements FactionService {
             }
             targetPm.get().setRankId(newRank.getId());
             repos.players().save(targetPm.get());
+            auditService.record(factionId, actorUUID,
+                promote ? FactionAuditAction.MEMBER_PROMOTE : FactionAuditAction.MEMBER_DEMOTE,
+                resolveName(targetUUID));
             return true;
         } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to change rank for " + targetUUID, e);
             return false;
         }
+    }
+
+    private String resolveName(final UUID uuid) {
+        final OfflinePlayer op = Bukkit.getOfflinePlayer(uuid);
+        return op.getName() != null ? op.getName() : uuid.toString();
     }
 }

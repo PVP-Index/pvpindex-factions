@@ -3,6 +3,7 @@ package com.pvpindex.factions.data;
 import com.github.ezframework.jaloquent.config.JaloquentConfig;
 import com.github.ezframework.jaloquent.store.sql.DataSourceJdbcStore;
 import com.pvpindex.factions.config.DatabaseConfig;
+import com.pvpindex.factions.data.model.AuditLogModel;
 import com.pvpindex.factions.data.model.BankTransactionModel;
 import com.pvpindex.factions.data.model.BoardEntry;
 import com.pvpindex.factions.data.model.FactionInboxEntry;
@@ -125,6 +126,7 @@ public final class DatabaseManager {
             stmt.executeUpdate(createTableSql("ranks", RankModel.COLUMNS, "id"));
             stmt.executeUpdate(createTableSql("bank_transactions", BankTransactionModel.COLUMNS, "id"));
             stmt.executeUpdate(createTableSql("faction_inbox", FactionInboxEntry.COLUMNS, "id"));
+            stmt.executeUpdate(createTableSql("audit_logs", AuditLogModel.COLUMNS, "id"));
             ensureColumn(
                 stmt,
                 logger,
@@ -171,6 +173,10 @@ public final class DatabaseManager {
             stmt, logger, "idx_bank_tx_faction_created_at", "bank_transactions", "faction_id, created_at");
         // Inbox entries per player.
         createIndex(stmt, logger, "idx_inbox_player_id", "faction_inbox", "player_id");
+        // Audit log scans per faction, ordered by time.
+        createIndex(stmt, logger, "idx_audit_logs_faction_id", "audit_logs", "faction_id");
+        createIndex(
+            stmt, logger, "idx_audit_logs_faction_created_at", "audit_logs", "faction_id, created_at");
     }
 
     private void createIndex(

@@ -4,6 +4,7 @@ import com.pvpindex.factions.command.AdminCommandExecutor;
 import com.pvpindex.factions.command.AdminTabCompleter;
 import com.pvpindex.factions.command.FactionCommandExecutor;
 import com.pvpindex.factions.command.FactionTabCompleter;
+import com.pvpindex.factions.command.sub.CmdAudit;
 import com.pvpindex.factions.command.sub.CmdClaim;
 import com.pvpindex.factions.command.sub.CmdCreate;
 import com.pvpindex.factions.command.sub.CmdDemote;
@@ -31,6 +32,7 @@ import com.pvpindex.factions.command.sub.CmdSetHome;
 import com.pvpindex.factions.command.sub.CmdTop;
 import com.pvpindex.factions.command.sub.CmdUnclaim;
 import com.pvpindex.factions.command.sub.CmdUnsetHome;
+import com.pvpindex.factions.command.sub.admin.CmdAdminAudit;
 import com.pvpindex.factions.command.sub.admin.CmdAdminBypass;
 import com.pvpindex.factions.command.sub.admin.CmdAdminClaim;
 import com.pvpindex.factions.command.sub.admin.CmdAdminDisband;
@@ -112,6 +114,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         commandRegistry.register(new CmdDesc(factionSvc));
         commandRegistry.register(new CmdTop(factionSvc));
         commandRegistry.register(new CmdFlag(factionSvc, flagSvc));
+        commandRegistry.register(new CmdAudit(factionSvc));
         commandRegistry.register(new CmdHelp(commandRegistry));
 
         final FactionCommandExecutor executor = new FactionCommandExecutor(
@@ -139,6 +142,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         adminRegistry.register(new CmdAdminWarzone());
         adminRegistry.register(new CmdAdminShield());
         adminRegistry.register(new CmdAdminFlag(factionSvc, flagSvc));
+        adminRegistry.register(new CmdAdminAudit(factionSvc));
         adminRegistry.register(new CmdAdminHelp(adminRegistry));
 
         final AdminCommandExecutor adminExecutor = new AdminCommandExecutor(

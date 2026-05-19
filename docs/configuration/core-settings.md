@@ -57,3 +57,4 @@ Key groups:
 - `factions.top.page-size`
 - `factions.economy.bank.history.page-size`
 - `factions.warp.list.page-size`
+- `factions.audit.page-size`

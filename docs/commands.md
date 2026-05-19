@@ -97,6 +97,13 @@ Requires Vault economy.
 | `/f bank transfer <faction> <amount>` | `factions.cmd.bank.transfer` | Transfer money to another faction's bank. |
 | `/f bank history [page]` | `factions.cmd.bank.history` | View faction bank transaction history. |
 
+### `/f audit`
+
+| Command | Permission | Description |
+|---|---|---|
+| `/f audit [page]` | `factions.cmd.audit` | View your faction's audit log (officer or above). |
+| `/f audit [page] --action=<action>` | `factions.cmd.audit` | Filter audit log by action type (`claim`, `unclaim`, `relation-change`, `kick`, `promote`, `demote`, `bank-deposit`, `bank-withdraw`, `bank-transfer`). |
+
 ### `/f warp`
 
 | Command | Permission | Description |
@@ -127,6 +134,11 @@ Requires Vault economy.
 | `/fa unclaim <faction> [all\|one\|square\|circle\|fill] [radius]` | `factions.cmd.claim.other` | Unclaim land for another faction. |
 | `/fa safezone [one\|square\|circle\|remove] [radius]` | `factions.cmd.safezone` | Assign or remove safe zone chunks. |
 | `/fa warzone [one\|square\|circle\|remove] [radius]` | `factions.cmd.warzone` | Assign or remove war zone chunks. |
+| `/fa flag <faction> <flag> [on\|off]` | `factions.admin` | Override any faction flag regardless of player-editable config. |
+| `/fa shield <faction> <start-hour> <duration-hours>` | `factions.cmd.shield` | Set a daily UTC war shield window for a faction. |
+| `/fa shield <faction> clear` | `factions.cmd.shield` | Remove a faction's war shield. |
+| `/fa audit <faction> [page]` | `factions.admin` | View the audit log for any faction. |
+| `/fa audit <faction> [page] --action=<action>` | `factions.admin` | View the audit log for any faction filtered by action type. |
 
 ---
 

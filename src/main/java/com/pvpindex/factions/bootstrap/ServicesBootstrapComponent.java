@@ -4,6 +4,7 @@ import com.pvpindex.factions.api.TeamsApiRegistrar;
 import com.pvpindex.factions.config.FactionsConfig;
 import com.pvpindex.factions.config.NotificationsConfig;
 import com.pvpindex.factions.data.Repositories;
+import com.pvpindex.factions.service.AuditServiceImpl;
 import com.pvpindex.factions.service.FactionServiceImpl;
 import com.pvpindex.factions.service.FlagServiceImpl;
 import com.pvpindex.factions.service.InviteServiceImpl;
@@ -46,6 +47,10 @@ public final class ServicesBootstrapComponent extends AbstractBootstrapComponent
         final FlagServiceImpl flagImpl =
             new FlagServiceImpl(repos, cfg, logger(context));
         context.services().setFlagService(flagImpl);
+
+        final AuditServiceImpl auditImpl = new AuditServiceImpl(repos, logger(context));
+        context.services().setAuditService(auditImpl);
+        factionImpl.setAuditService(auditImpl);
 
         if (!isTeamsApiAvailable(context)) {
             logger(context).info("TeamsAPI not found — running standalone.");

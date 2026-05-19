@@ -202,6 +202,10 @@ public class FactionsConfig {
         return cfg.getInt("factions.warp.list.page-size", 8);
     }
 
+    public int getAuditPageSize() {
+        return cfg.getInt("factions.audit.page-size", 10);
+    }
+
     // -------------------------------------------------------------------------
     // Economy
     // -------------------------------------------------------------------------

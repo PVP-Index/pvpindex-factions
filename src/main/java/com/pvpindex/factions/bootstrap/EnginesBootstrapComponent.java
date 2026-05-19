@@ -7,6 +7,7 @@ import com.pvpindex.factions.config.FactionsConfig;
 import com.pvpindex.factions.config.NotificationsConfig;
 import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.engine.EngineChat;
+import com.pvpindex.factions.engine.EngineAuditLog;
 import com.pvpindex.factions.engine.EngineAutoTerritory;
 import com.pvpindex.factions.engine.AutoTerritoryModeCache;
 import com.pvpindex.factions.engine.EngineChunkChange;
@@ -56,6 +57,9 @@ public final class EnginesBootstrapComponent extends AbstractBootstrapComponent 
             repos, cfg, context.services().getFlagService(),
             context.infra().getTerritoryGuard(), logger(context));
         protection.register(context.plugin());
+
+        final EngineAuditLog auditLog = new EngineAuditLog(context.services().getAuditService());
+        auditLog.register(context.plugin());
 
         if (cfg.isWorldGuardSyncRegions()
                 && context.plugin().getServer().getPluginManager().getPlugin("WorldGuard") != null) {
