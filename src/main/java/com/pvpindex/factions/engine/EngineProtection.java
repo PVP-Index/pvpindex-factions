@@ -85,7 +85,7 @@ public final class EngineProtection implements Listener {
                 return;
             }
             final String factionId = entry.get().getFactionId();
-            if (FactionModel.SAFEZONE_ID.equals(factionId)) {
+            if (FactionModel.SAFEZONE_ID.equals(factionId) && config.isSafeZoneEnabled()) {
                 event.setCancelled(true);
                 MsgUtil.send(attacker, "<red>PvP is disabled in the Safezone.");
             }
@@ -136,8 +136,11 @@ public final class EngineProtection implements Listener {
                 return true; // Wilderness — allowed
             }
             final String factionId = entry.get().getFactionId();
-            if (FactionModel.SAFEZONE_ID.equals(factionId) || FactionModel.WARZONE_ID.equals(factionId)) {
-                return false; // System zones — no building
+            if (FactionModel.SAFEZONE_ID.equals(factionId) && config.isSafeZoneEnabled()) {
+                return false; // Safezone — no building
+            }
+            if (FactionModel.WARZONE_ID.equals(factionId) && config.isWarZoneEnabled()) {
+                return false; // Warzone — no building
             }
 
             if (pm.isEmpty() || !pm.get().isInFaction()) {

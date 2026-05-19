@@ -47,6 +47,23 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   - Detected EssentialsX version is logged at startup.
   - New `messages.yml` keys: `home.teleported`, `home.teleport-failed`, `home.jailed`,
     `warp.teleported`, `warp.teleport-failed`, `warp.jailed`.
+- **Safe zones and war zones** (`factions.zones.safe-zone.enabled`, `factions.zones.war-zone.enabled`):
+  - Both zones are enabled by default. Disabling a zone causes its chunks to behave as
+    Wilderness — protection, PvP rules, and power-loss suppression are all inactive.
+  - New admin commands `/fa safezone` and `/fa warzone` let operators assign chunks to each
+    zone in one-shot, square, or circle modes (with an optional `remove` sub-mode).
+  - New permissions: `factions.cmd.safezone`, `factions.cmd.warzone` (default `op`).
+- **Overclaiming** (`factions.overclaiming.enabled: false` — opt-in):
+  - When enabled, a faction can claim an enemy's chunk if the victim's land count exceeds
+    their current maximum land (power-based). Border adjacency is waived for overclaims.
+  - Optional guard `factions.overclaiming.require-enemy-relation: true` restricts overclaims
+    to factions that have declared `ENEMY` relation.
+  - Attacker receives a `claim.overclaimed` notification; all online victim members receive
+    `claim.overclaimed-victim` showing remaining chunk count.
+  - `FactionChunkClaimEvent` gains an optional `overclaimedFromFaction` field populated on
+    overclaim so third-party plugins can observe the event.
+  - New `messages.yml` keys: `claim.overclaimed`, `claim.overclaimed-victim`,
+    `claim.enemy-not-raidable`.
 
 ### Changed
 

@@ -337,6 +337,30 @@ public class FactionsConfig {
     }
 
     // -------------------------------------------------------------------------
+    // Zones
+    // -------------------------------------------------------------------------
+
+    public boolean isSafeZoneEnabled() {
+        return cfg.getBoolean("factions.zones.safe-zone.enabled", true);
+    }
+
+    public boolean isWarZoneEnabled() {
+        return cfg.getBoolean("factions.zones.war-zone.enabled", true);
+    }
+
+    // -------------------------------------------------------------------------
+    // Overclaiming
+    // -------------------------------------------------------------------------
+
+    public boolean isOverclaimingEnabled() {
+        return cfg.getBoolean("factions.overclaiming.enabled", false);
+    }
+
+    public boolean isOverclaimRequireEnemyRelation() {
+        return cfg.getBoolean("factions.overclaiming.require-enemy-relation", true);
+    }
+
+    // -------------------------------------------------------------------------
     // Updates
     // -------------------------------------------------------------------------
 

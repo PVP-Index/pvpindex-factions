@@ -225,3 +225,11 @@ permissions:
   factions.cmd.fly:
     description: Toggle faction flight in own territory.
     default: true
+
+  factions.cmd.safezone:
+    description: Assign or remove safe zone territory chunks.
+    default: op
+
+  factions.cmd.warzone:
+    description: Assign or remove war zone territory chunks.
+    default: op

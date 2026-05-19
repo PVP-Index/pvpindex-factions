@@ -85,6 +85,16 @@ public final class CmdHelp extends FactionCommand {
             MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry("/fa unclaim", "Admin-unclaim current chunk."));
             MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry("/fa disband <faction>", "Force-disband any faction."));
             MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry("/fa reload", "Reload plugin configuration."));
+            if (ctx.getSender().hasPermission("factions.cmd.safezone")) {
+                MsgUtil.send(ctx.getSender(),
+                    MsgUtil.helpEntry("/fa safezone [one|square|circle|remove] [radius]",
+                        "Assign or remove safe zone chunks."));
+            }
+            if (ctx.getSender().hasPermission("factions.cmd.warzone")) {
+                MsgUtil.send(ctx.getSender(),
+                    MsgUtil.helpEntry("/fa warzone [one|square|circle|remove] [radius]",
+                        "Assign or remove war zone chunks."));
+            }
         }
         MsgUtil.sendKey(
             ctx.getSender(),

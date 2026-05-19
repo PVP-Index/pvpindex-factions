@@ -125,6 +125,8 @@ Requires Vault economy.
 | `/fa disband <faction>` | `factions.cmd.disband.other` | Disband any faction by name. |
 | `/fa claim <faction> [one\|square\|circle\|fill] [radius]` | `factions.cmd.claim.other` | Claim land for another faction. |
 | `/fa unclaim <faction> [all\|one\|square\|circle\|fill] [radius]` | `factions.cmd.claim.other` | Unclaim land for another faction. |
+| `/fa safezone [one\|square\|circle\|remove] [radius]` | `factions.cmd.safezone` | Assign or remove safe zone chunks. |
+| `/fa warzone [one\|square\|circle\|remove] [radius]` | `factions.cmd.warzone` | Assign or remove war zone chunks. |
 
 ---
 

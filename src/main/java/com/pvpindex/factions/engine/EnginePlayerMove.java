@@ -88,10 +88,16 @@ public final class EnginePlayerMove implements Listener {
         }
         final String factionId = entry.get().getFactionId();
         if (FactionModel.SAFEZONE_ID.equals(factionId)) {
-            return new TerritoryInfo(FactionModel.SAFEZONE_ID, "Safezone", false, null);
+            if (config.isSafeZoneEnabled()) {
+                return new TerritoryInfo(FactionModel.SAFEZONE_ID, "Safezone", false, null);
+            }
+            return new TerritoryInfo(FactionModel.WILDERNESS_ID, "Wilderness", false, null);
         }
         if (FactionModel.WARZONE_ID.equals(factionId)) {
-            return new TerritoryInfo(FactionModel.WARZONE_ID, "Warzone", false, null);
+            if (config.isWarZoneEnabled()) {
+                return new TerritoryInfo(FactionModel.WARZONE_ID, "Warzone", false, null);
+            }
+            return new TerritoryInfo(FactionModel.WILDERNESS_ID, "Wilderness", false, null);
         }
         final Optional<FactionModel> faction = repos.factions().find(factionId);
         if (faction.isEmpty()) {
