@@ -1,5 +1,6 @@
 package com.pvpindex.factions.config;
 
+import com.pvpindex.factions.FactionFlag;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
@@ -287,6 +288,10 @@ public class FactionsConfig {
         return cfg.getBoolean("integrations.worldguard", true);
     }
 
+    public boolean isWorldGuardSyncRegions() {
+        return cfg.getBoolean("integrations.worldguard-sync-regions", false);
+    }
+
     public boolean isDynmapEnabled() {
         return cfg.getBoolean("integrations.dynmap", true);
     }
@@ -455,5 +460,30 @@ public class FactionsConfig {
 
     public String getUpdateGithubRepo() {
         return cfg.getString("factions.updates.github-repo", "pvpindex-factions");
+    }
+
+    // -------------------------------------------------------------------------
+    // Flags
+    // -------------------------------------------------------------------------
+
+    /**
+     * Server-wide default for a flag.
+     * Falls back to the enum's hard-coded default if no config key is set.
+     */
+    public boolean getFlagDefault(final FactionFlag flag) {
+        return cfg.getBoolean(
+                "factions.flags." + flag.getId() + ".default",
+                flag.getDefaultValue());
+    }
+
+    /**
+     * Whether faction officers may toggle this flag via {@code /f flag set}.
+     * Defaults to {@code true}; admins can lock individual flags by setting
+     * {@code player-editable: false} in config.
+     */
+    public boolean isFlagPlayerEditable(final FactionFlag flag) {
+        return cfg.getBoolean(
+                "factions.flags." + flag.getId() + ".player-editable",
+                true);
     }
 }

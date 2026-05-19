@@ -143,6 +143,8 @@ Admin commands use `/fa` (aliases: `/factionadmin`) and require the `factions.ad
 | `home` | Teleport to faction home |
 | `unsethome` | Remove the faction home |
 | `fly` | Toggle faction flight in own territory |
+| `flag` | List all flags and their current values. |
+| `flag set <flag> [on\|off]` | Toggle or set a specific faction flag. |
 | `desc <text>` | Set faction description |
 | `rename <name>` | Rename your faction |
 | `relation <faction> <ally\|truce\|enemy\|neutral>` | Set relation with another faction |
@@ -174,6 +176,7 @@ Admin commands use `/fa` (aliases: `/factionadmin`) and require the `factions.ad
 | `warzone [one\|square\|circle\|remove] [radius]` | Assign / remove war zone chunks |
 | `shield <faction> <start-hour> <duration-hours>` | Set a daily UTC war shield window |
 | `shield <faction> clear` | Remove a faction's war shield |
+| `flag <faction> <flag> [on\|off]` | Override any faction flag regardless of editability config. |
 
 ---
 

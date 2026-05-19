@@ -18,6 +18,7 @@ import com.pvpindex.factions.engine.EngineProtection;
 import com.pvpindex.factions.engine.EngineUpdateNotifier;
 import com.pvpindex.factions.gui.FactionsGuiManager;
 import com.pvpindex.factions.integration.vault.VaultEconomy;
+import com.pvpindex.factions.integration.worldguard.WorldGuardRegionSync;
 import com.pvpindex.factions.scheduler.TaskScheduler;
 import com.pvpindex.factions.update.UpdateNotificationManager;
 import java.util.List;
@@ -51,8 +52,18 @@ public final class EnginesBootstrapComponent extends AbstractBootstrapComponent 
         context.engines().setAutoTerritoryModeCache(autoTerritoryModeCache);
         economy.startTaxScheduler(scheduler);
 
-        final EngineProtection protection = new EngineProtection(repos, cfg, logger(context));
+        final EngineProtection protection = new EngineProtection(
+            repos, cfg, context.services().getFlagService(),
+            context.infra().getTerritoryGuard(), logger(context));
         protection.register(context.plugin());
+
+        if (cfg.isWorldGuardSyncRegions()
+                && context.plugin().getServer().getPluginManager().getPlugin("WorldGuard") != null) {
+            final WorldGuardRegionSync wgSync =
+                new WorldGuardRegionSync(repos, context.plugin(), logger(context));
+            wgSync.register();
+            wgSync.syncAll();
+        }
 
         final EnginePlayerMove playerMove = new EnginePlayerMove(repos, cfg, logger(context));
         playerMove.register(context.plugin());

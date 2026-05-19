@@ -88,6 +88,23 @@ This page documents all shipped configuration keys with a description and a conc
 | `factions.fly.disable-on-threat` | Disable fly when threat logic triggers. | `disable-on-threat: true` |
 | `factions.fly.require-own-territory` | Restrict fly to own territory. | `require-own-territory: true` |
 
+### `factions.flags.*`
+
+Each built-in flag has two keys: `default` (boolean) and `player-editable` (boolean).
+
+| Key | Description | Example |
+|---|---|---|
+| `factions.flags.pvp.default` | Default value for the `pvp` flag (allow PvP in territory). | `default: true` |
+| `factions.flags.pvp.player-editable` | Whether officers may toggle the `pvp` flag in-game. | `player-editable: true` |
+| `factions.flags.friendly-fire.default` | Default for the `friendly-fire` flag. | `default: false` |
+| `factions.flags.friendly-fire.player-editable` | Whether officers may toggle `friendly-fire`. | `player-editable: true` |
+| `factions.flags.explosions.default` | Default for the `explosions` flag. | `default: false` |
+| `factions.flags.explosions.player-editable` | Whether officers may toggle `explosions`. | `player-editable: true` |
+| `factions.flags.fire-spread.default` | Default for the `fire-spread` flag. | `default: false` |
+| `factions.flags.fire-spread.player-editable` | Whether officers may toggle `fire-spread`. | `player-editable: true` |
+| `factions.flags.open.default` | Default for the `open` flag (open join without invite). | `default: false` |
+| `factions.flags.open.player-editable` | Whether officers may toggle `open`. | `player-editable: true` |
+
 ### `factions.chat.*`
 
 | Key | Description | Example |
@@ -114,6 +131,7 @@ This page documents all shipped configuration keys with a description and a conc
 |---|---|---|
 | `integrations.vault` | Enable Vault integration attempt. | `vault: true` |
 | `integrations.worldguard` | Enable WorldGuard integration attempt. | `worldguard: true` |
+| `integrations.worldguard-sync-regions` | Mirror faction claims as WG ProtectedCuboidRegions for native build protection (no per-event DB query for denied players). Requires WorldGuard. Restart required when toggling. | `worldguard-sync-regions: false` |
 | `integrations.dynmap` | Enable dynmap integration attempt. | `dynmap: true` |
 | `integrations.placeholderapi` | Enable PlaceholderAPI integration attempt. | `placeholderapi: true` |
 | `integrations.essentialsx.enabled` | Enable EssentialsX teleport routing for `/f home` and `/f warp`. Jailed players are blocked. Requires EssentialsX 2.19+. | `essentialsx: { enabled: false }` |

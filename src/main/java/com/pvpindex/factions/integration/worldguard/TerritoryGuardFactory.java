@@ -25,7 +25,7 @@ public final class TerritoryGuardFactory {
             return new NoopTerritoryGuard();
         }
         logger.info("WorldGuard detected — territory guard enabled.");
-        return new WorldGuardTerritoryGuard();
+        return new WorldGuardTerritoryGuard(config.isWorldGuardSyncRegions());
     }
 }
 

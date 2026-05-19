@@ -10,6 +10,45 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Changed
 
+## [1.0.8] - 2026-05-19
+
+### Added
+
+- **Faction flags** (`/f flag`, `/f flag list`, `/f flag set <flag> [on|off]`):
+  - Per-faction boolean toggles that officers can manage in-game. Five built-in flags:
+    - `pvp`: allow PvP inside the faction's claimed territory (default: `true`)
+    - `friendly-fire`: allow members to harm each other (default: `false`)
+    - `explosions`: allow explosions to destroy terrain in territory (default: `false`)
+    - `fire-spread`: allow fire to spread in territory (default: `false`)
+    - `open`: allow anyone to join without a pending invite (default: `false`)
+  - `/f flag` with no arguments shows the current flag list; `/f flag list` is an explicit alias.
+  - `/f flag set <flag>` toggles; `/f flag set <flag> on|off` sets a specific value.
+  - `/fa flag <faction> <flag> [on|off]` lets admins override any flag regardless of the
+    `player-editable` config setting.
+  - Flag defaults and player-editability are configurable per-flag under `factions.flags.*`.
+  - New permissions: `factions.cmd.flag` (default `true`), `factions.cmd.flag.set` (default `true`,
+    officer check enforced by command logic).
+  - New `messages.yml` keys: `flag.*`.
+
+  ![Faction Flags overview](https://i.ibb.co/qF7gtGBZ/image.png)
+  ![Set flag state](https://i.ibb.co/DD16mXCM/image.png)
+  ![Flag autocomplete](https://i.ibb.co/FLz53n5r/image.png)
+
+- **WorldGuard region sync** (`integrations.worldguard-sync-regions: false`, opt-in):
+  - When enabled, every faction-claimed chunk is mirrored as a `ProtectedCuboidRegion` in
+    WorldGuard on startup and kept in sync with claim, unclaim, join, leave, and disband events.
+  - WG handles block-break and block-place denial at its native `NORMAL` event priority.
+    Because the protection engine registers at `HIGH` with `ignoreCancelled = true`, enemy
+    players are denied before our handler runs; no per-event database query is needed for them.
+  - Faction members are added to their faction's regions as WG domain members so WG passes
+    their interactions transparently.
+  - Allies are handled by a dedicated `HIGHEST ignoreCancelled = false` pass that un-cancels
+    their events after a single DB lookup.
+  - Safezone and warzone chunks get WG regions with an empty member list, so WG denies all
+    building there regardless of WG membership.
+  - Requires WorldGuard to be installed and loaded. Toggling the option requires a restart.
+  - New config key: `integrations.worldguard-sync-regions` (default `false`).
+
 ## [1.0.7] - 2026-05-19
 
 ### Added

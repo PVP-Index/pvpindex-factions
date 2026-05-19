@@ -113,6 +113,30 @@ factions:
     # Players can only fly inside their own faction's territory.
     require-own-territory: true
 
+  flags:
+    # Per-faction toggleable behaviour flags.
+    # Officers can toggle flags via /f flag set unless player-editable: false.
+    pvp:
+      # Allow PvP inside this faction's claimed territory.
+      default: true
+      player-editable: true
+    friendly-fire:
+      # Allow faction members to harm each other anywhere.
+      default: false
+      player-editable: true
+    explosions:
+      # Allow explosions to destroy terrain in this faction's territory.
+      default: false
+      player-editable: true
+    fire-spread:
+      # Allow fire to spread inside this faction's territory.
+      default: false
+      player-editable: true
+    open:
+      # Allow any player to join this faction without a pending invite.
+      default: false
+      player-editable: true
+
   chat:
     # Show faction tag before player name in global chat.
     show-tag: true
@@ -168,6 +192,10 @@ factions:
 integrations:
   vault: true
   worldguard: true
+  # When true, faction claim chunks are mirrored as WorldGuard ProtectedCuboidRegions so that
+  # WG handles block-break/place protection natively (no per-event database query for members).
+  # Requires WorldGuard to be installed. Restart required when toggling.
+  worldguard-sync-regions: false
   dynmap: true
   placeholderapi: true
   essentialsx:

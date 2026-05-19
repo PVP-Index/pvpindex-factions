@@ -60,6 +60,7 @@ permissions:
       factions.cmd.claim.other: true
       factions.cmd.disband.other: true
       factions.cmd.shield: true
+      factions.cmd.flag.set: true
 
   factions.bypass:
     description: Bypass faction territory protection (build, interact, PvP).
@@ -134,6 +135,14 @@ permissions:
 
   factions.cmd.join:
     description: Join a faction via a pending invite.
+    default: true
+
+  factions.cmd.flag:
+    description: View faction flags.
+    default: true
+
+  factions.cmd.flag.set:
+    description: Toggle or set a faction flag (officer or above).
     default: true
 
   factions.cmd.leave:

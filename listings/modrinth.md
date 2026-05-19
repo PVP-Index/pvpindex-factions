@@ -80,6 +80,12 @@ You keep the Factions gameplay loop, but gain a modern operational foundation.
 - Warp listing/set/delete flows
 - Compatibility-oriented command structure for player familiarity
 
+### Faction flags
+
+- Per-faction boolean toggles: `pvp`, `friendly-fire`, `explosions`, `fire-spread`, `open`
+- Officers manage flags in-game with `/f flag set`; defaults and editability configurable per-flag
+- Admins override any flag via `/fa flag` regardless of the player-editable setting
+
 ### Power and war mechanics
 
 - Configurable power model with per-player max, regen rate, loss on death, and grace period
@@ -182,6 +188,18 @@ Faction info:
 Top tab-complete:
 
 ![PvPIndex Factions top tabcomplete](https://i.ibb.co/5XY0cN0X/image.png)
+
+Faction Flags:
+
+![Faction Flags overview](https://i.ibb.co/qF7gtGBZ/image.png)
+
+Set flag state:
+
+![Set flag state](https://i.ibb.co/DD16mXCM/image.png)
+
+Flag autocomplete:
+
+![Flag autocomplete](https://i.ibb.co/FLz53n5r/image.png)
 
 ## Commands at a glance
 
