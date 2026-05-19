@@ -1,7 +1,9 @@
 package com.pvpindex.factions.command.sub;
 
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 
 import com.pvpindex.factions.command.CommandTestBase;
 import com.pvpindex.factions.config.GuiConfig;
@@ -9,18 +11,22 @@ import com.pvpindex.factions.gui.FactionsGuiManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.pvpindex.factions.command.StorageTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("CmdGui - /f gui [menu]")
 class CmdGuiTest extends CommandTestBase {
 
+
     @Mock private FactionsGuiManager guiManager;
 
+
     private CmdGui cmd;
+
 
     @BeforeEach
     void setUp() {
@@ -32,7 +38,8 @@ class CmdGuiTest extends CommandTestBase {
         cmd = new CmdGui(guiManager, guiConfig);
     }
 
-    @Test
+
+    @StorageTest
     @DisplayName("opens default menu without args")
     void opensDefaultWithoutArgs() {
         when(guiManager.openMenu(player, "main")).thenReturn(true);
@@ -40,7 +47,8 @@ class CmdGuiTest extends CommandTestBase {
         verify(guiManager).openMenu(player, "main");
     }
 
-    @Test
+
+    @StorageTest
     @DisplayName("opens requested menu")
     void opensRequestedMenu() {
         when(guiManager.openMenu(player, "admin")).thenReturn(true);

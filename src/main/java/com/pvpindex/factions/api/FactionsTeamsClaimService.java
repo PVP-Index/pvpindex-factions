@@ -253,6 +253,88 @@ public class FactionsTeamsClaimService implements TeamsClaimService {
     }
 
     // -------------------------------------------------------------------------
+    // Special territory support — SafeZone and WarZone (TeamsAPI 1.7+)
+    // -------------------------------------------------------------------------
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Claims the chunk using the internal {@link FactionModel#SAFEZONE_ID}
+     * sentinel so that existing engine code recognises it as safe-zone
+     * territory.  Any chunk already claimed (regardless of owner) is
+     * overwritten; the caller is expected to check first if needed.</p>
+     */
+    @Override
+    public boolean claimSafeZone(
+            final UUID actorUUID,
+            final String worldName,
+            final int chunkX,
+            final int chunkZ) {
+        try {
+            repos.board().claimChunk(worldName, chunkX, chunkZ, FactionModel.SAFEZONE_ID);
+            return true;
+        } catch (StorageException e) {
+            logger.log(Level.SEVERE,
+                "Failed to claim safe zone chunk at " + worldName + ":" + chunkX + ":" + chunkZ, e);
+            return false;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Claims the chunk using the internal {@link FactionModel#WARZONE_ID}
+     * sentinel so that existing engine code recognises it as war-zone
+     * territory.</p>
+     */
+    @Override
+    public boolean claimWarZone(
+            final UUID actorUUID,
+            final String worldName,
+            final int chunkX,
+            final int chunkZ) {
+        try {
+            repos.board().claimChunk(worldName, chunkX, chunkZ, FactionModel.WARZONE_ID);
+            return true;
+        } catch (StorageException e) {
+            logger.log(Level.SEVERE,
+                "Failed to claim war zone chunk at " + worldName + ":" + chunkX + ":" + chunkZ, e);
+            return false;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Removes a SafeZone or WarZone chunk. Returns {@code false} if the chunk
+     * is not currently a special territory.</p>
+     */
+    @Override
+    public boolean unclaimSpecialZone(
+            final UUID actorUUID,
+            final String worldName,
+            final int chunkX,
+            final int chunkZ) {
+        try {
+            final var existing = repos.board().findByChunk(worldName, chunkX, chunkZ);
+            if (existing.isEmpty()) {
+                return false;
+            }
+            final String factionId = existing.get().getFactionId();
+            if (!FactionModel.SAFEZONE_ID.equals(factionId)
+                    && !FactionModel.WARZONE_ID.equals(factionId)) {
+                return false;
+            }
+            repos.board().unclaimChunk(worldName, chunkX, chunkZ);
+            return true;
+        } catch (StorageException e) {
+            logger.log(Level.SEVERE,
+                "Failed to unclaim special zone chunk at " + worldName + ":" + chunkX + ":" + chunkZ, e);
+            return false;
+        }
+    }
+
+    // -------------------------------------------------------------------------
     // Private helpers
     // -------------------------------------------------------------------------
 

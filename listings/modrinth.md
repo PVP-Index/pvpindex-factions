@@ -4,7 +4,7 @@ The goal is simple: revive Factions with a timeless architecture, reliable persi
 
 If you love classic Factions gameplay but need something maintainable, scalable, and integration-ready, PvPIndex Factions is built for exactly that.
 
-> **TeamsAPI integration available** - PvPIndex Factions connects natively with TeamsAPI to expose faction data to other compatible plugins and services. [Download TeamsAPI on Modrinth →](https://modrinth.com/plugin/teams-api)
+> **TeamsAPI integration available** - PvPIndex Factions connects natively with TeamsAPI to expose faction data to other compatible plugins and services, including the 1.8.0 power history service. [Download TeamsAPI on Modrinth →](https://modrinth.com/plugin/teams-api)
 
 ## Supported platforms
 
@@ -79,6 +79,17 @@ You keep the Factions gameplay loop, but gain a modern operational foundation.
 - Faction home and warp management
 - Warp listing/set/delete flows
 - Compatibility-oriented command structure for player familiarity
+
+### Power and war mechanics
+
+- Configurable power model with per-player max, regen rate, loss on death, and grace period
+- Optional kill power rewards, with configurable flat or scaled amounts (scale rewards by victim/killer power ratio)
+- Optional death streak multiplier — consecutive deaths in a short window incur escalating loss
+- Optional inactive member exclusion — long-offline members do not count toward max-land
+- Overclaiming with enemy-relation guard and optional offline protection (block raids when all defenders are offline)
+- Raidable state broadcast — members (and optionally the server) are notified when a faction crosses the raidable threshold
+- War shield system — admins assign a daily UTC protection window; during the window territory cannot be overclaimed
+- `/f powerhistory` — paginated per-player power change log (alias: `/f phist`); shows death, kill, and passive-regen events
 
 ### Notifications and QoL
 

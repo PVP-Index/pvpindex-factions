@@ -32,7 +32,7 @@ The plugin starts without any of these. Each integration is enabled only when th
 | Vault | Economy costs for faction creation and land claiming |
 | WorldGuard / WorldEdit | Territory protection hooks |
 | PlaceholderAPI | Faction placeholders for scoreboards and chat |
-| TeamsAPI | Team synchronization adapter |
+| TeamsAPI | Team synchronization adapter; exposes faction, power, and power-history data through a standard API surface (1.8.0+ for power history) |
 | EssentialsX | Route `/f home` through the Essentials teleport system |
 | dynmap | Render faction territory on the dynmap web map |
 | EzEconomy | Alternative economy provider |
@@ -157,6 +157,8 @@ Admin commands use `/fa` (aliases: `/factionadmin`) and require the `factions.ad
 | `bank withdraw <amount>` | Withdraw money from the faction bank |
 | `bank transfer <faction> <amount>` | Transfer money to another faction's bank |
 | `bank history` | View recent bank transactions |
+| `power` | Show your current power |
+| `powerhistory [player] [page]` | View power change history (alias: `phist`) |
 
 ### Admin commands (`/fa`)
 
@@ -168,6 +170,10 @@ Admin commands use `/fa` (aliases: `/factionadmin`) and require the `factions.ad
 | `claim <faction>` | Force-claim the current chunk for a faction |
 | `unclaim` | Force-unclaim the current chunk |
 | `disband <faction>` | Force-disband any faction |
+| `safezone [one\|square\|circle\|remove] [radius]` | Assign / remove safe zone chunks |
+| `warzone [one\|square\|circle\|remove] [radius]` | Assign / remove war zone chunks |
+| `shield <faction> <start-hour> <duration-hours>` | Set a daily UTC war shield window |
+| `shield <faction> clear` | Remove a faction's war shield |
 
 ---
 

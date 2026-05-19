@@ -119,6 +119,36 @@ public class EngineChunkChange {
                                 "faction", candidate.getName()));
                             return false;
                         }
+                        // F5: Offline protection — block overclaim while all defenders are offline
+                        if (config.isOfflineProtectionEnabled()) {
+                            final boolean hasOnline = repos.players()
+                                    .findByFactionId(existingFactionId).stream()
+                                    .anyMatch(m -> {
+                                        try {
+                                            return Bukkit.getPlayer(
+                                                    java.util.UUID.fromString(m.getId())) != null;
+                                        } catch (IllegalArgumentException ignored) {
+                                            return false;
+                                        }
+                                    });
+                            if (!hasOnline) {
+                                MsgUtil.send(player, MsgUtil.replace(
+                                    MsgUtil.message("claim.enemy-offline-protected",
+                                        "<red>{faction} is offline — you cannot overclaim"
+                                        + " their land while all members are offline."),
+                                    "faction", candidate.getName()));
+                                return false;
+                            }
+                        }
+                        // F6: War shield — block overclaim during the faction's protection window
+                        if (config.isWarShieldEnabled() && candidate.isShieldActive()) {
+                            MsgUtil.send(player, MsgUtil.replace(
+                                MsgUtil.message("claim.shield-active",
+                                    "<red>{faction} has an active war shield"
+                                    + " — their territory is protected right now."),
+                                "faction", candidate.getName()));
+                            return false;
+                        }
                         victimFaction = candidate;
                     }
                     // victimFaction null means victim row is gone — allow the claim to clean it up
@@ -251,12 +281,24 @@ public class EngineChunkChange {
     /**
      * Max land = total faction power (sum of member power + faction power boost) / land-per-power ratio.
      *
-     * <p>Bug fix #1 and #5: always computed real-time from the DB, never cached.
+     * <p>Bug fix #1 and #5: always computed real-time from the DB, never cached.</p>
+     *
+     * <p>F1 — inactive exclusion: members offline longer than the configured threshold do
+     * not contribute to the total, discouraging dead factions from holding territory.</p>
      */
     private int computeMaxLand(final FactionModel faction, final String factionId)
             throws StorageException {
         double totalPower = faction.getPowerBoost();
+        final boolean inactiveExclude = config.isPowerInactiveExclusionEnabled();
+        final long inactiveMs = config.getPowerInactiveDays() * 24L * 3600L * 1000L;
+        final long now = System.currentTimeMillis();
         for (final PlayerModel pm : repos.players().findByFactionId(factionId)) {
+            if (inactiveExclude) {
+                final long last = pm.getLastActivity();
+                if (last > 0 && now - last > inactiveMs) {
+                    continue; // member too inactive — skip their power
+                }
+            }
             totalPower += pm.getPower();
         }
         final double landPerPower = config.getLandPerPower();

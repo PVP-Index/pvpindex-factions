@@ -34,6 +34,8 @@ public class RankModel extends Model {
 
     public RankModel(final String id) {
         super(id);
+        // Ensure NOT NULL database columns always have explicit values on first save.
+        setPriority(PRIORITY_MEMBER);
     }
 
     // -------------------------------------------------------------------------

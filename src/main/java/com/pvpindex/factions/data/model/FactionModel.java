@@ -36,7 +36,10 @@ public class FactionModel extends Model {
         Map.entry("home_y", "DOUBLE"),
         Map.entry("home_z", "DOUBLE"),
         Map.entry("home_yaw", "FLOAT"),
-        Map.entry("home_pitch", "FLOAT")
+        Map.entry("home_pitch", "FLOAT"),
+        Map.entry("is_raidable", "TINYINT NOT NULL DEFAULT 0"),
+        Map.entry("shield_start_hour", "INT"),
+        Map.entry("shield_duration_hours", "INT NOT NULL DEFAULT 0")
     );
 
     /** Special sentinel ID for the "wilderness" (no faction). */
@@ -50,6 +53,15 @@ public class FactionModel extends Model {
 
     public FactionModel(final String id) {
         super(id);
+        // Ensure NOT NULL database columns always have explicit values on first save,
+        // matching the column DEFAULT declarations in COLUMNS. Jaloquent serialises all
+        // registered columns in the INSERT, so any unset column is passed as NULL — the
+        // database DEFAULT is ignored and the NOT NULL constraint fires (H2 error 23502).
+        setRaidable(false);
+        setShieldDurationHours(0);
+        setPowerBoost(0.0);
+        setMoney(0.0);
+        setCreatedAt(0L);
     }
 
     // -------------------------------------------------------------------------
@@ -227,5 +239,71 @@ public class FactionModel extends Model {
 
     public boolean isNormal() {
         return !isWilderness() && !isSafeZone() && !isWarZone();
+    }
+
+    // -------------------------------------------------------------------------
+    // Raidable state (F4)
+    // -------------------------------------------------------------------------
+
+    /** Persisted raidable flag — updated by the power-tick engine on each transition. */
+    public boolean isRaidable() {
+        return getAs("is_raidable", Integer.class, 0) == 1;
+    }
+
+    public void setRaidable(final boolean raidable) {
+        set("is_raidable", raidable ? 1 : 0);
+    }
+
+    // -------------------------------------------------------------------------
+    // War shield (F6)
+    // -------------------------------------------------------------------------
+
+    /**
+     * UTC start hour (0–23) of the daily war shield window, or {@code null} when no
+     * shield has been configured.
+     */
+    public Integer getShieldStartHour() {
+        return getAs("shield_start_hour", Integer.class, null);
+    }
+
+    public void setShieldStartHour(final Integer hour) {
+        set("shield_start_hour", hour);
+    }
+
+    /**
+     * Duration in hours of the war shield window. {@code 0} means no shield is active.
+     */
+    public int getShieldDurationHours() {
+        return getAs("shield_duration_hours", Integer.class, 0);
+    }
+
+    public void setShieldDurationHours(final int hours) {
+        set("shield_duration_hours", hours);
+    }
+
+    /**
+     * Returns {@code true} if this faction's war shield is currently active.
+     *
+     * <p>The shield covers a rolling window of {@link #getShieldDurationHours()} UTC hours
+     * starting at {@link #getShieldStartHour()}. The check wraps around midnight.</p>
+     */
+    public boolean isShieldActive() {
+        final int duration = getShieldDurationHours();
+        if (duration <= 0) {
+            return false;
+        }
+        final Integer start = getShieldStartHour();
+        if (start == null) {
+            return false;
+        }
+        final int current = java.time.ZonedDateTime
+                .now(java.time.ZoneOffset.UTC).getHour();
+        final int base = ((start % 24) + 24) % 24;
+        for (int i = 0; i < duration; i++) {
+            if ((base + i) % 24 == current) {
+                return true;
+            }
+        }
+        return false;
     }
 }

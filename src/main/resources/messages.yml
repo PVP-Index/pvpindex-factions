@@ -94,6 +94,8 @@ claim:
   overclaimed: "<green>You overclaimed a chunk from <yellow>{faction}<green>!"
   overclaimed-victim: "<red><yellow>{attacker}<red> overclaimed a chunk from your territory! <yellow>{remaining}<red> chunk(s) remain."
   enemy-not-raidable: "<red>{faction} still has enough power — you cannot overclaim their land yet."
+  enemy-offline-protected: "<red>{faction} is offline — you cannot overclaim their land while all members are offline."
+  shield-active: "<red>{faction} has an active war shield — their territory is protected right now."
   enter-faction: "<gray>Entering <yellow>{faction}</yellow> territory."
   enter-wilderness: "<gray>Entering <green>Wilderness</green>."
   enter-safezone: "<gray>Entering <aqua>Safe Zone</aqua>."
@@ -162,6 +164,19 @@ power:
   buy-invalid-amount: "<red>Enter a positive amount (max <yellow>{max}<red> per purchase)."
   buy-already-max: "<red>You already have maximum power."
   buy-insufficient-funds: "<red>You need <yellow>{cost}<red> to buy that much power."
+  death-streak-penalty: "<red>Death streak x{streak}! You lost <yellow>{amount}<red> power."
+  history-empty: "<yellow>No power history found for <white>{name}<yellow>."
+  history-console-usage: "<red>Specify a player: <yellow>/f powerhistory <player> [page]"
+  history-header: "<gold>== Power History: <yellow>{name}<gold> (Page {page}) =="
+  history-entry-gain: "<dark_aqua>{time}  <white>{reason}  <green>{delta}  <gray>\u2192  <white>{power_after}"
+  history-entry-loss: "<dark_aqua>{time}  <white>{reason}  <red>{delta}  <gray>\u2192  <white>{power_after}"
+  history-storage-error: "<red>A storage error occurred. Please try again."
+
+raidable:
+  became-raidable: "<red>\u26a0 Your faction is now raidable! Enemies can overclaim your land."
+  no-longer-raidable: "<green>\u2714 Your faction is no longer raidable."
+  server-announce: "<red>\u26a0 <yellow>{faction}</yellow> is now raidable!"
+  server-announce-recovered: "<green>\u2714 <yellow>{faction}</yellow> is no longer raidable."
 
 fly:
   enabled: "<green>Faction fly enabled."
@@ -188,6 +203,13 @@ admin:
   bypass-enabled: "<gold>[Admin] Bypass enabled."
   bypass-disabled: "<gold>[Admin] Bypass disabled."
   reload: "<green>Configuration reloaded."
+
+shield:
+  set: "<green>War shield set for <yellow>{faction}</yellow>: <white>{start}:00 UTC</white> for <white>{duration}h</white>."
+  cleared: "<yellow>War shield cleared for <white>{faction}</white>."
+  feature-disabled: "<red>War shields are not enabled on this server."
+  invalid-hour: "<red>Start hour must be 0\u201323."
+  invalid-duration: "<red>Duration must be 1\u2013{max} hours."
 
 notifications:
   inbox-header: "<gold>Missed faction notifications (<white>{count}</white>):"

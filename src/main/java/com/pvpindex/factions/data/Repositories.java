@@ -7,6 +7,7 @@ import com.pvpindex.factions.data.repository.FactionInboxRepository;
 import com.pvpindex.factions.data.repository.FactionRepository;
 import com.pvpindex.factions.data.repository.InvitationRepository;
 import com.pvpindex.factions.data.repository.PlayerRepository;
+import com.pvpindex.factions.data.repository.PowerHistoryRepository;
 import com.pvpindex.factions.data.repository.RankRepository;
 import com.pvpindex.factions.data.repository.WarpRepository;
 
@@ -26,6 +27,7 @@ public class Repositories {
     private final InvitationRepository invitations;
     private final RankRepository ranks;
     private final BankTransactionRepository bankTransactions;
+    private final PowerHistoryRepository powerHistory;
     private final FactionInboxRepository inbox;
 
     public Repositories(final DataSourceJdbcStore store) {
@@ -36,6 +38,7 @@ public class Repositories {
         this.invitations = new InvitationRepository(store);
         this.ranks = new RankRepository(store);
         this.bankTransactions = new BankTransactionRepository(store);
+        this.powerHistory = new PowerHistoryRepository(store);
         this.inbox = new FactionInboxRepository(store);
     }
 
@@ -65,6 +68,10 @@ public class Repositories {
 
     public BankTransactionRepository bankTransactions() {
         return bankTransactions;
+    }
+
+    public PowerHistoryRepository powerHistory() {
+        return powerHistory;
     }
 
     public FactionInboxRepository inbox() {

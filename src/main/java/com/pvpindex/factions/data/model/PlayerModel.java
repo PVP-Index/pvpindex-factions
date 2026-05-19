@@ -25,7 +25,9 @@ public class PlayerModel extends Model {
         Map.entry("territory_titles", "TINYINT NOT NULL DEFAULT 1"),
         Map.entry("auto_territory_mode", "TINYINT NOT NULL DEFAULT 0"),
         Map.entry("notify_invites", "TINYINT NOT NULL DEFAULT 1"),
-        Map.entry("notify_bank_tax", "TINYINT NOT NULL DEFAULT 1")
+        Map.entry("notify_bank_tax", "TINYINT NOT NULL DEFAULT 1"),
+        Map.entry("last_death_at", "BIGINT NOT NULL DEFAULT 0"),
+        Map.entry("death_streak", "TINYINT NOT NULL DEFAULT 0")
     );
 
     public PlayerModel(final String id) {
@@ -40,6 +42,8 @@ public class PlayerModel extends Model {
         setAutoTerritoryMode(AutoTerritoryMode.OFF);
         setInviteNotifications(true);
         setBankTaxNotifications(true);
+        setLastDeathAt(0L);
+        setDeathStreak(0);
     }
 
     // -------------------------------------------------------------------------
@@ -144,6 +148,27 @@ public class PlayerModel extends Model {
 
     public void setBankTaxNotifications(final boolean enabled) {
         set("notify_bank_tax", enabled ? 1 : 0);
+    }
+
+    /** Epoch-millis timestamp of the player's most recent death. */
+    public long getLastDeathAt() {
+        return getAs("last_death_at", Long.class, 0L);
+    }
+
+    public void setLastDeathAt(final long lastDeathAt) {
+        set("last_death_at", lastDeathAt);
+    }
+
+    /**
+     * How many consecutive deaths have occurred within the current streak window.
+     * {@code 0} means the previous death was outside the window (or never).
+     */
+    public int getDeathStreak() {
+        return getAs("death_streak", Integer.class, 0);
+    }
+
+    public void setDeathStreak(final int streak) {
+        set("death_streak", streak);
     }
 
     public AutoTerritoryMode getAutoTerritoryMode() {

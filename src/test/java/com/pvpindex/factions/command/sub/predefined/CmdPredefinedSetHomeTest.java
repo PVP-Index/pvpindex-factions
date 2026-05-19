@@ -1,0 +1,91 @@
+package com.pvpindex.factions.command.sub.predefined;
+
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.pvpindex.factions.command.CommandTestBase;
+import com.pvpindex.factions.command.StorageTest;
+import com.pvpindex.factions.predefined.PredefinedConfigManager;
+import java.nio.file.Path;
+import java.util.logging.Logger;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+@DisplayName("CmdPredefinedSetHome — /f predefined sethome <faction>")
+class CmdPredefinedSetHomeTest extends CommandTestBase {
+
+    @TempDir Path tempDir;
+
+    @Mock private Location location;
+    @Mock private World world;
+
+    private CmdPredefinedSetHome cmd;
+
+    @BeforeEach
+    void setUp() {
+        cmd = new CmdPredefinedSetHome();
+        when(player.getLocation()).thenReturn(location);
+        when(location.getWorld()).thenReturn(world);
+        when(world.getName()).thenReturn("world");
+    }
+
+    @AfterEach
+    void tearDown() {
+        PredefinedConfigManager.setInstance(null);
+    }
+
+    @StorageTest
+    @DisplayName("predefined disabled — disabled message")
+    void testDisabled() {
+        cmd.execute(ctx("Spawn"));
+
+        verify(player).sendMessage(argThat(componentContains("disabled")));
+    }
+
+    @StorageTest
+    @DisplayName("unknown predefined faction — error message")
+    void testUnknownFaction() throws Exception {
+        final YamlConfiguration cfg = new YamlConfiguration();
+        cfg.set("enabled", true);
+        cfg.save(tempDir.resolve("pre-defined.yml").toFile());
+        final PredefinedConfigManager mgr =
+            new PredefinedConfigManager(tempDir.toFile(), Logger.getLogger("test"));
+        mgr.reload();
+        PredefinedConfigManager.setInstance(mgr);
+
+        cmd.execute(ctx("Spawn"));
+
+        verify(player).sendMessage(argThat(componentContains("Unknown")));
+    }
+
+    @StorageTest
+    @DisplayName("success — home saved for predefined faction")
+    void testSetHomeSuccess() throws Exception {
+        final YamlConfiguration cfg = new YamlConfiguration();
+        cfg.set("enabled", true);
+        cfg.set("factions.spawn.name", "Spawn");
+        cfg.set("factions.spawn.created", false);
+        cfg.save(tempDir.resolve("pre-defined.yml").toFile());
+        final PredefinedConfigManager mgr =
+            new PredefinedConfigManager(tempDir.toFile(), Logger.getLogger("test"));
+        mgr.reload();
+        PredefinedConfigManager.setInstance(mgr);
+
+        cmd.execute(ctx("Spawn"));
+
+        verify(player).sendMessage(argThat(componentContains("Saved")));
+    }
+}

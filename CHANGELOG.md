@@ -20,14 +20,14 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   server software.
 - Operator join notification when an update is available, including clickable release URL output.
 - New update config keys:
-  - `factions.updates.enabled` (default `false` — opt-in)
+  - `factions.updates.enabled` (default `false` - opt-in)
   - `factions.updates.notify-ops-on-join` (default `false`)
 - New message keys:
   - `update.available`
   - `update.url`
-- **DiscordSRV integration** (`integrations.discordsrv.enabled: true`):
+- **[DiscordSRV](https://modrinth.com/plugin/discordsrv) integration** (`integrations.discordsrv.enabled: true`):
   - Faction create, disband, ally, truce, and enemy-declared events are broadcast to a
-    Discord channel via DiscordSRV (pure reflection — no hard compile-time dependency).
+    Discord channel via DiscordSRV (pure reflection - no hard compile-time dependency).
   - Per-event toggles and Discord-markdown message templates are configurable in `config.yml`
     under `integrations.discordsrv.events.*`.
   - `channel-id` key routes messages to a specific text channel; leave empty to use DiscordSRV's
@@ -40,7 +40,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
     - `integrations.discordsrv.events.relation-ally.enabled` / `.message`
     - `integrations.discordsrv.events.relation-truce.enabled` / `.message`
     - `integrations.discordsrv.events.relation-enemy.enabled` / `.message`
-- **EssentialsX integration overhaul** (`integrations.essentialsx.enabled: true`):
+- **[EssentialsX](https://modrinth.com/plugin/essentialsx) integration overhaul** (`integrations.essentialsx.enabled: true`):
   - `/f warp` teleports now route through EssentialsX alongside `/f home`.
   - EssentialsX `/back` location is recorded before every teleport so players can return with `/back`.
   - Jailed players are blocked from `/f home` and `/f warp` with a message.
@@ -49,11 +49,11 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
     `warp.teleported`, `warp.teleport-failed`, `warp.jailed`.
 - **Safe zones and war zones** (`factions.zones.safe-zone.enabled`, `factions.zones.war-zone.enabled`):
   - Both zones are enabled by default. Disabling a zone causes its chunks to behave as
-    Wilderness — protection, PvP rules, and power-loss suppression are all inactive.
+    Wilderness - protection, PvP rules, and power-loss suppression are all inactive.
   - New admin commands `/fa safezone` and `/fa warzone` let operators assign chunks to each
     zone in one-shot, square, or circle modes (with an optional `remove` sub-mode).
   - New permissions: `factions.cmd.safezone`, `factions.cmd.warzone` (default `op`).
-- **Overclaiming** (`factions.overclaiming.enabled: false` — opt-in):
+- **Overclaiming** (`factions.overclaiming.enabled: false` - opt-in):
   - When enabled, a faction can claim an enemy's chunk if the victim's land count exceeds
     their current maximum land (power-based). Border adjacency is waived for overclaims.
   - Optional guard `factions.overclaiming.require-enemy-relation: true` restricts overclaims
@@ -64,9 +64,61 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
     overclaim so third-party plugins can observe the event.
   - New `messages.yml` keys: `claim.overclaimed`, `claim.overclaimed-victim`,
     `claim.enemy-not-raidable`.
+- **Power and war improvements** - six optional, independently toggleable features that
+  improve PvP/raiding pacing. All are disabled by default:
+  - **F1 - Inactive member exclusion** (`factions.power.inactive-exclusion.enabled: false`):
+    members who have been offline longer than `inactive-exclusion.days` do not contribute to
+    the faction's max-land calculation. Their stored power is unchanged; only the land-cap
+    computation skips them, discouraging dead factions from holding territory indefinitely.
+  - **F2 - Death streak multiplier** (`factions.power.death-streak.enabled: false`):
+    consecutive deaths within a rolling `window-seconds` window each multiply the power loss
+    by `multiplier^streak`. After the window expires the streak resets. A separate
+    `power.death-streak-penalty` message is sent on streak deaths.
+    Persisted in two new `PlayerModel` columns: `last_death_at`, `death_streak`.
+  - **F3 - Scaled kill rewards** (`factions.power.gain-on-kill.scale.enabled: false`):
+    kill power gain is multiplied by `clamp(victimPower / killerPower, min-factor, max-factor)`.
+    Rewarding high-risk kills and reducing farming incentive.
+  - **F4 - Raidable state broadcast** (`factions.raidable.broadcast.enabled: true`):
+    after each power tick, the engine detects factions that cross the raidable threshold and
+    notifies members. Optional `server-wide: true` broadcasts to all online players.
+    The raidable flag is persisted in a new `FactionModel` column: `is_raidable`.
+  - **F5 - Offline protection** (`factions.overclaiming.offline-protection.enabled: false`):
+    blocks overclaiming when all members of the defending faction are currently offline,
+    preventing pure offline raiding.
+  - **F6 - War shield** (`factions.war.shield.enabled: false`):
+    a faction may be assigned a daily UTC protection window by an admin using the new
+    `/fa shield <faction> <start-hour> <duration-hours>` command. During the window the
+    faction's land cannot be overclaimed. Persisted in two new `FactionModel` columns:
+    `shield_start_hour`, `shield_duration_hours`.
+  - New admin command: `/fa shield <faction> <clear|<start-hour (0-23)> <duration-hours>>`.
+  - New permission: `factions.cmd.shield` (default `op`, child of `factions.admin`).
+  - New `config.yml` keys:
+    - `factions.power.inactive-exclusion.enabled` / `.days`
+    - `factions.power.death-streak.enabled` / `.window-seconds` / `.multiplier`
+    - `factions.power.gain-on-kill.scale.enabled` / `.min-factor` / `.max-factor`
+    - `factions.raidable.broadcast.enabled` / `.server-wide`
+    - `factions.overclaiming.offline-protection.enabled`
+    - `factions.war.shield.enabled` / `.max-duration-hours`
+  - New `messages.yml` keys: `power.death-streak-penalty`, `raidable.*`, `shield.*`,
+    `claim.enemy-offline-protected`, `claim.shield-active`.
+- **`/f powerhistory [<player>] [<page>]`** (`alias: phist`):
+  shows a paginated log of significant power changes (death, kill, and purchase events).
+  Players can view their own history without any extra permission.
+  Viewing another player's history requires `factions.cmd.power.history.other` (default `op`).
+  All message templates are configurable in `messages.yml` under `power.history-*`.
+- **[TeamsAPI](https://modrinth.com/plugin/teams-api) 1.8.0 power history provider**: when TeamsAPI 1.8.0+ is present the plugin
+  registers a `TeamsPowerHistoryService` implementation that exposes all recorded power-change
+  events through the standard TeamsAPI surface.
+  Consumer plugins can read player and team history, filter by time range, add external
+  entries, and remove or clear records without touching the database directly.
+  The provider is registered reflectively so servers running TeamsAPI 1.7.x or earlier
+  start cleanly and the provider is silently skipped.
+  New permissions: `factions.cmd.power.history` (default `true`),
+  `factions.cmd.power.history.other` (default `op`).
 
 ### Changed
 
+- **[TeamsAPI](https://modrinth.com/plugin/teams-api) dependency updated to 1.8.0** (was 1.7.0).
 - Update notifier library is now explicitly relocated in shading:
   `com.github.ezplugins.updater` -> `com.pvpindex.lib.updater`, preventing runtime classpath conflicts.
 - Update check is **disabled by default** (`factions.updates.enabled: false`). Opt in by setting it
@@ -74,7 +126,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - `factions.updates.modrinth-slug`, `factions.updates.github-owner`, and
   `factions.updates.github-repo` are no longer exposed as config keys; the values are hardcoded
   in the plugin and the config entries are ignored if present.
-- EssentialsX interop now uses the compile-time EssentialsX API instead of reflection, making
+- [EssentialsX](https://modrinth.com/plugin/essentialsx) interop now uses the compile-time EssentialsX API instead of reflection, making
   it resilient to future EssentialsX API changes and easier to diagnose when something breaks.
 - Plugin validates that the plugin named `Essentials` actually implements `IEssentials` before
   enabling the integration; logs a warning and falls back to noop if not.
@@ -116,13 +168,13 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   All scheduled tasks use a new scheduler abstraction that automatically picks the correct
   Bukkit or Folia scheduler at runtime. `plugin.yml` now declares `folia-supported: true`.
 - **Correct chat formatting on Spigot**: chat-format events are now handled through the right
-  API on each platform — `AsyncChatEvent` on Paper and `AsyncPlayerChatEvent` on Spigot.
+  API on each platform - `AsyncChatEvent` on Paper and `AsyncPlayerChatEvent` on Spigot.
 
 ### Fixed
 
 - **Plugin did not start when TeamsAPI or EzCountdown were absent**:
   Servers without TeamsAPI or EzCountdown installed logged `NoClassDefFoundError` at startup
-  and the plugin failed to load entirely. Both integrations are now fully isolated — the plugin
+  and the plugin failed to load entirely. Both integrations are now fully isolated - the plugin
   always starts cleanly and activates each integration only when its plugin is present.
 
 - **Plugin did not start on Spigot** (`NoClassDefFoundError` at startup):

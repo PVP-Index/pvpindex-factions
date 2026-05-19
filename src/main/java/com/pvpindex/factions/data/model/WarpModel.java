@@ -28,6 +28,13 @@ public class WarpModel extends Model {
 
     public WarpModel(final String id) {
         super(id);
+        // Ensure NOT NULL database columns always have explicit values on first save.
+        setX(0.0);
+        setY(64.0);
+        setZ(0.0);
+        setYaw(0.0f);
+        setPitch(0.0f);
+        setCreatedAt(0L);
     }
 
     // -------------------------------------------------------------------------

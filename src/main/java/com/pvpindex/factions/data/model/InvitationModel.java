@@ -23,6 +23,8 @@ public class InvitationModel extends Model {
 
     public InvitationModel(final String id) {
         super(id);
+        // Ensure NOT NULL database columns always have explicit values on first save.
+        setCreatedAt(0L);
     }
 
     // -------------------------------------------------------------------------

@@ -2,7 +2,7 @@ PvPIndex Factions is a long-term modernization of the classic Factions experienc
 
 The mission is to revive Factions as an API-connectable, timeless, and production-ready plugin while preserving the gameplay identity players already love.
 
-[QUOTE][B]TeamsAPI integration available[/B] - PvPIndex Factions connects natively with TeamsAPI to expose faction data to other compatible plugins and services. [URL='https://modrinth.com/plugin/teams-api']Download TeamsAPI on Modrinth →[/URL][/QUOTE]
+[QUOTE][B]TeamsAPI integration available[/B] - PvPIndex Factions connects natively with TeamsAPI to expose faction data to other compatible plugins and services, including the 1.8.0 power history service. [URL='https://modrinth.com/plugin/teams-api']Download TeamsAPI on Modrinth →[/URL][/QUOTE]
 
 [B]Supported platforms[/B]
 [LIST]
@@ -56,6 +56,18 @@ Faction lifecycle[/B]
 [*]Claim and unclaim with one/square/circle/fill/auto variants
 [*]Map-centered territory interaction and visibility
 [*]Territory context messaging for better player clarity
+[*]Overclaiming with enemy-relation guard, offline protection, and war shield support
+[/LIST]
+
+[B]Power and war mechanics[/B]
+[LIST]
+[*]Configurable power model: per-player max, regen rate, loss on death, grace period
+[*]Optional kill power rewards — flat or scaled by victim/killer power ratio
+[*]Optional death streak multiplier — escalating loss for consecutive deaths
+[*]Optional inactive member exclusion — long-offline members excluded from max-land
+[*]Raidable state broadcast — notify members (and optionally the server) on threshold crossing
+[*]War shield system — admins set a daily UTC protection window per faction
+[*]/f powerhistory — paginated per-player power change log (alias: /f phist); shows death, kill, and passive-regen events
 [/LIST]
 
 [B]Economy and bank[/B]

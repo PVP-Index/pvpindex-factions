@@ -1,11 +1,13 @@
 package com.pvpindex.factions.command.sub;
 
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 
 import com.github.ezframework.jaloquent.exception.StorageException;
 import com.pvpindex.factions.command.CommandTestBase;
@@ -20,26 +22,30 @@ import java.util.UUID;
 import org.bukkit.command.CommandSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.pvpindex.factions.command.StorageTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @DisplayName("CmdInfo — /f info [name]")
 class CmdInfoTest extends CommandTestBase {
+
 
     @Mock private FactionService factionService;
     @Mock private FactionModel faction;
     @Mock private PlayerRepository playerRepository;
     @Mock private BoardRepository boardRepository;
 
+
     private CmdInfo cmd;
     private final UUID uuid = UUID.randomUUID();
     private final String factionId = UUID.randomUUID().toString();
+
 
     @BeforeEach
     void setUp() throws StorageException {
@@ -70,12 +76,15 @@ class CmdInfoTest extends CommandTestBase {
         when(boardRepository.countByFactionId(factionId)).thenReturn(5);
     }
 
-    @Test
+
+    @StorageTest
     @DisplayName("player — own faction info shown")
     void testPlayerOwnFaction() throws StorageException {
         when(factionService.getFactionByPlayer(uuid)).thenReturn(Optional.of(faction));
 
+
         cmd.execute(ctx());
+
 
         verify(player).sendMessage(argThat(componentContains("Alpha")));
         verify(player).sendMessage(argThat(componentContains("Members")));
@@ -87,7 +96,8 @@ class CmdInfoTest extends CommandTestBase {
         verify(player).sendMessage(argThat(componentContains("Allies")));
     }
 
-    @Test
+
+    @StorageTest
     @DisplayName("optional relation types shown when enabled")
     void testOptionalRelationTypesShown() throws StorageException {
         when(config.isInfoShowTruces()).thenReturn(true);
@@ -113,7 +123,9 @@ class CmdInfoTest extends CommandTestBase {
         when(factionService.getFactionById(neutralId)).thenReturn(Optional.of(neutral));
         when(factionService.getFactionById(enemyId)).thenReturn(Optional.of(enemy));
 
+
         cmd.execute(ctx());
+
 
         verify(player).sendMessage(argThat(componentContains("Allies:")));
         verify(player).sendMessage(argThat(componentContains("Truces:")));
@@ -121,56 +133,71 @@ class CmdInfoTest extends CommandTestBase {
         verify(player).sendMessage(argThat(componentContains("Enemies:")));
     }
 
-    @Test
+
+    @StorageTest
     @DisplayName("player — named faction info shown")
     void testPlayerNamedFaction() throws StorageException {
         when(factionService.getFactionByName("Alpha")).thenReturn(Optional.of(faction));
 
+
         cmd.execute(ctx("Alpha"));
+
 
         verify(player).sendMessage(argThat(componentContains("Alpha")));
     }
 
-    @Test
+
+    @StorageTest
     @DisplayName("faction not found — error message")
     void testFactionNotFound() {
         when(factionService.getFactionByName("Unknown")).thenReturn(Optional.empty());
 
+
         cmd.execute(ctx("Unknown"));
+
 
         verify(player).sendMessage(argThat(componentContains("not found")));
     }
 
-    @Test
+
+    @StorageTest
     @DisplayName("console with name arg — faction info shown")
     void testConsoleWithName() throws StorageException {
         final CommandSender console = org.mockito.Mockito.mock(CommandSender.class);
         when(factionService.getFactionByName("Alpha")).thenReturn(Optional.of(faction));
 
+
         cmd.execute(ctx(console, "Alpha"));
+
 
         verify(console).sendMessage(argThat(componentContains("Alpha")));
     }
 
-    @Test
+
+    @StorageTest
     @DisplayName("console without arg — usage shown")
     void testConsoleNoArg() {
         final CommandSender console = org.mockito.Mockito.mock(CommandSender.class);
 
+
         cmd.execute(ctx(console));
+
 
         verify(console).sendMessage(argThat(componentContains("Usage")));
         verify(factionService, never()).getFactionByName(any());
     }
 
-    @Test
+
+    @StorageTest
     @DisplayName("storage error — graceful error message")
     void testStorageException() throws StorageException {
         when(factionService.getFactionByName("Alpha")).thenReturn(Optional.of(faction));
         when(playerRepository.findByFactionId(anyString()))
             .thenThrow(new StorageException("disk error"));
 
+
         cmd.execute(ctx("Alpha"));
+
 
         verify(player).sendMessage(argThat(componentContains("error")));
         verify(logger).severe(anyString());
