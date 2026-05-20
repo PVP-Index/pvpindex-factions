@@ -4,6 +4,7 @@ import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.data.model.PlayerModel;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -101,8 +102,44 @@ public class MessagesConfig {
         return get(path, fallback, resolveSenderLocale(sender));
     }
 
+    public List<String> getStringList(
+            final String path,
+            final List<String> fallback,
+            final String preferredLocale) {
+        final String preferred = normalizeLocale(preferredLocale);
+        final List<String> fromPreferred = readList(preferred, path);
+        if (fromPreferred != null) {
+            return fromPreferred;
+        }
+        final List<String> fromDefault = readList(defaultLocale, path);
+        if (fromDefault != null) {
+            return fromDefault;
+        }
+        final List<String> fromEnglish = readList(ENGLISH_LOCALE, path);
+        if (fromEnglish != null) {
+            return fromEnglish;
+        }
+        return fallback;
+    }
+
+    public List<String> getStringListForSender(
+            final CommandSender sender,
+            final String path,
+            final List<String> fallback) {
+        return getStringList(path, fallback, resolveSenderLocale(sender));
+    }
+
     private String read(final String locale, final String path) {
         final FileConfiguration cfg = bundles.get(normalizeLocale(locale));
         return cfg == null ? null : cfg.getString(path);
+    }
+
+    private List<String> readList(final String locale, final String path) {
+        final FileConfiguration cfg = bundles.get(normalizeLocale(locale));
+        if (cfg == null || !cfg.isList(path)) {
+            return null;
+        }
+        final List<String> result = cfg.getStringList(path);
+        return result.isEmpty() ? null : result;
     }
 }

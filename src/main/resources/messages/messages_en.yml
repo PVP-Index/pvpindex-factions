@@ -338,3 +338,82 @@ custom:
     help-title: "<gold>== Faction Merge =="
     help-send: "<yellow>/f merge send <faction> <gray>- Send a merge request"
     help-accept: "<yellow>/f merge accept <faction> <gray>- Accept a merge request"
+
+map:
+  separator: "<dark_gray>----------------------------------------"
+  header: "<gold> Territory Map <gray>({world} @ {x}, {z})"
+  hint: "<gray>Use <white>/f map on</white> to keep territory titles enabled."
+  legend: "<gray>Legend: <white>■ <gray>you, <green>■ <gray>your faction, <yellow>■ <gray>other faction, <aqua>■ <gray>safezone, <red>■ <gray>warzone, <dark_gray>■ <gray>wilderness"
+  enabled: "<green>Territory titles enabled."
+  disabled: "<yellow>Territory titles disabled."
+  error:
+    usage: "<red>Usage: /f map [on|off|once] [--size=<size>]"
+    size-nan: "<red>Map size must be a number."
+    size-small: "<red>Map size must be at least 1."
+    save-failed: "<red>Failed to update map preference."
+
+gui:
+  items:
+    info:
+      name: "<gold><bold>Your Faction</bold></gold>"
+      lore:
+        - "<gray>Faction: <white>{faction}</white>"
+        - "<gray>Members: <white>{faction_members}</white>"
+        - "<gray>Land: <white>{faction_land}</white>"
+        - "<gray>Bank: <white>${faction_bank}</white>"
+        - "<dark_gray>Open detailed faction info"
+    map:
+      name: "<aqua><bold>Territory Map</bold></aqua>"
+      lore:
+        - "<gray>Open a live territorial map."
+        - "<dark_gray>Click to run /f map"
+    claim:
+      name: "<green><bold>Claim Current Chunk</bold></green>"
+      lore:
+        - "<gray>Claim where you are standing."
+        - "<dark_gray>Fast claim action"
+    unclaim:
+      name: "<red><bold>Unclaim Current Chunk</bold></red>"
+      lore:
+        - "<gray>Unclaim where you are standing."
+        - "<dark_gray>Fast unclaim action"
+    invites:
+      name: "<yellow><bold>Invitations</bold></yellow>"
+      lore:
+        - "<gray>Review and accept pending invites."
+        - "<dark_gray>Opens invite list"
+    home:
+      name: "<gold><bold>Faction Home</bold></gold>"
+      lore:
+        - "<gray>Teleport to your faction home."
+        - "<dark_gray>Click to run /f home"
+    warps:
+      name: "<light_purple><bold>Warps</bold></light_purple>"
+      lore:
+        - "<gray>View and use faction warps."
+        - "<dark_gray>Click to run /f warp list"
+    top:
+      name: "<#3ddad7><bold>Top Factions</bold></#3ddad7>"
+      lore:
+        - "<gray>Open the faction leaderboard."
+        - "<dark_gray>Click to run /f top"
+    your-power:
+      name: "<white><bold>{player}</bold></white>"
+      lore:
+        - "<gray>Power: <white>{power}</white><gray>/<white>{max_power}</white>"
+        - "<dark_gray>Personal faction status"
+    language-status:
+      name: "<aqua><bold>Language</bold></aqua>"
+      lore:
+        - "<gray>Current: <white>{language_current}</white>"
+        - "<gray>Default: <white>{language_default}</white>"
+        - "<dark_gray>Click refresh after changing"
+    language-reset:
+      name: "<yellow><bold>Reset Language</bold></yellow>"
+      lore:
+        - "<gray>Use server default locale"
+        - "<dark_gray>Equivalent to /f language reset"
+    close:
+      name: "<red><bold>Close</bold></red>"
+      lore:
+        - "<gray>Close this menu."

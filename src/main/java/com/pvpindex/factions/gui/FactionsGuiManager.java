@@ -93,7 +93,7 @@ public class FactionsGuiManager implements Listener {
                 if (slot < 0 || slot >= size) {
                     continue;
                 }
-                inventory.setItem(slot, buildItem(itemSection, player));
+                inventory.setItem(slot, buildItem(key, itemSection, player));
             }
         }
         openMenus.put(player.getUniqueId(), menuId);
@@ -210,13 +210,35 @@ public class FactionsGuiManager implements Listener {
         }
     }
 
-    private ItemStack buildItem(final ConfigurationSection section, final Player player) {
+    private ItemStack buildItem(
+            final String itemKey,
+            final ConfigurationSection section,
+            final Player player) {
         final Material material = Material.matchMaterial(section.getString("material", "PAPER"));
         final ItemStack item = new ItemStack(material == null ? Material.PAPER : material);
         final ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            final String nameStr = render(section.getString("name", "<white>Factions"), player);
-            final List<String> loreRaw = section.getStringList("lore");
+            final MessagesConfig messages = MsgUtil.getMessagesConfig();
+            final String msgNameKey = "gui.items." + itemKey + ".name";
+            final String rawName;
+            if (messages != null) {
+                final String fromBundle = messages.getForSender(player, msgNameKey, null);
+                rawName = fromBundle != null
+                    ? fromBundle
+                    : section.getString("name", "<white>Factions");
+            } else {
+                rawName = section.getString("name", "<white>Factions");
+            }
+            final String nameStr = render(rawName, player);
+            final List<String> loreRaw;
+            final String msgLoreKey = "gui.items." + itemKey + ".lore";
+            if (messages != null) {
+                final List<String> fromBundle = messages.getStringListForSender(
+                    player, msgLoreKey, null);
+                loreRaw = fromBundle != null ? fromBundle : section.getStringList("lore");
+            } else {
+                loreRaw = section.getStringList("lore");
+            }
             meta.setDisplayName(MsgUtil.toLegacy(nameStr));
             if (!loreRaw.isEmpty()) {
                 final List<String> lorePlain = new ArrayList<>();
