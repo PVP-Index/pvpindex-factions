@@ -151,6 +151,12 @@ public final class DatabaseManager {
                 stmt,
                 logger,
                 "players",
+                "locale",
+                "VARCHAR(16)");
+            ensureColumn(
+                stmt,
+                logger,
+                "players",
                 "power_frozen",
                 "TINYINT NOT NULL DEFAULT 0");
             createIndexes(stmt, logger);

@@ -26,6 +26,7 @@ public class PlayerModel extends Model {
         Map.entry("auto_territory_mode", "TINYINT NOT NULL DEFAULT 0"),
         Map.entry("notify_invites", "TINYINT NOT NULL DEFAULT 1"),
         Map.entry("notify_bank_tax", "TINYINT NOT NULL DEFAULT 1"),
+        Map.entry("locale", "VARCHAR(16)"),
         Map.entry("last_death_at", "BIGINT NOT NULL DEFAULT 0"),
         Map.entry("death_streak", "TINYINT NOT NULL DEFAULT 0"),
         Map.entry("power_frozen", "TINYINT NOT NULL DEFAULT 0")
@@ -43,6 +44,7 @@ public class PlayerModel extends Model {
         setAutoTerritoryMode(AutoTerritoryMode.OFF);
         setInviteNotifications(true);
         setBankTaxNotifications(true);
+        setLocale(null);
         setLastDeathAt(0L);
         setDeathStreak(0);
         setPowerFrozen(false);
@@ -150,6 +152,14 @@ public class PlayerModel extends Model {
 
     public void setBankTaxNotifications(final boolean enabled) {
         set("notify_bank_tax", enabled ? 1 : 0);
+    }
+
+    public String getLocale() {
+        return getAs("locale", String.class, null);
+    }
+
+    public void setLocale(final String locale) {
+        set("locale", locale);
     }
 
     /** Epoch-millis timestamp of the player's most recent death. */
