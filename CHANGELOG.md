@@ -18,7 +18,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   - New permission `factions.cmd.merge` (default: true).
   - New `MergeRequestModel` / `MergeRequestRepository` data layer and `MergeService` / `MergeServiceImpl` service layer.
   - New audit actions `merge-request` and `merge-accept` for the audit log.
-- Internationalization support with locale bundles under `messages/` for `en`, `es`, `de`, `fr`, and `pt-BR`.
+- Internationalization support with locale bundles under `messages/` for `en`, `es`, `de`, `fr`, `pt-BR`, `ja`, `zh`, and `ru`.
 - New player language command: `/f language [code|reset]` with aliases `lang` and `locale`.
 - New player profile locale persistence (`players.locale`) for per-player language overrides.
 - New config key: `factions.language.default` for server-wide default locale fallback.
