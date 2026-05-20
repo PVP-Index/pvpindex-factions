@@ -12,6 +12,8 @@ A modern factions plugin for **Paper, Folia, and Spigot 1.21.x / 1.26.x**, backe
 Project documentation for server owners is available in [`/docs`](docs) and is
 published through the GitHub Pages docs workflow.
 
+Language contribution docs: [`docs/i18n.md`](docs/i18n.md).
+
 ---
 
 ## Requirements
@@ -146,6 +148,7 @@ Admin commands use `/fa` (aliases: `/factionadmin`) and require the `factions.ad
 | `list` | List all factions |
 | `top` | Leaderboard ranked by power |
 | `map` | ASCII territory map of the surrounding area |
+| `language [code\|reset]` | Show or set your personal message language |
 | `claim [mode]` | Claim land for your faction |
 | `unclaim` | Unclaim the current chunk |
 | `sethome` | Set faction home to your current location |
