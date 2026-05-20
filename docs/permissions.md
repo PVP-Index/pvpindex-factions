@@ -22,6 +22,7 @@ Examples:
 - `factions.cmd.bank.history`
 - `factions.cmd.audit`
 - `factions.cmd.merge`
+- `factions.cmd.language`
 - `factions.cmd.admin.power`
 - `factions.cmd.admin.power.view`
 - `factions.cmd.admin.power.set`

@@ -107,6 +107,16 @@ Faction lifecycle[/B]
 [*]Online target members are notified immediately when a request arrives
 [/LIST]
 
+[B]Internationalization[/B]
+[LIST]
+[*]Eight built-in locale bundles: en, es, de, fr, pt-BR, ja, zh, ru
+[*]Players choose their language with /f language [code|reset]
+[*]Server default locale configurable via factions.language.default in config.yml
+[*]All command output, GUI items, and map display respect the resolved locale
+[*]Message lookup order: player locale → server default → English → inline fallback
+[*]Community locale contributions welcomed — see the i18n guide in the docs
+[/LIST]
+
 [B]Integrations[/B]
 [LIST]
 [*]Vault

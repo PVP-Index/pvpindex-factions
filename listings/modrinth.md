@@ -100,6 +100,15 @@ You keep the Factions gameplay loop, but gain a modern operational foundation.
 - All claims, warps, bank balance, and members are transferred atomically; the sender faction is then disbanded
 - Online target members are notified immediately when a request arrives
 
+### Internationalization
+
+- Eight built-in locale bundles: `en`, `es`, `de`, `fr`, `pt-BR`, `ja`, `zh`, `ru`
+- Players choose their language with `/f language [code|reset]`
+- Server default locale configurable via `factions.language.default` in `config.yml`
+- All command output, GUI item text, and map display respect the resolved locale
+- Message lookup order: player locale → server default → English → inline fallback
+- Community locale contributions welcomed — see the [i18n guide](https://pvp-index.github.io/pvpindex-factions/i18n)
+
 ### Power and war mechanics
 
 - Configurable power model with per-player max, regen rate, loss on death, and grace period

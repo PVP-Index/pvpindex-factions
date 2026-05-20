@@ -116,6 +116,7 @@ Checkstyle enforces UTF-8 encoding, no star imports, no trailing whitespace, and
 | `factions.fly.disable-on-threat` | `true` | Cancel flight when an enemy enters the chunk |
 | `factions.fly.require-own-territory` | `true` | Restrict flight to own faction's territory |
 | `factions.chat.show-tag` | `true` | Prepend faction tag in global chat |
+| `factions.language.default` | `en` | Server default locale; player locale overrides this per-player |
 | `factions.audit.page-size` | `10` | Entries per page for `/f audit` and `/fa audit` |
 
 ---
@@ -202,6 +203,7 @@ Admin commands use `/fa` (aliases: `/factionadmin`) and require the `factions.ad
 | Node | Default | Description |
 |---|---|---|
 | `factions.admin` | op | Access to all `/fa` admin commands |
+| `factions.cmd.language` | true | Show or set personal message language (`/f language`) |
 | `factions.cmd.audit` | op | View the faction audit log (`/f audit`) |
 | `factions.cmd.merge` | true | Send and accept faction merge requests (`/f merge`) |
 | `factions.cmd.admin.power` | op | Root access to `/fa power` |

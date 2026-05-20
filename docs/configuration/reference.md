@@ -155,6 +155,12 @@ Each built-in flag has two keys: `default` (boolean) and `player-editable` (bool
 | `factions.updates.enabled` | Check for new plugin versions on startup (opt-in, disabled by default). | `enabled: false` |
 | `factions.updates.notify-ops-on-join` | Notify online operators about available updates when they join. | `notify-ops-on-join: false` |
 
+### `factions.language.*`
+
+| Key | Description | Example |
+|---|---|---|
+| `factions.language.default` | Server-wide default locale code used when no player locale is set. Falls back to `en` if the specified locale bundle is absent. | `default: en` |
+
 ### `factions.merge.*`
 
 | Key | Description | Example |

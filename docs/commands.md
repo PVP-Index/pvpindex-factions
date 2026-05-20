@@ -46,6 +46,7 @@ nav_order: 1
 | `/f map [on\|off\|once]` | `factions.cmd.map` | Show or toggle territory map notifications. |
 | `/f notify [status\|invites\|territory\|tax\|all] [on\|off]` | `factions.cmd.notify` | Manage your faction notification preferences. |
 | `/f gui [menu]` | `factions.cmd.gui` | Open the factions GUI. |
+| `/f language [code\|reset]` | `factions.cmd.language` | Show or set your personal message language. |
 
 ### `/f claim`
 
