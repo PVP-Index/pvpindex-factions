@@ -51,7 +51,7 @@ public final class CmdInvite extends FactionCommand {
     protected void perform(final CommandContext ctx) {
         final Player player = (Player) ctx.getSender();
         if (ctx.getArgs().isEmpty()) {
-            MsgUtil.send(player, "<red>Usage: " + getUsage());
+            MsgUtil.sendKey(player, "general.invalid-args", "<red>Usage: {usage}", "usage", getUsage());
             return;
         }
         final Optional<FactionModel> factionOpt = CommandGuards.requireFaction(player, factionService);
@@ -63,27 +63,27 @@ public final class CmdInvite extends FactionCommand {
         }
         final Player target = Bukkit.getPlayer(ctx.arg(0));
         if (target == null) {
-            MsgUtil.send(player, "<red>Player not found or not online.");
+            MsgUtil.sendKey(player, "general.player-not-found", "<red>Player <yellow>{name}</yellow> not found.", "name", ctx.arg(0));
             return;
         }
         if (factionService.isInFaction(target.getUniqueId())) {
-            MsgUtil.send(player, "<red>That player is already in a faction.");
+            MsgUtil.sendKey(player, "custom.invite.target-already-in-faction", "<red>That player is already in a faction.");
             return;
         }
         if (inviteService.sendInvite(
                 factionOpt.get().getId(), player.getUniqueId(), target.getUniqueId())) {
-            MsgUtil.send(player, "<green>Invited <white>" + target.getName() + "<green>.");
+            MsgUtil.sendKey(player, "custom.invite.sent", "<green>Invited <white>{player}<green>.", "player", target.getName());
             // Rich notification: [Accept] button that runs /f join <faction>
             try {
                 final PlayerModel targetModel = repos.players().findOrCreate(target.getUniqueId().toString());
                 if (targetModel.hasInviteNotifications()) {
-                    MsgUtil.send(target, MsgUtil.inviteNotification(factionOpt.get().getName()));
+                    MsgUtil.send(target, MsgUtil.inviteNotification(target, factionOpt.get().getName()));
                 }
             } catch (StorageException ignored) {
-                target.sendMessage(MsgUtil.inviteNotification(factionOpt.get().getName()));
+                target.sendMessage(MsgUtil.inviteNotification(target, factionOpt.get().getName()));
             }
         } else {
-            MsgUtil.send(player, "<red>Could not invite that player (already pending?).");
+            MsgUtil.sendKey(player, "custom.invite.already-pending", "<red>Could not invite that player (already pending?).");
         }
     }
 

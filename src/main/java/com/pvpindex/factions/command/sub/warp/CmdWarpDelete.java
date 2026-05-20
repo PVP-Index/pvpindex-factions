@@ -43,9 +43,9 @@ public final class CmdWarpDelete extends FactionCommand {
         }
         final String name = ctx.arg(0);
         if (warpService.deleteWarp(factionOpt.get().getId(), name)) {
-            MsgUtil.send(player, "<yellow>Warp '" + name + "' deleted.");
+            MsgUtil.sendKey(player, "warp.deleted", "<yellow>Warp <yellow>{name}</yellow> deleted.", "name", name);
         } else {
-            MsgUtil.send(player, "<red>Warp '" + name + "' not found.");
+            MsgUtil.sendKey(player, "warp.not-found", "<red>Warp <yellow>{name}</yellow> not found.", "name", name);
         }
     }
 

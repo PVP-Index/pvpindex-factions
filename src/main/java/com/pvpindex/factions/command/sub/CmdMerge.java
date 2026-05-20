@@ -24,8 +24,8 @@ public final class CmdMerge extends FactionCommand {
     @Override
     protected void perform(final CommandContext ctx) {
         final Player player = (Player) ctx.getSender();
-        MsgUtil.send(player, "<gold>== Faction Merge ==");
-        MsgUtil.send(player, "<yellow>/f merge send <faction> <gray>- Send a merge request");
-        MsgUtil.send(player, "<yellow>/f merge accept <faction> <gray>- Accept a merge request");
+        MsgUtil.sendKey(player, "custom.merge.help-title", "<gold>== Faction Merge ==");
+        MsgUtil.sendKey(player, "custom.merge.help-send", "<yellow>/f merge send <faction> <gray>- Send a merge request");
+        MsgUtil.sendKey(player, "custom.merge.help-accept", "<yellow>/f merge accept <faction> <gray>- Accept a merge request");
     }
 }

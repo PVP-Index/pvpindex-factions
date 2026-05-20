@@ -46,14 +46,14 @@ public final class CmdMergeSend extends FactionCommand {
 
         final Optional<FactionModel> targetFaction = factionService.getFactionByName(ctx.arg(0));
         if (targetFaction.isEmpty()) {
-            MsgUtil.send(player, MsgUtil.message("merge.target-not-found",
+            MsgUtil.send(player, MsgUtil.message(player, "merge.target-not-found",
                 "<red>Faction <yellow>{faction}<red> not found.")
                 .replace("{faction}", ctx.arg(0)));
             return;
         }
 
         if (senderFaction.get().getId().equals(targetFaction.get().getId())) {
-            MsgUtil.send(player, MsgUtil.message("merge.self-merge",
+            MsgUtil.send(player, MsgUtil.message(player, "merge.self-merge",
                 "<red>You cannot merge your faction into itself."));
             return;
         }
@@ -62,18 +62,18 @@ public final class CmdMergeSend extends FactionCommand {
             senderFaction.get().getId(), targetFaction.get().getId(), player.getUniqueId());
 
         if (!sent) {
-            MsgUtil.send(player, MsgUtil.message("merge.already-requested",
+            MsgUtil.send(player, MsgUtil.message(player, "merge.already-requested",
                 "<red>A merge request to <yellow>{faction}<red> is already pending.")
                 .replace("{faction}", targetFaction.get().getName()));
             return;
         }
 
-        MsgUtil.send(player, MsgUtil.message("merge.request-sent",
+        MsgUtil.send(player, MsgUtil.message(player, "merge.request-sent",
             "<green>Merge request sent to <yellow>{faction}<green>.")
             .replace("{faction}", targetFaction.get().getName()));
 
         // Notify online members of the target faction
-        final String notifyMsg = MsgUtil.message("merge.request-received",
+        final String notifyMsg = MsgUtil.message(player, "merge.request-received",
             "<yellow>{faction}<green> has sent a merge request to your faction. "
             + "Use <white>/f merge accept {faction}<green> to absorb them.")
             .replace("{faction}", senderFaction.get().getName());

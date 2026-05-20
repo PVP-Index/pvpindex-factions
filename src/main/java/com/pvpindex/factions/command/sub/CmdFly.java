@@ -32,11 +32,12 @@ public final class CmdFly extends FactionCommand {
             return;
         }
         if (!ctx.getConfig().isFlyEnabled()) {
-            MsgUtil.send(player, "<red>Faction fly is disabled.");
+            MsgUtil.sendKey(player, "custom.fly.disabled-global", "<red>Faction fly is disabled.");
             return;
         }
         if (ctx.getConfig().isFlyRequireOwnTerritory() && !inOwnTerritory(ctx, player, factionOpt.get().getId())) {
-            MsgUtil.send(player, "<red>You can only use faction fly in your own territory.");
+            MsgUtil.sendKey(player, "custom.fly.own-territory-required",
+                "<red>You can only use faction fly in your own territory.");
             return;
         }
         final boolean newState = !factionService.isFactionFlyEnabled(player.getUniqueId());
@@ -45,7 +46,8 @@ public final class CmdFly extends FactionCommand {
         if (!newState && player.isFlying()) {
             player.setFlying(false);
         }
-        MsgUtil.send(player, newState ? "<green>Faction fly enabled." : "<yellow>Faction fly disabled.");
+        MsgUtil.sendKey(player, newState ? "fly.enabled" : "fly.disabled",
+            newState ? "<green>Faction fly enabled." : "<yellow>Faction fly disabled.");
     }
 
     private boolean inOwnTerritory(final CommandContext ctx, final Player player, final String factionId) {
@@ -61,4 +63,3 @@ public final class CmdFly extends FactionCommand {
         }
     }
 }
-

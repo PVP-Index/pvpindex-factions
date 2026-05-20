@@ -34,7 +34,7 @@ public final class CmdGui extends FactionCommand {
         }
         final String menu = ctx.arg(0).isBlank() ? guiConfig.getDefaultMenu() : ctx.arg(0);
         if (!guiManager.openMenu(player, menu)) {
-            MsgUtil.send(player, "<red>Unknown GUI menu: <yellow>" + menu);
+            MsgUtil.sendKey(player, "custom.gui.menu-not-found", "<red>Unknown GUI menu: <yellow>{menu}", "menu", menu);
         }
     }
 

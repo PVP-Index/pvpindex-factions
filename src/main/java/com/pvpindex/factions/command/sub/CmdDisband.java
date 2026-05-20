@@ -45,9 +45,9 @@ public final class CmdDisband extends FactionCommand {
             return;
         }
         if (factionService.disbandFaction(factionOpt.get().getId())) {
-            MsgUtil.send(player, "<yellow>Your faction has been disbanded.");
+            MsgUtil.sendKey(player, "custom.faction.disbanded", "<yellow>Your faction has been disbanded.");
         } else {
-            MsgUtil.send(player, "<red>Failed to disband faction.");
+            MsgUtil.sendKey(player, "custom.faction.disband-failed", "<red>Failed to disband faction.");
         }
     }
 }

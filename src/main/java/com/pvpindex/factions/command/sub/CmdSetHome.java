@@ -33,13 +33,14 @@ public final class CmdSetHome extends FactionCommand {
             return;
         }
         if (!territoryGuard.canModifyTerritory(player, player.getLocation())) {
-            MsgUtil.send(player, "<red>You cannot set faction home in this protected region.");
+            MsgUtil.sendKey(player, "custom.home.set-protected",
+                "<red>You cannot set faction home in this protected region.");
             return;
         }
         if (factionService.setFactionHome(player.getUniqueId(), player.getLocation())) {
-            MsgUtil.send(player, "<green>Faction home set.");
+            MsgUtil.sendKey(player, "custom.home.set", "<green>Faction home set.");
             return;
         }
-        MsgUtil.send(player, "<red>Failed to set faction home.");
+        MsgUtil.sendKey(player, "custom.home.set-failed", "<red>Failed to set faction home.");
     }
 }

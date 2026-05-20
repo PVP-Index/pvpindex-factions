@@ -30,6 +30,6 @@ public final class CmdPower extends FactionCommand {
     @Override
     protected void perform(final CommandContext ctx) {
         final Player player = (Player) ctx.getSender();
-        MsgUtil.send(player, "<gray>Usage: <yellow>/f power buy <amount>");
+        MsgUtil.sendKey(player, "custom.power.usage-buy", "<gray>Usage: <yellow>/f power buy <amount>");
     }
 }

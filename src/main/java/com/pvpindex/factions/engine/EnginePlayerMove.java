@@ -61,14 +61,30 @@ public final class EnginePlayerMove implements Listener {
                     final int land = repos.board().countByFactionId(toInfo.faction().getId());
                     final double power = computeFactionPower(toInfo.faction());
                     MsgUtil.send(event.getPlayer(), MsgUtil.factionInfoHover(
-                        "<gold>You entered claimed faction territory: <white>" + toInfo.name(),
+                        MsgUtil.replace(
+                            MsgUtil.message(event.getPlayer(), "custom.move.enter-claimed",
+                                "<gold>You entered claimed faction territory: <white>{faction}"),
+                            "faction", toInfo.name()),
                         toInfo.name(),
-                        "<gray>Leader: <white>" + leader,
-                        "<gray>Members: <white>" + members,
-                        "<gray>Land: <white>" + land,
-                        "<gray>Power: <white>" + String.format(java.util.Locale.ROOT, "%.1f", power)));
+                        MsgUtil.replace(
+                            MsgUtil.message(event.getPlayer(), "custom.move.info-leader",
+                                "<gray>Leader: <white>{value}"),
+                            "value", leader),
+                        MsgUtil.replace(
+                            MsgUtil.message(event.getPlayer(), "custom.move.info-members",
+                                "<gray>Members: <white>{value}"),
+                            "value", String.valueOf(members)),
+                        MsgUtil.replace(
+                            MsgUtil.message(event.getPlayer(), "custom.move.info-land",
+                                "<gray>Land: <white>{value}"),
+                            "value", String.valueOf(land)),
+                        MsgUtil.replace(
+                            MsgUtil.message(event.getPlayer(), "custom.move.info-power",
+                                "<gray>Power: <white>{value}"),
+                            "value", String.format(java.util.Locale.ROOT, "%.1f", power))));
                 } else {
-                    MsgUtil.send(event.getPlayer(), "<gray>You entered: <white>" + toInfo.name());
+                    MsgUtil.sendKey(event.getPlayer(), "custom.move.enter",
+                        "<gray>You entered: <white>{territory}", "territory", toInfo.name());
                 }
             }
         } catch (StorageException e) {

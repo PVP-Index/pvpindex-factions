@@ -65,10 +65,10 @@ public final class CmdWarp extends FactionCommand {
             // List available warps
             final var warps = warpService.getWarps(factionOpt.get().getId());
             if (warps.isEmpty()) {
-                MsgUtil.send(player, "<yellow>Your faction has no warps.");
+                MsgUtil.sendKey(player, "custom.warp.none", "<yellow>Your faction has no warps.");
                 return;
             }
-            MsgUtil.send(player, "<gold>== Faction Warps ==");
+            MsgUtil.sendKey(player, "custom.warp.header", "<gold>== Faction Warps ==");
             warps.forEach(w -> MsgUtil.send(player, MsgUtil.warpEntry(w.getName())));
             return;
         }
@@ -77,12 +77,12 @@ public final class CmdWarp extends FactionCommand {
         final Optional<WarpModel> warpOpt =
             warpService.getWarp(factionOpt.get().getId(), warpName);
         if (warpOpt.isEmpty()) {
-            MsgUtil.send(player, "<red>Warp '" + warpName + "' not found.");
+            MsgUtil.sendKey(player, "warp.not-found", "<red>Warp <yellow>{name}</yellow> not found.", "name", warpName);
             return;
         }
         final Location dest = warpOpt.get().toLocation();
         if (dest == null || dest.getWorld() == null) {
-            MsgUtil.send(player, "<red>Warp world not loaded.");
+            MsgUtil.sendKey(player, "custom.warp.world-not-loaded", "<red>Warp world not loaded.");
             return;
         }
         if (essentialsInterop.teleport(player, dest,

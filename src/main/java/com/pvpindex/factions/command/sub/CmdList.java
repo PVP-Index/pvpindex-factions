@@ -44,22 +44,28 @@ public final class CmdList extends FactionCommand {
         }
         factions.sort(comparator);
         if (factions.isEmpty()) {
-            MsgUtil.send(ctx.getSender(), "<yellow>No factions found.");
+            MsgUtil.sendKey(ctx.getSender(), "custom.list.none", "<yellow>No factions found.");
             return;
         }
         final int pageSize = Math.max(1, ctx.getConfig().getListPageSize());
         final int start = Math.max(0, (page - 1) * pageSize);
         final int end = Math.min(factions.size(), start + pageSize);
-        MsgUtil.send(ctx.getSender(), "<dark_gray>----------------------------------------");
-        MsgUtil.send(ctx.getSender(), "<gold> Factions <gray>(page <white>" + page + "<gray>, sort <white>" + sort + "<gray>)");
+        MsgUtil.sendKey(ctx.getSender(), "custom.list.separator", "<dark_gray>----------------------------------------");
+        MsgUtil.sendKey(ctx.getSender(), "custom.list.header",
+            "<gold> Factions <gray>(page <white>{page}<gray>, sort <white>{sort}<gray>)",
+            "page", String.valueOf(page),
+            "sort", sort);
         for (int i = start; i < end; i++) {
             final FactionModel faction = factions.get(i);
-            MsgUtil.send(ctx.getSender(), "<yellow>#" + (i + 1) + " <white>" + faction.getName()
-                + "<gray> | members <white>" + memberCount(ctx, faction)
-                + "<gray> | land <white>" + landCount(ctx, faction)
-                + "<gray> | bank <white>" + String.format(Locale.ROOT, "%.2f", faction.getBank()));
+            MsgUtil.sendKey(ctx.getSender(), "custom.list.row",
+                "<yellow>#{rank} <white>{name}<gray> | members <white>{members}<gray> | land <white>{land}<gray> | bank <white>{bank}",
+                "rank", String.valueOf(i + 1),
+                "name", faction.getName(),
+                "members", String.valueOf(memberCount(ctx, faction)),
+                "land", String.valueOf(landCount(ctx, faction)),
+                "bank", String.format(Locale.ROOT, "%.2f", faction.getBank()));
         }
-        MsgUtil.send(ctx.getSender(), "<dark_gray>----------------------------------------");
+        MsgUtil.sendKey(ctx.getSender(), "custom.list.separator", "<dark_gray>----------------------------------------");
     }
 
     @Override

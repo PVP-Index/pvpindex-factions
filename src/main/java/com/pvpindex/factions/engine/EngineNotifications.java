@@ -102,7 +102,7 @@ public final class EngineNotifications implements Listener {
             final String faction = factionService.getFactionById(invite.getFactionId())
                 .map(FactionModel::getName).orElse("Unknown");
             final String inviter = resolvePlayerName(invite.getInviterId());
-            MsgUtil.send(player, MsgUtil.inviteListEntry(faction, inviter));
+            MsgUtil.send(player, MsgUtil.inviteListEntry(player, faction, inviter));
         }
     }
 

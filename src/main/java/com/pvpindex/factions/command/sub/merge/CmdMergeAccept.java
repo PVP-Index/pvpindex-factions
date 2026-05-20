@@ -46,7 +46,7 @@ public final class CmdMergeAccept extends FactionCommand {
 
         final Optional<FactionModel> senderFaction = factionService.getFactionByName(ctx.arg(0));
         if (senderFaction.isEmpty()) {
-            MsgUtil.send(player, MsgUtil.message("merge.target-not-found",
+            MsgUtil.send(player, MsgUtil.message(player, "merge.target-not-found",
                 "<red>Faction <yellow>{faction}<red> not found.")
                 .replace("{faction}", ctx.arg(0)));
             return;
@@ -56,14 +56,14 @@ public final class CmdMergeAccept extends FactionCommand {
             senderFaction.get().getId(), targetFaction.get().getId(), player.getUniqueId());
 
         if (merged.isEmpty()) {
-            MsgUtil.send(player, MsgUtil.message("merge.no-request-found",
+            MsgUtil.send(player, MsgUtil.message(player, "merge.no-request-found",
                 "<red>No pending merge request from <yellow>{faction}<red> was found.")
                 .replace("{faction}", senderFaction.get().getName()));
             return;
         }
 
         // Notify all current members of the merged (target) faction
-        final String notifyMsg = MsgUtil.message("merge.accepted",
+        final String notifyMsg = MsgUtil.message(player, "merge.accepted",
             "<yellow>{faction}<green> has merged into your faction!")
             .replace("{faction}", senderFaction.get().getName());
         FactionMemberNotifier.notifyMembers(
@@ -74,7 +74,7 @@ public final class CmdMergeAccept extends FactionCommand {
             member -> true,
             notifyMsg);
 
-        MsgUtil.send(player, MsgUtil.message("merge.merged-into",
+        MsgUtil.send(player, MsgUtil.message(player, "merge.merged-into",
             "<green>Successfully merged <yellow>{faction}<green> into your faction.")
             .replace("{faction}", senderFaction.get().getName()));
     }
