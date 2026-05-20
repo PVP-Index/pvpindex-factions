@@ -41,6 +41,10 @@ public class FactionsConfig {
         return cfg.getInt("factions.invites.ttl-hours", 72);
     }
 
+    public String getDefaultLanguage() {
+        return cfg.getString("factions.language.default", "en");
+    }
+
     // -------------------------------------------------------------------------
     // Power
     // -------------------------------------------------------------------------

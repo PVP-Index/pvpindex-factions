@@ -10,6 +10,10 @@ factions:
   invites:
     # Pending invite lifetime. Expired invites are auto-pruned on login/list/join.
     ttl-hours: 72
+  language:
+    # Server default locale for faction messages.
+    # Players may override with /f language <code>.
+    default: en
 
   power:
     # Maximum power each online player contributes to the faction.
