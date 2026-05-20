@@ -54,7 +54,8 @@ public final class CmdTop extends FactionCommand {
         for (int i = start; i < end; i++) {
             final FactionModel faction = factions.get(i);
             MsgUtil.sendKey(ctx.getSender(), "custom.top.row",
-                "<yellow>#{rank} <white>{name}<gray> | power <white>{power}<gray> | land <white>{land}<gray> | bank <white>{bank}",
+                "<yellow>#{rank} <white>{name}<gray>"
+                    + " | power <white>{power}<gray> | land <white>{land}<gray> | bank <white>{bank}",
                 "rank", String.valueOf(i + 1),
                 "name", faction.getName(),
                 "power", String.format(Locale.ROOT, "%.1f", totalPower(ctx, faction)),

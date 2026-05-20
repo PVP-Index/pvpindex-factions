@@ -63,7 +63,8 @@ public final class CmdInvite extends FactionCommand {
         }
         final Player target = Bukkit.getPlayer(ctx.arg(0));
         if (target == null) {
-            MsgUtil.sendKey(player, "general.player-not-found", "<red>Player <yellow>{name}</yellow> not found.", "name", ctx.arg(0));
+            MsgUtil.sendKey(player, "general.player-not-found",
+                "<red>Player <yellow>{name}</yellow> not found.", "name", ctx.arg(0));
             return;
         }
         if (factionService.isInFaction(target.getUniqueId())) {

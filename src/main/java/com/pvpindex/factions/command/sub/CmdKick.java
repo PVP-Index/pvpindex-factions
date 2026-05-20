@@ -34,7 +34,8 @@ public final class CmdKick extends FactionCommand {
         }
         final Player target = Bukkit.getPlayerExact(ctx.arg(0));
         if (target == null) {
-            MsgUtil.sendKey(actor, "general.player-not-found", "<red>Player <yellow>{name}</yellow> not found.", "name", ctx.arg(0));
+            MsgUtil.sendKey(actor, "general.player-not-found",
+                "<red>Player <yellow>{name}</yellow> not found.", "name", ctx.arg(0));
             return;
         }
         if (actor.getUniqueId().equals(target.getUniqueId())) {
@@ -53,7 +54,8 @@ public final class CmdKick extends FactionCommand {
             final String factionName = factionService.getFactionByPlayer(actor.getUniqueId())
                 .map(f -> f.getName())
                 .orElse("faction");
-            MsgUtil.sendKey(target, "member.kicked", "<red>You were kicked from <yellow>{faction}</yellow> by <yellow>{kicker}</yellow>.",
+            MsgUtil.sendKey(target, "member.kicked",
+                "<red>You were kicked from <yellow>{faction}</yellow> by <yellow>{kicker}</yellow>.",
                 "faction", factionName,
                 "kicker", kickerName);
             return;

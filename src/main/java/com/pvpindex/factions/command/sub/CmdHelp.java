@@ -83,7 +83,8 @@ public final class CmdHelp extends FactionCommand {
             MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry(ctx.getSender(), "/fa bypass", "Toggle protection bypass."));
             MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry(ctx.getSender(), "/fa claim", "Admin-claim current chunk."));
             MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry(ctx.getSender(), "/fa unclaim", "Admin-unclaim current chunk."));
-            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry(ctx.getSender(), "/fa disband <faction>", "Force-disband any faction."));
+            MsgUtil.send(ctx.getSender(),
+                MsgUtil.helpEntry(ctx.getSender(), "/fa disband <faction>", "Force-disband any faction."));
             MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry(ctx.getSender(), "/fa reload", "Reload plugin configuration."));
             if (ctx.getSender().hasPermission("factions.cmd.safezone")) {
                 MsgUtil.send(ctx.getSender(),

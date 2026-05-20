@@ -80,10 +80,6 @@ public class MessagesConfig {
         return get(path, fallback, defaultLocale);
     }
 
-    public String getForSender(final CommandSender sender, final String path, final String fallback) {
-        return get(path, fallback, resolveSenderLocale(sender));
-    }
-
     public String get(final String path, final String fallback, final String preferredLocale) {
         final String preferred = normalizeLocale(preferredLocale);
         final String fromPreferred = read(preferred, path);
@@ -99,6 +95,10 @@ public class MessagesConfig {
             return fromEnglish;
         }
         return fallback;
+    }
+
+    public String getForSender(final CommandSender sender, final String path, final String fallback) {
+        return get(path, fallback, resolveSenderLocale(sender));
     }
 
     private String read(final String locale, final String path) {

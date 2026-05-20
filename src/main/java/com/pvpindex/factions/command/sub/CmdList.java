@@ -58,7 +58,8 @@ public final class CmdList extends FactionCommand {
         for (int i = start; i < end; i++) {
             final FactionModel faction = factions.get(i);
             MsgUtil.sendKey(ctx.getSender(), "custom.list.row",
-                "<yellow>#{rank} <white>{name}<gray> | members <white>{members}<gray> | land <white>{land}<gray> | bank <white>{bank}",
+                "<yellow>#{rank} <white>{name}<gray>"
+                    + " | members <white>{members}<gray> | land <white>{land}<gray> | bank <white>{bank}",
                 "rank", String.valueOf(i + 1),
                 "name", faction.getName(),
                 "members", String.valueOf(memberCount(ctx, faction)),
