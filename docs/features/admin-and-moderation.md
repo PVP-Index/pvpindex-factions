@@ -23,6 +23,17 @@ Core actions:
 - `/fa shield <faction> clear`
 - `/fa flag <faction> <flag> [on|off]`
 - `/fa audit <faction> [page] [--action=<action>]`
+- `/fa power view <player>`
+- `/fa power set <player> <amount> <reason...>`
+- `/fa power add <player> <amount> <reason...>`
+- `/fa power remove <player> <amount> <reason...>`
+- `/fa power reset <player> <reason...>`
+- `/fa power freeze <player> <on|off>`
+- `/fa power history <player> [page]`
+
+Example output (`/fa power history <player>`):
+
+![Admin power history command output](https://i.ibb.co/XZvQDyLm/image.png)
 
 Permissions:
 
@@ -30,6 +41,8 @@ Permissions:
 - `factions.cmd.safezone` — assign / remove safe zone chunks (default op)
 - `factions.cmd.warzone` — assign / remove war zone chunks (default op)
 - `factions.cmd.shield` — set or clear a faction's war shield window (default op)
+- `factions.cmd.admin.power` — root permission for `/fa power`
+- `factions.cmd.admin.power.view` / `.set` / `.add` / `.remove` / `.reset` / `.freeze` / `.history`
 
 Config toggles:
 
@@ -37,6 +50,11 @@ Config toggles:
 - `factions.zones.war-zone.enabled` (default `true`) — disable to treat war zone chunks as Wilderness
 - `factions.war.shield.enabled` (default `false`) — enable the war shield system before `/fa shield` has effect
 - `factions.war.shield.max-duration-hours` (default `8`) — maximum window length an admin may assign
+- `factions.power.sources.*` — per-source enable/amount controls
+- `factions.power.constraints.*` — min/max/clamp controls
+- `factions.power.multipliers.*` — world/zone scaling controls
+- `factions.power.freeze.*` — frozen-state behavior and admin bypass controls
+- `factions.power.notifications.*` — actor/faction/staff notification routing
 
 Operational notes:
 

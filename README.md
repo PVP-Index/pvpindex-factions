@@ -95,6 +95,14 @@ Checkstyle enforces UTF-8 encoding, no star imports, no trailing whitespace, and
 | `factions.power.regen-per-second` | `0.1` | Power regeneration rate while online |
 | `factions.power.loss-on-death` | `4.0` | Power lost on death in enemy/war territory |
 | `factions.power.grace-period-seconds` | `3600` | Startup grace period before power loss applies |
+| `factions.power.sources.*` | varies | Per-source power toggles/amounts (`regen-online`, `regen-offline`, `death-loss`, `kill-gain`, `buy`) |
+| `factions.power.constraints.min-power` | `0.0` | Global floor for player power |
+| `factions.power.constraints.max-power` | `10.0` | Global ceiling for player power |
+| `factions.power.constraints.max-change-per-event` | `0.0` | Clamp power delta per event (`0` disables clamp) |
+| `factions.power.multipliers.worlds.*` | `1.0` | World-specific multiplier for death/kill sources |
+| `factions.power.multipliers.zones.*` | `1.0` | Zone-context multiplier for death/kill sources |
+| `factions.power.freeze.*` | varies | Control frozen-player behavior and admin bypass |
+| `factions.power.notifications.*` | varies | Route power notifications to actor/faction/staff |
 | `factions.land.buffer-zone` | `0` | Minimum chunk buffer between enemy territories (0 = off) |
 | `factions.land.max-per-command` | `200` | Max chunks claimable in one fill/circle/square command |
 | `factions.economy.cost-create` | `50.0` | Vault cost to create a faction |
@@ -180,6 +188,7 @@ Admin commands use `/fa` (aliases: `/factionadmin`) and require the `factions.ad
 | `shield <faction> clear` | Remove a faction's war shield |
 | `flag <faction> <flag> [on\|off]` | Override any faction flag regardless of editability config. |
 | `audit <faction> [page] [--action=<action>]` | View the audit log for any faction. |
+| `power <view\|set\|add\|remove\|reset\|freeze\|history> ...` | Staff power management commands for online/offline players. |
 
 ---
 
@@ -189,6 +198,14 @@ Admin commands use `/fa` (aliases: `/factionadmin`) and require the `factions.ad
 |---|---|---|
 | `factions.admin` | op | Access to all `/fa` admin commands |
 | `factions.cmd.audit` | op | View the faction audit log (`/f audit`) |
+| `factions.cmd.admin.power` | op | Root access to `/fa power` |
+| `factions.cmd.admin.power.view` | op | View target player power |
+| `factions.cmd.admin.power.set` | op | Set exact player power |
+| `factions.cmd.admin.power.add` | op | Add power to player |
+| `factions.cmd.admin.power.remove` | op | Remove power from player |
+| `factions.cmd.admin.power.reset` | op | Reset player power to configured max |
+| `factions.cmd.admin.power.freeze` | op | Toggle frozen power state |
+| `factions.cmd.admin.power.history` | op | View player power history through admin path |
 
 Most other `/f` commands default to `true` (all players). Grant `factions.cmd.audit` explicitly to non-op roles that should have access.
 

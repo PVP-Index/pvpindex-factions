@@ -80,6 +80,7 @@ public class PlayerRepository extends ModelRepository<PlayerModel> {
         model.setOverriding(model.isOverriding());
         model.setInviteNotifications(model.hasInviteNotifications());
         model.setBankTaxNotifications(model.hasBankTaxNotifications());
+        model.setPowerFrozen(model.isPowerFrozen());
         model.setAutoTerritoryMode(model.getAutoTerritoryMode());
         if (model.getAutoTerritoryMode() == null) {
             model.setAutoTerritoryMode(AutoTerritoryMode.OFF);

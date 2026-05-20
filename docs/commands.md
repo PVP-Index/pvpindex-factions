@@ -139,6 +139,13 @@ Requires Vault economy.
 | `/fa shield <faction> clear` | `factions.cmd.shield` | Remove a faction's war shield. |
 | `/fa audit <faction> [page]` | `factions.admin` | View the audit log for any faction. |
 | `/fa audit <faction> [page] --action=<action>` | `factions.admin` | View the audit log for any faction filtered by action type. |
+| `/fa power view <player>` | `factions.cmd.admin.power.view` | View current power and freeze state for a player. |
+| `/fa power set <player> <amount> <reason...>` | `factions.cmd.admin.power.set` | Set a player's power to an exact value. |
+| `/fa power add <player> <amount> <reason...>` | `factions.cmd.admin.power.add` | Add power to a player. |
+| `/fa power remove <player> <amount> <reason...>` | `factions.cmd.admin.power.remove` | Remove power from a player. |
+| `/fa power reset <player> <reason...>` | `factions.cmd.admin.power.reset` | Reset a player's power to configured max power. |
+| `/fa power freeze <player> <on\|off>` | `factions.cmd.admin.power.freeze` | Freeze or unfreeze automatic power changes for a player. |
+| `/fa power history <player> [page]` | `factions.cmd.admin.power.history` | View target player's power history. |
 
 ---
 
@@ -147,4 +154,3 @@ Requires Vault economy.
 - [Permissions](../permissions.md)
 - [Features](../features/index.md)
 - [Configuration Reference](../configuration/reference.md)
-

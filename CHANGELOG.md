@@ -10,6 +10,33 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Changed
 
+## [1.0.10] - 2026-05-20
+
+### Added
+
+- New admin power command suite under `/fa power`:
+  - `view`, `set`, `add`, `remove`, `reset`, `freeze`, and `history`
+  - Added granular permissions under `factions.cmd.admin.power.*`
+  - Admin mutations now support reason logging through power history entries
+- New power service architecture:
+  - Introduced centralized `PowerService` / `PowerServiceImpl`
+  - `EnginePower`, `/f power buy`, and admin power commands now use the shared service
+- Expanded power model and controls:
+  - Added player-level `power_frozen` state
+  - Added source-level power controls under `factions.power.sources.*`
+  - Added constraints under `factions.power.constraints.*`
+  - Added context multipliers under `factions.power.multipliers.*`
+  - Added freeze behavior toggles under `factions.power.freeze.*`
+  - Added power notification routing under `factions.power.notifications.*`
+- New message keys for power change routing and admin responses (`power.admin-*`, `power.change-*`, `power.blocked-frozen`).
+
+  ![Admin power history command output](https://i.ibb.co/XZvQDyLm/image.png)
+
+### Changed
+
+- Refactored power mutation paths to remove duplicated logic and make power behavior consistently configurable.
+- Updated command wiring/bootstrapping to inject and reuse the centralized power service.
+
 ## [1.0.9] - 2026-05-19
 
 ### Added

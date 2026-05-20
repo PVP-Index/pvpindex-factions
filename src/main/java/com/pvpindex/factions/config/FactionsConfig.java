@@ -144,6 +144,89 @@ public class FactionsConfig {
         return cfg.getDouble("factions.power.buy.max-per-purchase", 5.0);
     }
 
+    public boolean isPowerSourceRegenOnlineEnabled() {
+        return cfg.getBoolean("factions.power.sources.regen-online.enabled", true);
+    }
+
+    public boolean isPowerSourceRegenOfflineEnabled() {
+        return cfg.getBoolean("factions.power.sources.regen-offline.enabled", true);
+    }
+
+    public boolean isPowerSourceDeathLossEnabled() {
+        return cfg.getBoolean("factions.power.sources.death-loss.enabled", true);
+    }
+
+    public boolean isPowerSourceKillGainEnabled() {
+        return cfg.getBoolean("factions.power.sources.kill-gain.enabled", true);
+    }
+
+    public boolean isPowerSourceBuyEnabled() {
+        return cfg.getBoolean("factions.power.sources.buy.enabled", true);
+    }
+
+    public double getPowerSourceRegenOnlineAmount() {
+        return cfg.getDouble("factions.power.sources.regen-online.amount", getPowerRegenOnline());
+    }
+
+    public double getPowerSourceRegenOfflineAmount() {
+        return cfg.getDouble("factions.power.sources.regen-offline.amount", getPowerRegenOffline());
+    }
+
+    public double getPowerSourceDeathLossAmount() {
+        return cfg.getDouble("factions.power.sources.death-loss.amount", getPowerLossOnDeath());
+    }
+
+    public double getPowerSourceKillGainAmount() {
+        return cfg.getDouble("factions.power.sources.kill-gain.amount", getPowerGainOnKill());
+    }
+
+    public double getPowerMin() {
+        return cfg.getDouble("factions.power.constraints.min-power", 0.0);
+    }
+
+    public double getPowerMax() {
+        return cfg.getDouble("factions.power.constraints.max-power", getMaxPower());
+    }
+
+    public double getPowerMaxChangePerEvent() {
+        return cfg.getDouble("factions.power.constraints.max-change-per-event", 0.0);
+    }
+
+    public double getPowerWorldMultiplier(final String world) {
+        if (world == null || world.isBlank()) {
+            return 1.0;
+        }
+        return cfg.getDouble("factions.power.multipliers.worlds." + world, 1.0);
+    }
+
+    public double getPowerZoneMultiplier(final String zoneKey) {
+        return cfg.getDouble("factions.power.multipliers.zones." + zoneKey, 1.0);
+    }
+
+    public boolean isPowerFreezeBlocksAutomatic() {
+        return cfg.getBoolean("factions.power.freeze.blocks-automatic", true);
+    }
+
+    public boolean isPowerFreezeBlocksRegen() {
+        return cfg.getBoolean("factions.power.freeze.blocks-regen", true);
+    }
+
+    public boolean isPowerFreezeAllowAdminBypass() {
+        return cfg.getBoolean("factions.power.freeze.allow-admin-bypass", true);
+    }
+
+    public boolean isPowerNotifyActor() {
+        return cfg.getBoolean("factions.power.notifications.actor", true);
+    }
+
+    public boolean isPowerNotifyFaction() {
+        return cfg.getBoolean("factions.power.notifications.faction", false);
+    }
+
+    public boolean isPowerNotifyStaff() {
+        return cfg.getBoolean("factions.power.notifications.staff", false);
+    }
+
     // -------------------------------------------------------------------------
     // Land
     // -------------------------------------------------------------------------

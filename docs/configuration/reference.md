@@ -36,6 +36,30 @@ This page documents all shipped configuration keys with a description and a conc
 | `factions.power.buy.enabled` | Opt-in: allow players to purchase personal power via `/f power buy`. Requires Vault. | `enabled: false` |
 | `factions.power.buy.cost-per-point` | Money charged per 1 unit of power purchased. | `cost-per-point: 100.0` |
 | `factions.power.buy.max-per-purchase` | Maximum power a player can buy in a single command. | `max-per-purchase: 5.0` |
+| `factions.power.sources.regen-online.enabled` | Enable/disable online regen as a power source. | `enabled: true` |
+| `factions.power.sources.regen-online.amount` | Amount applied by online regen source each tick cycle. | `amount: 6.0` |
+| `factions.power.sources.regen-offline.enabled` | Enable/disable offline regen as a power source. | `enabled: true` |
+| `factions.power.sources.regen-offline.amount` | Amount applied by offline regen source each tick cycle. | `amount: 3.0` |
+| `factions.power.sources.death-loss.enabled` | Enable/disable death-loss source. | `enabled: true` |
+| `factions.power.sources.death-loss.amount` | Base amount removed by death-loss source. | `amount: 4.0` |
+| `factions.power.sources.kill-gain.enabled` | Enable/disable kill-gain source. | `enabled: true` |
+| `factions.power.sources.kill-gain.amount` | Base amount added by kill-gain source. | `amount: 2.0` |
+| `factions.power.sources.buy.enabled` | Enable/disable buy source (in addition to `power.buy.enabled`). | `enabled: true` |
+| `factions.power.constraints.min-power` | Hard lower bound for player power. | `min-power: 0.0` |
+| `factions.power.constraints.max-power` | Hard upper bound for player power. | `max-power: 10.0` |
+| `factions.power.constraints.max-change-per-event` | Clamp absolute power change per event (`0` disables). | `max-change-per-event: 0.0` |
+| `factions.power.multipliers.worlds.<world>` | World-specific multiplier for death/kill source adjustments. | `worlds: { world_nether: 1.25 }` |
+| `factions.power.multipliers.zones.safezone` | Safe zone multiplier for death/kill source adjustments. | `safezone: 1.0` |
+| `factions.power.multipliers.zones.warzone` | War zone multiplier for death/kill source adjustments. | `warzone: 1.0` |
+| `factions.power.multipliers.zones.own_claimed` | Own-claimed territory multiplier for death/kill source adjustments. | `own_claimed: 1.0` |
+| `factions.power.multipliers.zones.enemy_claimed` | Enemy-claimed territory multiplier for death/kill source adjustments. | `enemy_claimed: 1.0` |
+| `factions.power.multipliers.zones.wilderness` | Wilderness multiplier for death/kill source adjustments. | `wilderness: 1.0` |
+| `factions.power.freeze.blocks-automatic` | Block non-admin automatic sources while player is frozen. | `blocks-automatic: true` |
+| `factions.power.freeze.blocks-regen` | Block regen sources while player is frozen. | `blocks-regen: true` |
+| `factions.power.freeze.allow-admin-bypass` | Allow admin power commands to bypass freeze. | `allow-admin-bypass: true` |
+| `factions.power.notifications.actor` | Send actor/target-facing power update messages. | `actor: true` |
+| `factions.power.notifications.faction` | Broadcast power updates to faction members. | `faction: false` |
+| `factions.power.notifications.staff` | Broadcast power updates to staff channel. | `staff: false` |
 
 ### `factions.land.*`
 

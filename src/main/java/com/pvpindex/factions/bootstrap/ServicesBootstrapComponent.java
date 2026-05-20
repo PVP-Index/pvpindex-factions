@@ -8,6 +8,7 @@ import com.pvpindex.factions.service.AuditServiceImpl;
 import com.pvpindex.factions.service.FactionServiceImpl;
 import com.pvpindex.factions.service.FlagServiceImpl;
 import com.pvpindex.factions.service.InviteServiceImpl;
+import com.pvpindex.factions.service.PowerServiceImpl;
 import com.pvpindex.factions.service.WarpServiceImpl;
 
 /**
@@ -43,6 +44,7 @@ public final class ServicesBootstrapComponent extends AbstractBootstrapComponent
         context.services().setFactionService(factionImpl);
         context.services().setInviteService(inviteImpl);
         context.services().setWarpService(warpImpl);
+        context.services().setPowerService(new PowerServiceImpl(repos, cfg));
 
         final FlagServiceImpl flagImpl =
             new FlagServiceImpl(repos, cfg, logger(context));
