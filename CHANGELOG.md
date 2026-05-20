@@ -6,19 +6,6 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
-### Added
-- Internationalization support with locale bundles under `messages/` for `en`, `es`, `de`, `fr`, and `pt-BR`.
-- New player language command: `/f language [code|reset]` with aliases `lang` and `locale`.
-- New player profile locale persistence (`players.locale`) for per-player language overrides.
-- New config key: `factions.language.default` for server-wide default locale fallback.
-- New permission node: `factions.cmd.language` (default `true`).
-- New translator/contributor documentation: `docs/i18n.md`.
-
-### Changed
-- Message resolution now follows locale fallback order: player locale -> server default -> English -> inline fallback text.
-- `/f help` now includes the `language` command.
-- `/fa reload` now reloads locale bundles in `messages/` in addition to config.
-
 ## [1.0.11] - 2026-05-20
 
 ### Added
@@ -31,11 +18,20 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   - New permission `factions.cmd.merge` (default: true).
   - New `MergeRequestModel` / `MergeRequestRepository` data layer and `MergeService` / `MergeServiceImpl` service layer.
   - New audit actions `merge-request` and `merge-accept` for the audit log.
+- Internationalization support with locale bundles under `messages/` for `en`, `es`, `de`, `fr`, and `pt-BR`.
+- New player language command: `/f language [code|reset]` with aliases `lang` and `locale`.
+- New player profile locale persistence (`players.locale`) for per-player language overrides.
+- New config key: `factions.language.default` for server-wide default locale fallback.
+- New permission node: `factions.cmd.language` (default `true`).
+- New translator/contributor documentation: `docs/i18n.md`.
 
 ### Changed
 
 - Upgraded TeamsAPI integration to **2.0.0**:
   - `getRelation(id, id)` now returns `TeamRelation.MEMBER` when both team UUIDs are equal (new TeamsAPI 2.0.0 contract).
+- Message resolution now follows locale fallback order: player locale -> server default -> English -> inline fallback text.
+- `/f help` now includes the `language` command.
+- `/fa reload` now reloads locale bundles in `messages/` in addition to config.
 
 ## [1.0.10] - 2026-05-20
 
