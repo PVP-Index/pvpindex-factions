@@ -22,6 +22,7 @@ import com.pvpindex.factions.command.sub.CmdKick;
 import com.pvpindex.factions.command.sub.CmdLeader;
 import com.pvpindex.factions.command.sub.CmdLeave;
 import com.pvpindex.factions.command.sub.CmdList;
+import com.pvpindex.factions.command.sub.CmdLanguage;
 import com.pvpindex.factions.command.sub.CmdMap;
 import com.pvpindex.factions.command.sub.CmdMerge;
 import com.pvpindex.factions.command.sub.CmdNotify;
@@ -109,6 +110,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
             context.infra().getVaultEconomy(), cfg, repos, context.services().getPowerService()));
         commandRegistry.register(new CmdPowerHistory());
         commandRegistry.register(new CmdList(factionSvc));
+        commandRegistry.register(new CmdLanguage());
         commandRegistry.register(new CmdMap());
         commandRegistry.register(new CmdNotify());
         commandRegistry.register(new CmdPredefined(factionSvc));

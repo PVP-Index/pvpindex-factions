@@ -153,6 +153,10 @@ permissions:
     description: Manage personal faction notification settings.
     default: true
 
+  factions.cmd.language:
+    description: View or change your personal language.
+    default: true
+
   factions.cmd.gui:
     description: Open the factions graphical menu.
     default: true
