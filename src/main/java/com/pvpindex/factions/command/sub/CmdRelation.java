@@ -116,10 +116,11 @@ public final class CmdRelation extends FactionCommand {
                 notifyFactionMembers(
                     ctx,
                     target.get().getId(),
-                    MsgUtil.replace(
-                        MsgUtil.message(
-                            "relation.mutual-established-target",
-                            "<green><white>{faction}<green> and your faction are now <white>{relation}<green>."),
+                        MsgUtil.replace(
+                            MsgUtil.message(
+                                player,
+                                "relation.mutual-established-target",
+                                "<green><white>{faction}<green> and your faction are now <white>{relation}<green>."),
                         "faction", sourceName,
                         "relation", relation.displayName()));
                 sendRelationAnnouncement(sourceName, targetName, relation);
@@ -134,10 +135,11 @@ public final class CmdRelation extends FactionCommand {
                 notifyFactionMembers(
                     ctx,
                     target.get().getId(),
-                    MsgUtil.replace(
-                        MsgUtil.message(
-                            "relation.pending-received",
-                            "<yellow><white>{faction}<yellow> requested <white>{relation}<yellow> with your faction."),
+                        MsgUtil.replace(
+                            MsgUtil.message(
+                                player,
+                                "relation.pending-received",
+                                "<yellow><white>{faction}<yellow> requested <white>{relation}<yellow> with your faction."),
                         "faction", sourceName,
                         "relation", relation.displayName()));
             }
@@ -154,6 +156,7 @@ public final class CmdRelation extends FactionCommand {
             target.get().getId(),
             MsgUtil.replace(
                 MsgUtil.message(
+                    player,
                     "relation.updated-by-other",
                     "<yellow><white>{faction}<yellow> set relation to <white>{relation}<yellow>."),
                 "faction", sourceName,
@@ -233,7 +236,7 @@ public final class CmdRelation extends FactionCommand {
             defaultText = "<green>\ud83e\udd1d {source} and {target} are now " + relation.displayName() + "!";
         }
         final String message = MsgUtil.replace(
-            MsgUtil.message(messageKey, defaultText),
+            MsgUtil.message(null, messageKey, defaultText),
             "source", sourceName,
             "target", targetName);
         final boolean useEzCountdown = ezCountdownNotifier != null

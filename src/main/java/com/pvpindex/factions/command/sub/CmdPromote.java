@@ -31,10 +31,9 @@ public final class CmdPromote extends FactionCommand {
         }
         final OfflinePlayer target = Bukkit.getOfflinePlayer(ctx.arg(0));
         if (factionService.promoteMember(actor.getUniqueId(), target.getUniqueId())) {
-            MsgUtil.send(actor, "<green>Promoted <white>" + ctx.arg(0) + "<green>.");
+            MsgUtil.sendKey(actor, "custom.member.promoted", "<green>Promoted <white>{name}<green>.", "name", ctx.arg(0));
             return;
         }
-        MsgUtil.send(actor, "<red>Could not promote that player.");
+        MsgUtil.sendKey(actor, "custom.member.promote-failed", "<red>Could not promote that player.");
     }
 }
-

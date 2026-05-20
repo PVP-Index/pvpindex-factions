@@ -69,7 +69,7 @@ public final class FactionCommandExecutor implements CommandExecutor {
             if (teamsApiEnabled && dispatchTeamsSubcommand(sender, args)) {
                 return true;
             }
-            MsgUtil.send(sender, MsgUtil.unknownCommand(args[0]));
+            MsgUtil.send(sender, MsgUtil.unknownCommand(sender, args[0]));
             return true;
         }
         final List<String> subArgs = args.length > 1
@@ -98,12 +98,13 @@ public final class FactionCommandExecutor implements CommandExecutor {
                 final String perm = sub.getPermission();
                 if (perm != null && !sender.hasPermission(perm)) {
                     MsgUtil.send(sender, MsgUtil.message(
+                        sender,
                         "general.no-permission",
                         "<red>You do not have permission to use this command."));
                     return true;
                 }
                 if (!sub.execute(sender, args)) {
-                    MsgUtil.send(sender, "<gray>Usage: " + sub.getUsage());
+                    MsgUtil.sendKey(sender, "general.invalid-args", "<red>Usage: {usage}", "usage", sub.getUsage());
                 }
                 return true;
             }

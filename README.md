@@ -12,6 +12,8 @@ A modern factions plugin for **Paper, Folia, and Spigot 1.21.x / 1.26.x**, backe
 Project documentation for server owners is available in [`/docs`](docs) and is
 published through the GitHub Pages docs workflow.
 
+Language contribution docs: [`docs/i18n.md`](docs/i18n.md).
+
 ---
 
 ## Requirements
@@ -32,7 +34,7 @@ The plugin starts without any of these. Each integration is enabled only when th
 | Vault | Economy costs for faction creation and land claiming |
 | WorldGuard / WorldEdit | Territory protection hooks |
 | PlaceholderAPI | Faction placeholders for scoreboards and chat |
-| TeamsAPI | Team synchronization adapter; exposes faction, power, and power-history data through a standard API surface (1.8.0+ for power history) |
+| TeamsAPI | Team synchronization adapter; exposes faction, power, and power-history data through a standard API surface (2.0.0+ recommended) |
 | EssentialsX | Route `/f home` through the Essentials teleport system |
 | dynmap | Render faction territory on the dynmap web map |
 | EzEconomy | Alternative economy provider |
@@ -114,6 +116,7 @@ Checkstyle enforces UTF-8 encoding, no star imports, no trailing whitespace, and
 | `factions.fly.disable-on-threat` | `true` | Cancel flight when an enemy enters the chunk |
 | `factions.fly.require-own-territory` | `true` | Restrict flight to own faction's territory |
 | `factions.chat.show-tag` | `true` | Prepend faction tag in global chat |
+| `factions.language.default` | `en` | Server default locale; player locale overrides this per-player |
 | `factions.audit.page-size` | `10` | Entries per page for `/f audit` and `/fa audit` |
 
 ---
@@ -146,6 +149,7 @@ Admin commands use `/fa` (aliases: `/factionadmin`) and require the `factions.ad
 | `list` | List all factions |
 | `top` | Leaderboard ranked by power |
 | `map` | ASCII territory map of the surrounding area |
+| `language [code\|reset]` | Show or set your personal message language |
 | `claim [mode]` | Claim land for your faction |
 | `unclaim` | Unclaim the current chunk |
 | `sethome` | Set faction home to your current location |
@@ -159,6 +163,8 @@ Admin commands use `/fa` (aliases: `/factionadmin`) and require the `factions.ad
 | `relation <faction> <ally\|truce\|enemy\|neutral>` | Set relation with another faction |
 | `relation list` | List current relations |
 | `relation wishes` | List pending relation requests |
+| `merge send <faction>` | Send a merge request to another faction (officer+) |
+| `merge accept <faction>` | Accept a merge request from another faction (officer+) |
 | `warp <name>` | Teleport to a faction warp |
 | `warp set <name>` | Create or update a faction warp |
 | `warp delete <name>` | Delete a faction warp |
@@ -197,7 +203,9 @@ Admin commands use `/fa` (aliases: `/factionadmin`) and require the `factions.ad
 | Node | Default | Description |
 |---|---|---|
 | `factions.admin` | op | Access to all `/fa` admin commands |
+| `factions.cmd.language` | true | Show or set personal message language (`/f language`) |
 | `factions.cmd.audit` | op | View the faction audit log (`/f audit`) |
+| `factions.cmd.merge` | true | Send and accept faction merge requests (`/f merge`) |
 | `factions.cmd.admin.power` | op | Root access to `/fa power` |
 | `factions.cmd.admin.power.view` | op | View target player power |
 | `factions.cmd.admin.power.set` | op | Set exact player power |

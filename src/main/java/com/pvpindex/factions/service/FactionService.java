@@ -111,4 +111,15 @@ public interface FactionService {
      * @return {@code true} if the player was successfully added.
      */
     boolean joinFaction(String factionId, UUID playerUUID);
+
+    /**
+     * Merge {@code senderFactionId} into {@code targetFactionId}.
+     *
+     * <p>Transfers all claims, warps, and bank balance to the target faction, then
+     * migrates every member of the sender faction to the target at default (MEMBER)
+     * rank. Finally, removes the sender faction and its ranks/invitations/relations.</p>
+     *
+     * @return {@code true} if the merge completed successfully.
+     */
+    boolean mergeFaction(String senderFactionId, String targetFactionId, UUID actorUUID);
 }

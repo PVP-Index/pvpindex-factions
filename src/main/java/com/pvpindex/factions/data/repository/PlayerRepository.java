@@ -81,6 +81,9 @@ public class PlayerRepository extends ModelRepository<PlayerModel> {
         model.setInviteNotifications(model.hasInviteNotifications());
         model.setBankTaxNotifications(model.hasBankTaxNotifications());
         model.setPowerFrozen(model.isPowerFrozen());
+        if (model.getLocale() != null && model.getLocale().isBlank()) {
+            model.setLocale(null);
+        }
         model.setAutoTerritoryMode(model.getAutoTerritoryMode());
         if (model.getAutoTerritoryMode() == null) {
             model.setAutoTerritoryMode(AutoTerritoryMode.OFF);

@@ -22,7 +22,9 @@ import com.pvpindex.factions.command.sub.CmdKick;
 import com.pvpindex.factions.command.sub.CmdLeader;
 import com.pvpindex.factions.command.sub.CmdLeave;
 import com.pvpindex.factions.command.sub.CmdList;
+import com.pvpindex.factions.command.sub.CmdLanguage;
 import com.pvpindex.factions.command.sub.CmdMap;
+import com.pvpindex.factions.command.sub.CmdMerge;
 import com.pvpindex.factions.command.sub.CmdNotify;
 import com.pvpindex.factions.command.sub.CmdPredefined;
 import com.pvpindex.factions.command.sub.CmdPromote;
@@ -56,6 +58,7 @@ import com.pvpindex.factions.registry.CommandRegistry;
 import com.pvpindex.factions.service.FactionService;
 import com.pvpindex.factions.service.FlagService;
 import com.pvpindex.factions.service.InviteService;
+import com.pvpindex.factions.service.MergeService;
 import com.pvpindex.factions.service.WarpService;
 import org.bukkit.command.PluginCommand;
 
@@ -77,6 +80,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         final InviteService inviteSvc = context.services().getInviteService();
         final WarpService warpSvc = context.services().getWarpService();
         final FlagService flagSvc = context.services().getFlagService();
+        final MergeService mergeSvc = context.services().getMergeService();
         final EngineChunkChange chunkChange = context.engines().getChunkChange();
         final EngineEconomy economy = context.engines().getEconomy();
         final com.pvpindex.factions.engine.AutoTerritoryModeCache autoModeCache =
@@ -98,6 +102,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         commandRegistry.register(new CmdFly(factionSvc));
         commandRegistry.register(new CmdRelation(factionSvc, context.infra().getEzCountdownNotifier(),
             context.infra().getNotificationsConfig(), context.infra().getDiscordSrvNotifier(), cfg));
+        commandRegistry.register(new CmdMerge(factionSvc, mergeSvc));
         commandRegistry.register(new CmdWarp(factionSvc, warpSvc, context.infra().getTerritoryGuard(),
             context.infra().getEssentialsInterop()));
         commandRegistry.register(new CmdBank(factionSvc, economy));
@@ -105,6 +110,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
             context.infra().getVaultEconomy(), cfg, repos, context.services().getPowerService()));
         commandRegistry.register(new CmdPowerHistory());
         commandRegistry.register(new CmdList(factionSvc));
+        commandRegistry.register(new CmdLanguage());
         commandRegistry.register(new CmdMap());
         commandRegistry.register(new CmdNotify());
         commandRegistry.register(new CmdPredefined(factionSvc));

@@ -82,6 +82,12 @@ class FactionsTeamsRelationServiceTest {
     // -------------------------------------------------------------------------
 
     @Test
+    @DisplayName("getRelation returns MEMBER when both team IDs are equal (TeamsAPI 2.0.0)")
+    void getRelationSameTeamReturnsMember() {
+        assertEquals(TeamRelation.MEMBER, service.getRelation(fromId, fromId));
+    }
+
+    @Test
     @DisplayName("getRelation returns NEUTRAL when no relation is stored")
     void getRelationDefaultsToNeutral() throws StorageException {
         final FactionModel fromFaction = new FactionModel(fromId.toString());

@@ -153,6 +153,10 @@ permissions:
     description: Manage personal faction notification settings.
     default: true
 
+  factions.cmd.language:
+    description: View or change your personal language.
+    default: true
+
   factions.cmd.gui:
     description: Open the factions graphical menu.
     default: true
@@ -213,6 +217,11 @@ permissions:
   # Relations
   factions.cmd.relation:
     description: Set or view faction relations (ally, truce, enemy, neutral).
+    default: true
+
+  # Merge
+  factions.cmd.merge:
+    description: Send or accept faction merge requests.
     default: true
 
   factions.cmd.predefined:

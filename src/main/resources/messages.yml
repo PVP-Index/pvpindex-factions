@@ -244,3 +244,97 @@ ezcountdown:
   relation-enemy: "<red>\u2694 {source} declared war on {target}!"
   relation-ally: "<green>\ud83e\udd1d {source} and {target} are now allies!"
   relation-truce: "<yellow>\ud83e\udd1d {source} and {target} have called a truce!"
+
+merge:
+  disabled: "<red>Faction merging is not enabled on this server."
+  request-sent: "<green>Merge request sent to <yellow>{faction}<green>."
+  request-received: "<yellow>{faction}<green> has sent a merge request to your faction. Use <white>/f merge accept {faction}<green> to absorb them."
+  accepted: "<yellow>{faction}<green> has merged into your faction!"
+  merged-into: "<green>Successfully merged <yellow>{faction}<green> into your faction."
+  already-requested: "<red>A merge request to <yellow>{faction}<red> is already pending."
+  no-request-found: "<red>No pending merge request from <yellow>{faction}<red> was found."
+  self-merge: "<red>You cannot merge your faction into itself."
+  target-not-found: "<red>Faction <yellow>{faction}<red> not found."
+language:
+  system-unavailable: "<red>Language system is not available."
+  profile-load-failed: "<red>Unable to load your profile right now."
+  reset-success: "<green>Your language has been reset to server default."
+  invalid-code: "<red>Unsupported language code: <white>{code}</white>."
+  set-success: "<green>Language updated to <white>{code}</white>."
+  save-failed: "<red>Could not save your language preference."
+  current: "<gold>Current language: <white>{code}</white>"
+  default: "<gray>Server default: <white>{code}</white>"
+  available: "<gray>Available: <white>{list}</white>"
+  usage: "<gray>Usage: <white>/f language <code></white> or <white>/f language reset</white>"
+custom:
+  protection:
+    no-break: "<red>You may not break blocks in this territory."
+    no-place: "<red>You may not place blocks in this territory."
+    friendly-fire-disabled: "<red>Friendly fire is disabled in your faction."
+    pvp-safezone: "<red>PvP is disabled in the Safezone."
+    pvp-territory: "<red>PvP is disabled in this territory."
+  move:
+    enter-claimed: "<gold>You entered claimed faction territory: <white>{faction}"
+    enter: "<gray>You entered: <white>{territory}"
+    info-leader: "<gray>Leader: <white>{value}"
+    info-members: "<gray>Members: <white>{value}"
+    info-land: "<gray>Land: <white>{value}"
+    info-power: "<gray>Power: <white>{value}"
+  warp:
+    none: "<yellow>Your faction has no warps."
+    header: "<gold>== Faction Warps =="
+    header-page: "<gold>== Faction Warps (Page {page}) =="
+    world-not-loaded: "<red>Warp world not loaded."
+    set-protected: "<red>You cannot set a warp in this protected region."
+    set-failed: "<red>Could not set warp (limit reached?)."
+  home:
+    set-protected: "<red>You cannot set faction home in this protected region."
+    set: "<green>Faction home set."
+    set-failed: "<red>Failed to set faction home."
+  fly:
+    disabled-global: "<red>Faction fly is disabled."
+    own-territory-required: "<red>You can only use faction fly in your own territory."
+  power:
+    usage-buy: "<gray>Usage: <yellow>/f power buy <amount>"
+  notify:
+    usage: "<red>Usage: /f notify [status|invites|territory|tax|all] [on|off]"
+    unknown-type: "<red>Unknown notification type. Use: invites, territory, tax, all, status."
+    updated: "<green>Notification setting updated: <white>{type}<green> -> <white>{value}"
+    update-failed: "<red>Failed to update notification settings."
+    status-header: "<gold>Notification settings:"
+    status-line: "<gray>- {type}: <white>{value}"
+  member:
+    owner-cannot-leave: "<red>You are the owner. Transfer ownership or disband with /f disband."
+    leave-failed: "<red>Failed to leave faction."
+    leader-confirm-self: "<red>Use /f leader {name} confirm to re-affirm self leadership."
+    leader-transferred: "<green>Faction ownership transferred to <white>{name}<green>."
+    leader-transfer-failed: "<red>Could not transfer ownership."
+    promoted: "<green>Promoted <white>{name}<green>."
+    promote-failed: "<red>Could not promote that player."
+    kick-actor: "<yellow>Kicked <white>{player}<yellow>."
+  faction:
+    disbanded: "<yellow>Your faction has been disbanded."
+    disband-failed: "<red>Failed to disband faction."
+    desc-too-long: "<red>Description is too long (max 250 chars)."
+    desc-updated: "<green>Faction description updated."
+    desc-update-failed: "<red>Could not update faction description."
+  list:
+    separator: "<dark_gray>----------------------------------------"
+    none: "<yellow>No factions found."
+    header: "<gold> Factions <gray>(page <white>{page}<gray>, sort <white>{sort}<gray>)"
+    row: "<yellow>#{rank} <white>{name}<gray> | members <white>{members}<gray> | land <white>{land}<gray> | bank <white>{bank}"
+  top:
+    header: "<gold> Faction Top <gray>(page <white>{page}<gray>, sort <white>{sort}<gray>)"
+    row: "<yellow>#{rank} <white>{name}<gray> | power <white>{power}<gray> | land <white>{land}<gray> | bank <white>{bank}"
+  invite:
+    target-already-in-faction: "<red>That player is already in a faction."
+    sent: "<green>Invited <white>{player}<green>."
+    already-pending: "<red>Could not invite that player (already pending?)."
+  gui:
+    menu-not-found: "<red>Unknown GUI menu: <yellow>{menu}"
+    suggested-command: "<gray>Suggested: <yellow>{command}"
+    menu-not-configured: "<red>Menu '{menu}' is not configured."
+  merge:
+    help-title: "<gold>== Faction Merge =="
+    help-send: "<yellow>/f merge send <faction> <gray>- Send a merge request"
+    help-accept: "<yellow>/f merge accept <faction> <gray>- Accept a merge request"

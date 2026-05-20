@@ -29,14 +29,13 @@ public final class CmdDesc extends FactionCommand {
         }
         final String description = String.join(" ", ctx.getArgs()).trim();
         if (description.length() > 250) {
-            MsgUtil.send(player, "<red>Description is too long (max 250 chars).");
+            MsgUtil.sendKey(player, "custom.faction.desc-too-long", "<red>Description is too long (max 250 chars).");
             return;
         }
         if (factionService.setFactionDescription(player.getUniqueId(), description)) {
-            MsgUtil.send(player, "<green>Faction description updated.");
+            MsgUtil.sendKey(player, "custom.faction.desc-updated", "<green>Faction description updated.");
             return;
         }
-        MsgUtil.send(player, "<red>Could not update faction description.");
+        MsgUtil.sendKey(player, "custom.faction.desc-update-failed", "<red>Could not update faction description.");
     }
 }
-

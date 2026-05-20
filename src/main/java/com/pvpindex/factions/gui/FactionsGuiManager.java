@@ -2,6 +2,7 @@ package com.pvpindex.factions.gui;
 
 import com.pvpindex.factions.config.FactionsConfig;
 import com.pvpindex.factions.config.GuiConfig;
+import com.pvpindex.factions.config.MessagesConfig;
 import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.model.PlayerModel;
@@ -92,7 +93,7 @@ public class FactionsGuiManager implements Listener {
                 if (slot < 0 || slot >= size) {
                     continue;
                 }
-                inventory.setItem(slot, buildItem(itemSection, player));
+                inventory.setItem(slot, buildItem(key, itemSection, player));
             }
         }
         openMenus.put(player.getUniqueId(), menuId);
@@ -152,12 +153,53 @@ public class FactionsGuiManager implements Listener {
             case "SUGGEST_COMMAND" -> {
                 final String command = render(section.getString("command", "/f help"), player);
                 player.closeInventory();
-                MsgUtil.send(player, "<gray>Suggested: <yellow>" + command);
+                MsgUtil.sendKey(player, "custom.gui.suggested-command",
+                    "<gray>Suggested: <yellow>{command}", "command", command);
             }
             case "OPEN_MENU" -> {
                 final String target = section.getString("menu", guiConfig.getDefaultMenu());
                 if (!openMenu(player, target)) {
-                    MsgUtil.send(player, "<red>Menu '" + target + "' is not configured.");
+                    MsgUtil.sendKey(player, "custom.gui.menu-not-configured",
+                        "<red>Menu '{menu}' is not configured.", "menu", target);
+                }
+            }
+            case "LANGUAGE_SET" -> {
+                final String requested = section.getString("locale", "").trim();
+                final MessagesConfig messagesConfig = MsgUtil.getMessagesConfig();
+                if (messagesConfig == null) {
+                    MsgUtil.sendKey(player, "language.system-unavailable",
+                        "<red>Language system is not available.");
+                    return;
+                }
+                final String normalized = MessagesConfig.normalizeLocale(requested);
+                if (!messagesConfig.isSupportedLocale(normalized)) {
+                    MsgUtil.sendKey(player, "language.invalid-code",
+                        "<red>Unsupported language code: <white>{code}</white>.", "code", requested);
+                    return;
+                }
+                try {
+                    final PlayerModel model = repos.players().findOrCreate(player.getUniqueId().toString());
+                    model.setLocale(normalized);
+                    repos.players().save(model);
+                    MsgUtil.sendKey(player, "language.set-success",
+                        "<green>Language updated to <white>{code}</white>.", "code", normalized);
+                    openMenu(player, openMenus.getOrDefault(player.getUniqueId(), guiConfig.getDefaultMenu()));
+                } catch (StorageException e) {
+                    MsgUtil.sendKey(player, "language.save-failed",
+                        "<red>Could not save your language preference.");
+                }
+            }
+            case "LANGUAGE_RESET" -> {
+                try {
+                    final PlayerModel model = repos.players().findOrCreate(player.getUniqueId().toString());
+                    model.setLocale(null);
+                    repos.players().save(model);
+                    MsgUtil.sendKey(player, "language.reset-success",
+                        "<green>Your language has been reset to server default.");
+                    openMenu(player, openMenus.getOrDefault(player.getUniqueId(), guiConfig.getDefaultMenu()));
+                } catch (StorageException e) {
+                    MsgUtil.sendKey(player, "language.save-failed",
+                        "<red>Could not save your language preference.");
                 }
             }
             case "CLOSE" -> player.closeInventory();
@@ -168,13 +210,35 @@ public class FactionsGuiManager implements Listener {
         }
     }
 
-    private ItemStack buildItem(final ConfigurationSection section, final Player player) {
+    private ItemStack buildItem(
+            final String itemKey,
+            final ConfigurationSection section,
+            final Player player) {
         final Material material = Material.matchMaterial(section.getString("material", "PAPER"));
         final ItemStack item = new ItemStack(material == null ? Material.PAPER : material);
         final ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            final String nameStr = render(section.getString("name", "<white>Factions"), player);
-            final List<String> loreRaw = section.getStringList("lore");
+            final MessagesConfig messages = MsgUtil.getMessagesConfig();
+            final String msgNameKey = "gui.items." + itemKey + ".name";
+            final String rawName;
+            if (messages != null) {
+                final String fromBundle = messages.getForSender(player, msgNameKey, null);
+                rawName = fromBundle != null
+                    ? fromBundle
+                    : section.getString("name", "<white>Factions");
+            } else {
+                rawName = section.getString("name", "<white>Factions");
+            }
+            final String nameStr = render(rawName, player);
+            final List<String> loreRaw;
+            final String msgLoreKey = "gui.items." + itemKey + ".lore";
+            if (messages != null) {
+                final List<String> fromBundle = messages.getStringListForSender(
+                    player, msgLoreKey, null);
+                loreRaw = fromBundle != null ? fromBundle : section.getStringList("lore");
+            } else {
+                loreRaw = section.getStringList("lore");
+            }
             meta.setDisplayName(MsgUtil.toLegacy(nameStr));
             if (!loreRaw.isEmpty()) {
                 final List<String> lorePlain = new ArrayList<>();
@@ -203,6 +267,14 @@ public class FactionsGuiManager implements Listener {
             final int factionLand = factionId.isEmpty() ? 0 : repos.board().countByFactionId(factionId);
             final double factionBank = factionOpt.map(FactionModel::getBank).orElse(0.0D);
             final double power = self == null ? 0.0D : self.getPower();
+            final MessagesConfig messagesConfig = MsgUtil.getMessagesConfig();
+            final String localeCurrent = self == null || self.getLocale() == null || self.getLocale().isBlank()
+                ? (messagesConfig == null ? "en" : messagesConfig.getDefaultLocale())
+                : self.getLocale();
+            final String localeDefault = messagesConfig == null ? "en" : messagesConfig.getDefaultLocale();
+            final String localeAvailable = messagesConfig == null
+                ? "en"
+                : String.join(", ", messagesConfig.getAvailableLocales());
             return input
                 .replace("{player}", player.getName())
                 .replace("{faction}", factionName)
@@ -210,7 +282,10 @@ public class FactionsGuiManager implements Listener {
                 .replace("{faction_land}", Integer.toString(factionLand))
                 .replace("{faction_bank}", String.format(Locale.US, "%.2f", factionBank))
                 .replace("{power}", String.format(Locale.US, "%.2f", power))
-                .replace("{max_power}", String.format(Locale.US, "%.2f", cfg.getMaxPower()));
+                .replace("{max_power}", String.format(Locale.US, "%.2f", cfg.getMaxPower()))
+                .replace("{language_current}", localeCurrent)
+                .replace("{language_default}", localeDefault)
+                .replace("{language_available}", localeAvailable);
         } catch (StorageException ex) {
             logger.warning("Failed to render faction GUI placeholders for " + player.getName() + ": " + ex.getMessage());
             return input.replace("{player}", player.getName())
@@ -219,7 +294,10 @@ public class FactionsGuiManager implements Listener {
                 .replace("{faction_land}", "0")
                 .replace("{faction_bank}", "0.00")
                 .replace("{power}", "0.00")
-                .replace("{max_power}", String.format(Locale.US, "%.2f", cfg.getMaxPower()));
+                .replace("{max_power}", String.format(Locale.US, "%.2f", cfg.getMaxPower()))
+                .replace("{language_current}", "en")
+                .replace("{language_default}", "en")
+                .replace("{language_available}", "en");
         }
     }
 

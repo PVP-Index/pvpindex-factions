@@ -20,6 +20,9 @@ import com.pvpindex.factions.scheduler.PlatformDetector;
 import com.pvpindex.factions.scheduler.TaskScheduler;
 import com.pvpindex.factions.util.MsgUtil;
 import java.io.File;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -70,12 +73,7 @@ public final class InfrastructureBootstrapComponent extends AbstractBootstrapCom
         if (!dbFile.exists()) {
             context.javaPlugin().saveResource("database.yml", false);
         }
-        final File messagesFile = new File(context.plugin().getDataFolder(), "messages.yml");
-        if (!messagesFile.exists()) {
-            context.javaPlugin().saveResource("messages.yml", false);
-        }
-        final FileConfiguration msgCfgRaw = YamlConfiguration.loadConfiguration(messagesFile);
-        final MessagesConfig messagesConfig = new MessagesConfig(msgCfgRaw);
+        final MessagesConfig messagesConfig = loadMessagesConfig(context);
         context.infra().setMessagesConfig(messagesConfig);
         MsgUtil.setMessagesConfig(messagesConfig);
         final FileConfiguration dbCfgRaw = YamlConfiguration.loadConfiguration(dbFile);
@@ -103,7 +101,41 @@ public final class InfrastructureBootstrapComponent extends AbstractBootstrapCom
         }
         context.infra().setDatabaseManager(db);
         context.infra().setRepositories(new Repositories(db.getStore()));
+        if (context.infra().getMessagesConfig() != null) {
+            context.infra().getMessagesConfig().setRepositories(context.infra().getRepositories());
+        }
         return true;
+    }
+
+    private MessagesConfig loadMessagesConfig(final BootstrapContext context) {
+        final File dataFolder = context.plugin().getDataFolder();
+        final File messagesDir = new File(dataFolder, "messages");
+        if (!messagesDir.exists()) {
+            messagesDir.mkdirs();
+        }
+        final Set<String> shippedLocales = Set.of("en", "es", "de", "fr", "pt-BR");
+        for (final String locale : shippedLocales) {
+            final String name = "messages/messages_" + locale + ".yml";
+            final File dest = new File(dataFolder, name);
+            if (!dest.exists()) {
+                context.javaPlugin().saveResource(name, false);
+            }
+        }
+        final File legacyMessages = new File(dataFolder, "messages.yml");
+        if (!legacyMessages.exists()) {
+            context.javaPlugin().saveResource("messages.yml", false);
+        }
+
+        final Map<String, FileConfiguration> bundles = new LinkedHashMap<>();
+        for (final File file : messagesDir.listFiles((dir, name) -> name.startsWith("messages_") && name.endsWith(".yml"))) {
+            final String raw = file.getName().substring("messages_".length(), file.getName().length() - 4);
+            bundles.put(MessagesConfig.normalizeLocale(raw), YamlConfiguration.loadConfiguration(file));
+        }
+        if (!bundles.containsKey("en")) {
+            bundles.put("en", YamlConfiguration.loadConfiguration(legacyMessages));
+        }
+        final String defaultLocale = context.infra().getConfig().getDefaultLanguage();
+        return new MessagesConfig(bundles, defaultLocale);
     }
 
     private void initVault(final BootstrapContext context) {

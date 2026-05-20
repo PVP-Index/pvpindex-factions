@@ -26,18 +26,19 @@ public final class CmdLeave extends FactionCommand {
         final Player player = (Player) ctx.getSender();
         final Optional<FactionModel> factionOpt = factionService.getFactionByPlayer(player.getUniqueId());
         if (factionOpt.isEmpty()) {
-            MsgUtil.send(player, "<red>You are not in a faction.");
+            MsgUtil.sendKey(player, "general.not-in-faction", "<red>You are not in a faction.");
             return;
         }
         if (factionOpt.get().isOwner(player.getUniqueId())) {
-            MsgUtil.send(player,
+            MsgUtil.sendKey(player, "custom.member.owner-cannot-leave",
                 "<red>You are the owner. Transfer ownership or disband with /f disband.");
             return;
         }
         if (factionService.removeMember(factionOpt.get().getId(), player.getUniqueId())) {
-            MsgUtil.send(player, "<yellow>You left <white>" + factionOpt.get().getName() + "<yellow>.");
+            MsgUtil.sendKey(player, "member.left", "<yellow>You left faction <yellow>{faction}</yellow>.",
+                "faction", factionOpt.get().getName());
         } else {
-            MsgUtil.send(player, "<red>Failed to leave faction.");
+            MsgUtil.sendKey(player, "custom.member.leave-failed", "<red>Failed to leave faction.");
         }
     }
 }

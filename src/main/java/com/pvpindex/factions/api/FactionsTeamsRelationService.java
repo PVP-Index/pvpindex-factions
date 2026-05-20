@@ -107,6 +107,9 @@ public class FactionsTeamsRelationService implements TeamsRelationService {
      */
     @Override
     public TeamRelation getRelation(final UUID fromTeamId, final UUID toTeamId) {
+        if (fromTeamId.equals(toTeamId)) {
+            return TeamRelation.MEMBER;
+        }
         try {
             final Optional<FactionModel> fromOpt = repos.factions().find(fromTeamId.toString());
             if (fromOpt.isEmpty()) {
@@ -207,6 +210,7 @@ public class FactionsTeamsRelationService implements TeamsRelationService {
 
     private static TeamRelation toTeamRelation(final Relation r) {
         return switch (r) {
+            case MEMBER -> TeamRelation.MEMBER;
             case ALLY -> TeamRelation.ALLY;
             case TRUCE -> TeamRelation.TRUCE;
             case ENEMY -> TeamRelation.ENEMY;

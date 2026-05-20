@@ -6,9 +6,32 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-05-21
+
 ### Added
 
+- **Faction merge** (`/f merge send <faction>`, `/f merge accept <faction>`):
+  - Officers and above can send a merge request proposing their faction be absorbed by another.
+  - Officers and above of the target faction can accept the request to complete the merge.
+  - On acceptance, all claims, warps, bank balance, and members are transferred to the target faction; members join at the target's default rank; the sender faction is disbanded.
+  - Online members of the target faction are notified when a merge request arrives.
+  - New permission `factions.cmd.merge` (default: true).
+  - New `MergeRequestModel` / `MergeRequestRepository` data layer and `MergeService` / `MergeServiceImpl` service layer.
+  - New audit actions `merge-request` and `merge-accept` for the audit log.
+- Internationalization support with locale bundles under `messages/` for `en`, `es`, `de`, `fr`, `pt-BR`, `ja`, `zh`, and `ru`.
+- New player language command: `/f language [code|reset]` with aliases `lang` and `locale`.
+- New player profile locale persistence (`players.locale`) for per-player language overrides.
+- New config key: `factions.language.default` for server-wide default locale fallback.
+- New permission node: `factions.cmd.language` (default `true`).
+- New translator/contributor documentation: `docs/i18n.md`.
+
 ### Changed
+
+- Upgraded TeamsAPI integration to **2.0.0**:
+  - `getRelation(id, id)` now returns `TeamRelation.MEMBER` when both team UUIDs are equal (new TeamsAPI 2.0.0 contract).
+- Message resolution now follows locale fallback order: player locale -> server default -> English -> inline fallback text.
+- `/f help` now includes the `language` command.
+- `/fa reload` now reloads locale bundles in `messages/` in addition to config.
 
 ## [1.0.10] - 2026-05-20
 

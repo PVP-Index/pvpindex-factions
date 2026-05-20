@@ -55,6 +55,10 @@ public final class MsgUtil {
         messagesConfig = config;
     }
 
+    public static MessagesConfig getMessagesConfig() {
+        return messagesConfig;
+    }
+
     // -------------------------------------------------------------------------
     // Basic send
     // -------------------------------------------------------------------------
@@ -83,13 +87,21 @@ public final class MsgUtil {
             final String key,
             final String fallback,
             final String... kvPairs) {
-        final String template = message(key, fallback);
+        final String template = message(sender, key, fallback);
         send(sender, replace(template, kvPairs));
     }
 
     public static String message(final String key, final String fallback) {
         final MessagesConfig cfg = messagesConfig;
         return cfg == null ? fallback : cfg.get(key, fallback);
+    }
+
+    public static String message(
+            final CommandSender sender,
+            final String key,
+            final String fallback) {
+        final MessagesConfig cfg = messagesConfig;
+        return cfg == null ? fallback : cfg.getForSender(sender, key, fallback);
     }
 
     /**
@@ -164,13 +176,16 @@ public final class MsgUtil {
      * @param description short description shown on hover
      * @return MiniMessage string ready to pass to {@link #send}
      */
-    public static String helpEntry(final String usage, final String description) {
+    public static String helpEntry(
+            final CommandSender sender,
+            final String usage,
+            final String description) {
         final String line = replace(
-            message("help.entry-line", "<yellow>{usage}<gray> - {description}"),
+            message(sender, "help.entry-line", "<yellow>{usage}<gray> - {description}"),
             "usage", usage,
             "description", description);
         final String hover = replace(
-            message("help.entry-hover", "<gray>{description}<newline><dark_gray>Click to suggest command"),
+            message(sender, "help.entry-hover", "<gray>{description}<newline><dark_gray>Click to suggest command"),
             "description", description);
         return "<hover:show_text:'" + mmEscape(hover) + "'>"
             + "<click:suggest_command:'" + mmEscape(usage) + "'>"
@@ -213,14 +228,14 @@ public final class MsgUtil {
      * @param factionName name of the inviting faction
      * @return MiniMessage string ready to pass to {@link #send}
      */
-    public static String inviteNotification(final String factionName) {
+    public static String inviteNotification(final CommandSender sender, final String factionName) {
         final String msg = replace(
-            message("invite.received-short", "<yellow>{faction}<gray> invited you. "),
+            message(sender, "invite.received-short", "<yellow>{faction}<gray> invited you. "),
             "faction", factionName);
         final String acceptHover = replace(
-            message("invite.accept-hover", "<green>Click to join <white>{faction}"),
+            message(sender, "invite.accept-hover", "<green>Click to join <white>{faction}"),
             "faction", factionName);
-        final String denyHover = message("invite.decline-hover", "<red>Simply ignore to decline");
+        final String denyHover = message(sender, "invite.decline-hover", "<red>Simply ignore to decline");
         return msg
             + "<hover:show_text:'" + mmEscape(acceptHover) + "'>"
             + "<click:run_command:'/f join " + mmEscape(factionName) + "'>"
@@ -239,15 +254,19 @@ public final class MsgUtil {
      * @param inviterName inviter display name
      * @return MiniMessage string ready to pass to {@link #send}
      */
-    public static String inviteListEntry(final String factionName, final String inviterName) {
+    public static String inviteListEntry(
+            final CommandSender sender,
+            final String factionName,
+            final String inviterName) {
         final String line = replace(
             message(
+                sender,
                 "invite.summary-line",
                 "<yellow>- <white>{faction}</white> <gray>(invited by <white>{inviter}</white>)"),
             "faction", factionName,
             "inviter", inviterName);
         final String acceptHover = replace(
-            message("invite.accept-hover", "<green>Click to join <white>{faction}"),
+            message(sender, "invite.accept-hover", "<green>Click to join <white>{faction}"),
             "faction", factionName);
         return line + " "
             + "<hover:show_text:'" + mmEscape(acceptHover) + "'>"
@@ -262,12 +281,12 @@ public final class MsgUtil {
      * @param input the unrecognised token the player typed
      * @return MiniMessage string ready to pass to {@link #send}
      */
-    public static String unknownCommand(final String input) {
+    public static String unknownCommand(final CommandSender sender, final String input) {
         final String base = replace(
-            message("general.unknown-subcommand-detailed", "<red>Unknown command '<yellow>{input}<red>'. "),
+            message(sender, "general.unknown-subcommand-detailed", "<red>Unknown command '<yellow>{input}<red>'. "),
             "input",
             input);
-        final String hover = message("general.help-hover", "<gray>Click to view all faction commands");
+        final String hover = message(sender, "general.help-hover", "<gray>Click to view all faction commands");
         return base
             + "<hover:show_text:'" + mmEscape(hover) + "'>"
             + "<click:run_command:'/f help'>"

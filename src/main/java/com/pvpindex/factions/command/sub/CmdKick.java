@@ -34,23 +34,34 @@ public final class CmdKick extends FactionCommand {
         }
         final Player target = Bukkit.getPlayerExact(ctx.arg(0));
         if (target == null) {
-            MsgUtil.send(actor, "<red>Player not found or not online.");
+            MsgUtil.sendKey(actor, "general.player-not-found",
+                "<red>Player <yellow>{name}</yellow> not found.", "name", ctx.arg(0));
             return;
         }
         if (actor.getUniqueId().equals(target.getUniqueId())) {
-            MsgUtil.send(actor, "<red>You cannot kick yourself.");
+            MsgUtil.sendKey(actor, "member.cannot-kick-self", "<red>You cannot kick yourself.");
             return;
         }
         if (factionService.isOwner(target.getUniqueId())) {
-            MsgUtil.send(actor, "<red>You cannot kick the faction leader.");
+            MsgUtil.sendKey(actor, "member.cannot-kick-leader", "<red>You cannot kick the faction leader.");
             return;
         }
         if (factionService.kickMember(actor.getUniqueId(), target.getUniqueId())) {
-            MsgUtil.send(actor, "<yellow>Kicked <white>" + target.getName() + "<yellow>.");
-            MsgUtil.send(target, "<red>You were kicked from your faction.");
+            final String targetName = target.getName() == null ? ctx.arg(0) : target.getName();
+            final String kickerName = actor.getName() == null ? "Unknown" : actor.getName();
+            MsgUtil.sendKey(actor, "custom.member.kick-actor", "<yellow>Kicked <white>{player}<yellow>.",
+                "player", targetName);
+            final String factionName = factionService.getFactionByPlayer(actor.getUniqueId())
+                .map(f -> f.getName())
+                .orElse("faction");
+            MsgUtil.sendKey(target, "member.kicked",
+                "<red>You were kicked from <yellow>{faction}</yellow> by <yellow>{kicker}</yellow>.",
+                "faction", factionName,
+                "kicker", kickerName);
             return;
         }
-        MsgUtil.send(actor, "<red>Could not kick that player.");
+        final String targetName = target.getName() == null ? ctx.arg(0) : target.getName();
+        MsgUtil.sendKey(actor, "member.not-member", "<red>{player} is not a member of your faction.", "player", targetName);
     }
 
     @Override
@@ -61,4 +72,3 @@ public final class CmdKick extends FactionCommand {
         return Bukkit.getOnlinePlayers().stream().map(Player::getName).toList();
     }
 }
-

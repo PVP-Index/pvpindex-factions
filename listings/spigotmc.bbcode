@@ -2,7 +2,7 @@ PvPIndex Factions is a long-term modernization of the classic Factions experienc
 
 The mission is to revive Factions as an API-connectable, timeless, and production-ready plugin while preserving the gameplay identity players already love.
 
-[QUOTE][B]TeamsAPI integration available[/B] - PvPIndex Factions connects natively with TeamsAPI to expose faction data to other compatible plugins and services, including the 1.8.0 power history service. [URL='https://modrinth.com/plugin/teams-api']Download TeamsAPI on Modrinth →[/URL][/QUOTE]
+[QUOTE][B]TeamsAPI integration available[/B] - PvPIndex Factions connects natively with TeamsAPI to expose faction data to other compatible plugins and services. Requires TeamsAPI 2.0.0+. [URL='https://modrinth.com/plugin/teams-api']Download TeamsAPI on Modrinth →[/URL][/QUOTE]
 
 [B]Supported platforms[/B]
 [LIST]
@@ -95,8 +95,26 @@ Faction lifecycle[/B]
 [LIST]
 [*]Officers and above page through faction history with /f audit [page] [--action=<action>]
 [*]Staff view any faction's history with /fa audit <faction> [page] [--action=<action>]
-[*]Tracks claims, unclaims, relation changes, kicks, promotions, demotions, and bank transactions
+[*]Tracks claims, unclaims, relation changes, kicks, promotions, demotions, bank transactions, and merge events
 [*]Page size configurable via factions.audit.page-size in config.yml
+[/LIST]
+
+[B]Faction merges[/B]
+[LIST]
+[*]/f merge send <faction> — officers can propose dissolving their faction into another
+[*]/f merge accept <faction> — officers of the target faction accept and complete the merge
+[*]All claims, warps, bank balance, and members are transferred atomically; sender faction is disbanded
+[*]Online target members are notified immediately when a request arrives
+[/LIST]
+
+[B]Internationalization[/B]
+[LIST]
+[*]Eight built-in locale bundles: en, es, de, fr, pt-BR, ja, zh, ru
+[*]Players choose their language with /f language [code|reset]
+[*]Server default locale configurable via factions.language.default in config.yml
+[*]All command output, GUI items, and map display respect the resolved locale
+[*]Message lookup order: player locale → server default → English → inline fallback
+[*]Community locale contributions welcomed — see the i18n guide in the docs
 [/LIST]
 
 [B]Integrations[/B]

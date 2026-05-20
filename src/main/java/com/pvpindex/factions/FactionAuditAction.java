@@ -13,7 +13,9 @@ public enum FactionAuditAction {
     MEMBER_DEMOTE("demote"),
     BANK_DEPOSIT("bank-deposit"),
     BANK_WITHDRAW("bank-withdraw"),
-    BANK_TRANSFER("bank-transfer");
+    BANK_TRANSFER("bank-transfer"),
+    MERGE_REQUEST("merge-request"),
+    MERGE_ACCEPT("merge-accept");
 
     private final String id;
 

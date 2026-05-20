@@ -55,7 +55,7 @@ public final class CmdHelp extends FactionCommand {
             "<gray>4) <white>/f sethome</white> <dark_gray>- set your base home");
         MsgUtil.sendKey(ctx.getSender(), "help.separator", "<dark_gray>----------------------------------------");
 
-        sendSection(ctx, "Core", List.of("help", "info", "list", "map", "top", "gui"));
+        sendSection(ctx, "Core", List.of("help", "info", "list", "map", "top", "gui", "language"));
         sendSection(ctx, "Faction Setup", List.of("create", "rename", "desc", "disband"));
         sendSection(ctx, "Members & Invites", List.of("invite", "join", "leave", "kick", "promote", "demote", "leader"));
         sendSection(ctx, "Land & Navigation", List.of("claim", "unclaim", "home", "sethome", "unsethome", "warp", "fly"));
@@ -79,20 +79,21 @@ public final class CmdHelp extends FactionCommand {
 
         if (ctx.getSender().hasPermission("factions.admin")) {
             MsgUtil.sendKey(ctx.getSender(), "help.admin-title", "<red><bold>Admin Commands</bold></red>");
-            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry("/fa help", "List admin commands."));
-            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry("/fa bypass", "Toggle protection bypass."));
-            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry("/fa claim", "Admin-claim current chunk."));
-            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry("/fa unclaim", "Admin-unclaim current chunk."));
-            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry("/fa disband <faction>", "Force-disband any faction."));
-            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry("/fa reload", "Reload plugin configuration."));
+            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry(ctx.getSender(), "/fa help", "List admin commands."));
+            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry(ctx.getSender(), "/fa bypass", "Toggle protection bypass."));
+            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry(ctx.getSender(), "/fa claim", "Admin-claim current chunk."));
+            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry(ctx.getSender(), "/fa unclaim", "Admin-unclaim current chunk."));
+            MsgUtil.send(ctx.getSender(),
+                MsgUtil.helpEntry(ctx.getSender(), "/fa disband <faction>", "Force-disband any faction."));
+            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry(ctx.getSender(), "/fa reload", "Reload plugin configuration."));
             if (ctx.getSender().hasPermission("factions.cmd.safezone")) {
                 MsgUtil.send(ctx.getSender(),
-                    MsgUtil.helpEntry("/fa safezone [one|square|circle|remove] [radius]",
+                    MsgUtil.helpEntry(ctx.getSender(), "/fa safezone [one|square|circle|remove] [radius]",
                         "Assign or remove safe zone chunks."));
             }
             if (ctx.getSender().hasPermission("factions.cmd.warzone")) {
                 MsgUtil.send(ctx.getSender(),
-                    MsgUtil.helpEntry("/fa warzone [one|square|circle|remove] [radius]",
+                    MsgUtil.helpEntry(ctx.getSender(), "/fa warzone [one|square|circle|remove] [radius]",
                         "Assign or remove war zone chunks."));
             }
         }
@@ -116,7 +117,7 @@ public final class CmdHelp extends FactionCommand {
             if (cmd.getPermission() != null && !ctx.getSender().hasPermission(cmd.getPermission())) {
                 continue;
             }
-            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry(cmd.getUsage(), cmd.getDescription()));
+            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry(ctx.getSender(), cmd.getUsage(), cmd.getDescription()));
         }
     }
 }

@@ -34,7 +34,8 @@ public final class CmdMap extends FactionCommand {
         }
         final List<String> positional = parsedArgs.positionalArgs();
         if (positional.size() > 1) {
-            MsgUtil.send(player, "<red>Usage: /f map [on|off|once] [--size=<size>]");
+            MsgUtil.sendKey(player, "map.error.usage",
+                "<red>Usage: /f map [on|off|once] [--size=<size>]");
             return;
         }
         final String mode = positional.isEmpty() ? "" : positional.get(0).toLowerCase();
@@ -44,11 +45,13 @@ public final class CmdMap extends FactionCommand {
             try {
                 parsedSize = Integer.parseInt(sizeArg);
             } catch (NumberFormatException ex) {
-                MsgUtil.send(player, "<red>Map size must be a number.");
+                MsgUtil.sendKey(player, "map.error.size-nan",
+                    "<red>Map size must be a number.");
                 return;
             }
             if (parsedSize < 1) {
-                MsgUtil.send(player, "<red>Map size must be at least 1.");
+                MsgUtil.sendKey(player, "map.error.size-small",
+                    "<red>Map size must be at least 1.");
                 return;
             }
         }
@@ -57,17 +60,18 @@ public final class CmdMap extends FactionCommand {
             if ("on".equals(mode)) {
                 model.setTerritoryTitles(true);
                 ctx.getRepos().players().save(model);
-                MsgUtil.send(player, "<green>Territory titles enabled.");
+                MsgUtil.sendKey(player, "map.enabled", "<green>Territory titles enabled.");
                 return;
             }
             if ("off".equals(mode)) {
                 model.setTerritoryTitles(false);
                 ctx.getRepos().players().save(model);
-                MsgUtil.send(player, "<yellow>Territory titles disabled.");
+                MsgUtil.sendKey(player, "map.disabled", "<yellow>Territory titles disabled.");
                 return;
             }
         } catch (StorageException e) {
-            MsgUtil.send(player, "<red>Failed to update map preference.");
+            MsgUtil.sendKey(player, "map.error.save-failed",
+                "<red>Failed to update map preference.");
             return;
         }
         final int radius = parsedSize != null
@@ -110,9 +114,13 @@ public final class CmdMap extends FactionCommand {
         final int playerY = player.getLocation().getBlockY();
         final String world = player.getWorld().getName();
         final String playerFactionId = resolvePlayerFactionId(ctx, player);
-        MsgUtil.send(player, "<dark_gray>----------------------------------------");
-        MsgUtil.send(player, "<gold> Territory Map <gray>(" + world + " @ " + cx + ", " + cz + ")");
-        MsgUtil.send(player, "<gray>Use <white>/f map on</white> to keep territory titles enabled.");
+        MsgUtil.sendKey(player, "map.separator",
+            "<dark_gray>----------------------------------------");
+        MsgUtil.sendKey(player, "map.header",
+            "<gold> Territory Map <gray>({world} @ {x}, {z})",
+            "world", world, "x", String.valueOf(cx), "z", String.valueOf(cz));
+        MsgUtil.sendKey(player, "map.hint",
+            "<gray>Use <white>/f map on</white> to keep territory titles enabled.");
         for (int z = cz - radius; z <= cz + radius; z++) {
             final StringBuilder lineBuilder = new StringBuilder("<dark_gray>| ");
             for (int x = cx - radius; x <= cx + radius; x++) {
@@ -122,10 +130,12 @@ public final class CmdMap extends FactionCommand {
             lineBuilder.append("<dark_gray>| ");
             MsgUtil.send(player, lineBuilder.toString());
         }
-        MsgUtil.send(player, "<gray>Legend: <white>■ <gray>you, <green>■ <gray>your faction, "
-            + "<yellow>■ <gray>other faction, <aqua>■ <gray>safezone, <red>■ <gray>warzone, "
-            + "<dark_gray>■ <gray>wilderness");
-        MsgUtil.send(player, "<dark_gray>----------------------------------------");
+        MsgUtil.sendKey(player, "map.legend",
+            "<gray>Legend: <white>\u25a0 <gray>you, <green>\u25a0 <gray>your faction, "
+            + "<yellow>\u25a0 <gray>other faction, <aqua>\u25a0 <gray>safezone, "
+            + "<red>\u25a0 <gray>warzone, <dark_gray>\u25a0 <gray>wilderness");
+        MsgUtil.sendKey(player, "map.separator",
+            "<dark_gray>----------------------------------------");
     }
 
     private String cellTag(

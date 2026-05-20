@@ -32,7 +32,8 @@ public final class CmdNotify extends FactionCommand {
             }
             final String value = ctx.arg(1).toLowerCase();
             if (!"on".equals(value) && !"off".equals(value)) {
-                MsgUtil.send(player, "<red>Usage: /f notify [status|invites|territory|tax|all] [on|off]");
+                MsgUtil.sendKey(player, "custom.notify.usage",
+                    "<red>Usage: /f notify [status|invites|territory|tax|all] [on|off]");
                 return;
             }
             final boolean enabled = "on".equals(value);
@@ -46,15 +47,19 @@ public final class CmdNotify extends FactionCommand {
                     model.setBankTaxNotifications(enabled);
                 }
                 default -> {
-                    MsgUtil.send(player, "<red>Unknown notification type. Use: invites, territory, tax, all, status.");
+                    MsgUtil.sendKey(player, "custom.notify.unknown-type",
+                        "<red>Unknown notification type. Use: invites, territory, tax, all, status.");
                     return;
                 }
             }
             ctx.getRepos().players().save(model);
-            MsgUtil.send(player, "<green>Notification setting updated: <white>" + type + "<green> -> <white>" + value);
+            MsgUtil.sendKey(player, "custom.notify.updated",
+                "<green>Notification setting updated: <white>{type}<green> -> <white>{value}",
+                "type", type,
+                "value", value);
             sendStatus(player, model);
         } catch (StorageException e) {
-            MsgUtil.send(player, "<red>Failed to update notification settings.");
+            MsgUtil.sendKey(player, "custom.notify.update-failed", "<red>Failed to update notification settings.");
         }
     }
 
@@ -70,9 +75,15 @@ public final class CmdNotify extends FactionCommand {
     }
 
     private void sendStatus(final Player player, final PlayerModel model) {
-        MsgUtil.send(player, "<gold>Notification settings:");
-        MsgUtil.send(player, "<gray>- invites: <white>" + (model.hasInviteNotifications() ? "on" : "off"));
-        MsgUtil.send(player, "<gray>- territory: <white>" + (model.hasTerritoryTitles() ? "on" : "off"));
-        MsgUtil.send(player, "<gray>- tax: <white>" + (model.hasBankTaxNotifications() ? "on" : "off"));
+        MsgUtil.sendKey(player, "custom.notify.status-header", "<gold>Notification settings:");
+        MsgUtil.sendKey(player, "custom.notify.status-line", "<gray>- {type}: <white>{value}",
+            "type", "invites",
+            "value", model.hasInviteNotifications() ? "on" : "off");
+        MsgUtil.sendKey(player, "custom.notify.status-line", "<gray>- {type}: <white>{value}",
+            "type", "territory",
+            "value", model.hasTerritoryTitles() ? "on" : "off");
+        MsgUtil.sendKey(player, "custom.notify.status-line", "<gray>- {type}: <white>{value}",
+            "type", "tax",
+            "value", model.hasBankTaxNotifications() ? "on" : "off");
     }
 }

@@ -46,14 +46,15 @@ public final class CmdWarpSet extends FactionCommand {
         final String name = ctx.arg(0);
         final org.bukkit.Location target = resolveLocation(player, ctx);
         if (!territoryGuard.canModifyTerritory(player, target)) {
-            MsgUtil.send(player, "<red>You cannot set a warp in this protected region.");
+            MsgUtil.sendKey(player, "custom.warp.set-protected",
+                "<red>You cannot set a warp in this protected region.");
             return;
         }
         if (warpService.setWarp(
                 factionOpt.get().getId(), name, target, player.getUniqueId())) {
-            MsgUtil.send(player, "<green>Warp '" + name + "' set.");
+            MsgUtil.sendKey(player, "warp.set", "<green>Warp <yellow>{name}</yellow> set.", "name", name);
         } else {
-            MsgUtil.send(player, "<red>Could not set warp (limit reached?).");
+            MsgUtil.sendKey(player, "custom.warp.set-failed", "<red>Could not set warp (limit reached?).");
         }
     }
 

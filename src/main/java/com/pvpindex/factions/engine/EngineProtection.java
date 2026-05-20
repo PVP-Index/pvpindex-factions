@@ -72,7 +72,8 @@ public final class EngineProtection implements Listener {
             : canModify(event.getPlayer(), event.getBlock().getChunk());
         if (!allowed) {
             event.setCancelled(true);
-            MsgUtil.send(event.getPlayer(), "<red>You may not break blocks in this territory.");
+            MsgUtil.sendKey(event.getPlayer(), "custom.protection.no-break",
+                "<red>You may not break blocks in this territory.");
         }
     }
 
@@ -83,7 +84,8 @@ public final class EngineProtection implements Listener {
             : canModify(event.getPlayer(), event.getBlock().getChunk());
         if (!allowed) {
             event.setCancelled(true);
-            MsgUtil.send(event.getPlayer(), "<red>You may not place blocks in this territory.");
+            MsgUtil.sendKey(event.getPlayer(), "custom.protection.no-place",
+                "<red>You may not place blocks in this territory.");
         }
     }
 
@@ -135,7 +137,8 @@ public final class EngineProtection implements Listener {
                     if (factionOpt.isPresent()
                             && !flagService.getFlag(factionOpt.get(), FactionFlag.FRIENDLY_FIRE)) {
                         event.setCancelled(true);
-                        MsgUtil.send(attacker, "<red>Friendly fire is disabled in your faction.");
+                        MsgUtil.sendKey(attacker, "custom.protection.friendly-fire-disabled",
+                            "<red>Friendly fire is disabled in your faction.");
                         return;
                     }
                 }
@@ -151,7 +154,8 @@ public final class EngineProtection implements Listener {
             final String factionId = entry.get().getFactionId();
             if (FactionModel.SAFEZONE_ID.equals(factionId) && config.isSafeZoneEnabled()) {
                 event.setCancelled(true);
-                MsgUtil.send(attacker, "<red>PvP is disabled in the Safezone.");
+                MsgUtil.sendKey(attacker, "custom.protection.pvp-safezone",
+                    "<red>PvP is disabled in the Safezone.");
                 return;
             }
             if (FactionModel.WARZONE_ID.equals(factionId)) {
@@ -164,7 +168,8 @@ public final class EngineProtection implements Listener {
                 if (claimOwner.isPresent()
                         && !flagService.getFlag(claimOwner.get(), FactionFlag.PVP)) {
                     event.setCancelled(true);
-                    MsgUtil.send(attacker, "<red>PvP is disabled in this territory.");
+                    MsgUtil.sendKey(attacker, "custom.protection.pvp-territory",
+                        "<red>PvP is disabled in this territory.");
                 }
             }
         } catch (StorageException e) {

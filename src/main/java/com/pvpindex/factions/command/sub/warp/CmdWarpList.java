@@ -37,14 +37,15 @@ public final class CmdWarpList extends FactionCommand {
         }
         final List<WarpModel> warps = warpService.getWarps(faction.get().getId());
         if (warps.isEmpty()) {
-            MsgUtil.send(player, "<yellow>Your faction has no warps.");
+            MsgUtil.sendKey(player, "custom.warp.none", "<yellow>Your faction has no warps.");
             return;
         }
         final int pageSize = Math.max(1, ctx.getConfig().getWarpListPageSize());
         final int page = parsePage(ctx.arg(0));
         final int start = Math.max(0, (page - 1) * pageSize);
         final int end = Math.min(warps.size(), start + pageSize);
-        MsgUtil.send(player, "<gold>== Faction Warps (Page " + page + ") ==");
+        MsgUtil.sendKey(player, "custom.warp.header-page", "<gold>== Faction Warps (Page {page}) ==",
+            "page", String.valueOf(page));
         for (int i = start; i < end; i++) {
             MsgUtil.send(player, MsgUtil.warpEntry(warps.get(i).getName()));
         }

@@ -18,14 +18,14 @@ public final class CommandGuards {
             final Player player, final FactionService factionService) {
         final Optional<FactionModel> factionOpt = factionService.getFactionByPlayer(player.getUniqueId());
         if (factionOpt.isEmpty()) {
-            MsgUtil.send(player, "<red>You are not in a faction.");
+            MsgUtil.sendKey(player, "general.not-in-faction", "<red>You are not in a faction.");
         }
         return factionOpt;
     }
 
     public static boolean requireOwner(final Player player, final FactionService factionService) {
         if (!factionService.isOwner(player.getUniqueId())) {
-            MsgUtil.send(player, "<red>Only the faction owner can do that.");
+            MsgUtil.sendKey(player, "general.must-be-owner", "<red>Only the faction owner can do that.");
             return false;
         }
         return true;
@@ -33,10 +33,9 @@ public final class CommandGuards {
 
     public static boolean requireOfficerOrAbove(final Player player, final FactionService factionService) {
         if (!factionService.isOfficerOrAbove(player.getUniqueId())) {
-            MsgUtil.send(player, "<red>Only officers or above can do that.");
+            MsgUtil.sendKey(player, "general.must-be-officer", "<red>Only officers or above can do that.");
             return false;
         }
         return true;
     }
 }
-

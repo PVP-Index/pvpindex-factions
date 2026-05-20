@@ -32,14 +32,15 @@ public final class CmdLeader extends FactionCommand {
         }
         final OfflinePlayer target = Bukkit.getOfflinePlayer(ctx.arg(0));
         if (target.getUniqueId().equals(owner.getUniqueId()) && !"confirm".equalsIgnoreCase(ctx.arg(1))) {
-            MsgUtil.send(owner, "<red>Use /f leader " + owner.getName() + " confirm to re-affirm self leadership.");
+            MsgUtil.sendKey(owner, "custom.member.leader-confirm-self",
+                "<red>Use /f leader {name} confirm to re-affirm self leadership.", "name", owner.getName());
             return;
         }
         if (factionService.transferOwnership(owner.getUniqueId(), target.getUniqueId())) {
-            MsgUtil.send(owner, "<green>Faction ownership transferred to <white>" + ctx.arg(0) + "<green>.");
+            MsgUtil.sendKey(owner, "custom.member.leader-transferred",
+                "<green>Faction ownership transferred to <white>{name}<green>.", "name", ctx.arg(0));
             return;
         }
-        MsgUtil.send(owner, "<red>Could not transfer ownership.");
+        MsgUtil.sendKey(owner, "custom.member.leader-transfer-failed", "<red>Could not transfer ownership.");
     }
 }
-

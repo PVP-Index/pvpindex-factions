@@ -67,7 +67,7 @@ public final class CmdAdminShield extends FactionCommand {
                 return;
             }
             MsgUtil.send(ctx.getSender(), MsgUtil.replace(
-                MsgUtil.message("shield.cleared",
+                MsgUtil.message(ctx.getSender(), "shield.cleared",
                     "<yellow>War shield cleared for <white>{faction}<yellow>."),
                 "faction", target.getName()));
             return;
@@ -95,14 +95,14 @@ public final class CmdAdminShield extends FactionCommand {
             duration = Integer.parseInt(ctx.arg(2));
         } catch (NumberFormatException e) {
             MsgUtil.send(ctx.getSender(), MsgUtil.replace(
-                MsgUtil.message("shield.invalid-duration",
+                MsgUtil.message(ctx.getSender(), "shield.invalid-duration",
                     "<red>Duration must be 1\u2013{max} hours."),
                 "max", String.valueOf(maxDuration)));
             return;
         }
         if (duration < 1 || duration > maxDuration) {
             MsgUtil.send(ctx.getSender(), MsgUtil.replace(
-                MsgUtil.message("shield.invalid-duration",
+                MsgUtil.message(ctx.getSender(), "shield.invalid-duration",
                     "<red>Duration must be 1\u2013{max} hours."),
                 "max", String.valueOf(maxDuration)));
             return;
@@ -119,7 +119,7 @@ public final class CmdAdminShield extends FactionCommand {
         final String msg = MsgUtil.replace(
             MsgUtil.replace(
                 MsgUtil.replace(
-                    MsgUtil.message("shield.set",
+                    MsgUtil.message(ctx.getSender(), "shield.set",
                         "<green>War shield set for <yellow>{faction}</yellow>:"
                         + " <white>{start}:00 UTC</white>"
                         + " for <white>{duration}h</white>."),

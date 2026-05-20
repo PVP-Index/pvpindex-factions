@@ -54,7 +54,7 @@ public final class CmdJoin extends FactionCommand {
             for (final InvitationModel invite : invites) {
                 final String factionName = factionService.getFactionById(invite.getFactionId())
                     .map(FactionModel::getName).orElse("Unknown");
-                MsgUtil.send(player, MsgUtil.inviteListEntry(factionName, resolveInviter(invite)));
+                MsgUtil.send(player, MsgUtil.inviteListEntry(player, factionName, resolveInviter(invite)));
             }
             return;
         }

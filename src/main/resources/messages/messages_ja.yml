@@ -1,0 +1,420 @@
+# PvPIndex Factions — Messages
+# All values support MiniMessage formatting tags: <red>, <gold>, <bold>, etc.
+# See https://docs.advntr.dev/minimessage/format.html
+
+prefix: "<gray>[<gold>ファクション</gold>]</gray> "
+
+general:
+  no-permission: "<red>その操作を行う権限がありません。"
+  player-only: "<red>このコマンドはプレイヤーのみ実行できます。"
+  invalid-args: "<red>使用法: {usage}"
+  unknown-subcommand: "<red>不明なサブコマンドです。<yellow>/f help</yellow>を試してください。"
+  faction-not-found: "<red>ファクション <yellow>{name}</yellow> が見つかりません。"
+  player-not-found: "<red>プレイヤー <yellow>{name}</yellow> が見つかりません。"
+  not-in-faction: "<red>あなたはファクションに所属していません。"
+  must-be-leader: "<red>ファクションのリーダーのみこの操作ができます。"
+  must-be-officer: "<red>オフィサー以上のランクのみこの操作ができます。"
+  economy-disabled: "<red>経済連携は利用できません。"
+  cancelled: "<red>アクションがキャンセルされました。"
+  unknown-subcommand-detailed: "<red>不明なコマンド '<yellow>{input}<red>'。"
+  help-hover: "<gray>クリックしてすべてのファクションコマンドを表示"
+
+help:
+  title: "<gradient:#f6d365:#fda085><bold>PvPIndex ファクション ヘルプ</bold></gradient>"
+  start-here: "<gray>はじめに:"
+  start-step-1: "<gray>1) <white>/f create <name></white> <dark_gray>- ファクションを作成"
+  start-step-2: "<gray>2) <white>/f invite <player></white> <dark_gray>- メンバーを招待"
+  start-step-3: "<gray>3) <white>/f claim</white> <dark_gray>- 最初のチャンクを占領"
+  start-step-4: "<gray>4) <white>/f sethome</white> <dark_gray>- 拠点ホームを設定"
+  separator: "<dark_gray>----------------------------------------"
+  section:
+    core: "<gold>基本</gold>"
+    faction-setup: "<gold>ファクション設定</gold>"
+    members-and-invites: "<gold>メンバー & 招待</gold>"
+    land-and-navigation: "<gold>土地 & ナビゲーション</gold>"
+    economy-and-utility: "<gold>経済 & ユーティリティ</gold>"
+  officer-title: "<gold>オフィサー/モデレーターのヒント</gold>"
+  officer-line-1: "<gray>- 招待の管理: <white>/f invite list|revoke|declineall</white>"
+  officer-line-2: "<gray>- ロールの管理: <white>/f promote</white>, <white>/f demote</white>, <white>/f leader</white>"
+  officer-line-3: "<gray>- テリトリー保護: <white>/f claim auto on</white> または <white>/f unclaim auto on</white>"
+  admin-title: "<red><bold>管理者コマンド</bold></red>"
+  tip-notify: "<dark_gray>ヒント: <gray><white>/f notify status</white>で通知設定を管理できます。"
+  entry-line: "<yellow>{usage}<gray> - {description}"
+  entry-hover: "<gray>{description}<newline><dark_gray>クリックしてコマンドを提案"
+
+faction:
+  created: "<green>ファクション <yellow>{name}</yellow> を作成しました。"
+  name-taken: "<red>そのファクション名はすでに使用されています。"
+  name-too-short: "<red>ファクション名は3文字以上必要です。"
+  name-too-long: "<red>ファクション名は32文字以内にしてください。"
+  name-invalid: "<red>ファクション名には英数字・アンダースコア・ハイフンのみ使用できます。"
+  disbanded: "<red>ファクション <yellow>{name}</yellow> が解散されました。"
+  disband-confirm: "<yellow>本当にファクションを解散しますか？30秒以内にもう一度コマンドを実行して確認してください。"
+  already-in-faction: "<red>あなたはすでにファクションに所属しています。"
+  cost-to-create: "<yellow>ファクションの作成には <gold>{cost}</gold> かかります。現在の残高: <gold>{balance}</gold>。"
+  not-enough-money-create: "<red>ファクションを作成するための資金が足りません（費用: {cost}）。"
+
+member:
+  joined: "<green>ファクション <yellow>{faction}</yellow> に参加しました。"
+  player-joined: "<green>{player} があなたのファクションに参加しました。"
+  left: "<yellow>ファクション <yellow>{faction}</yellow> を退出しました。"
+  player-left: "<yellow>{player} がファクションを退出しました。"
+  kicked: "<red><yellow>{kicker}</yellow> によってファクション <yellow>{faction}</yellow> から除名されました。"
+  player-kicked: "<yellow>{player} が {kicker} によって除名されました。"
+  not-member: "<red>{player} はあなたのファクションのメンバーではありません。"
+  cannot-kick-self: "<red>自分自身を除名することはできません。"
+  cannot-kick-leader: "<red>ファクションリーダーを除名することはできません。"
+
+invite:
+  sent: "<green><yellow>{player}</yellow> に招待を送信しました。"
+  received: "<yellow>{player} からファクション <gold>{faction}</gold> への招待が届きました。<green>/f join {faction}</green> と入力して承認してください。"
+  summary: "<gold>保留中のファクション招待が <white>{count}</white> 件あります:"
+  summary-line: "<yellow>- <white>{faction}</white> <gray>(<white>{inviter}</white> からの招待)"
+  accepted: "<green>ファクション <yellow>{faction}</yellow> への招待を承認しました。"
+  declined: "<yellow>ファクション <yellow>{faction}</yellow> への招待を拒否しました。"
+  expired: "<red>ファクション <yellow>{faction}</yellow> への招待が期限切れになりました。"
+  already-invited: "<red>{player} にはすでに保留中の招待があります。"
+  not-invited: "<red>そのファクションからの保留中の招待がありません。"
+  no-invite-pending: "<red>保留中の招待はありません。"
+  received-short: "<yellow>{faction}<gray> からファクションへの招待が届いています！"
+  accept-hover: "<green>クリックして <white>{faction}</white> に参加"
+  decline-hover: "<red>無視すると辞退されます"
+
+claim:
+  claimed: "<green><yellow>{faction}</yellow> のためにこのチャンクを占領しました。"
+  unclaimed: "<yellow>このチャンクの占領を解除しました。"
+  unclaimed-all: "<yellow><yellow>{faction}</yellow> のすべての土地の占領を解除しました。"
+  already-claimed: "<red>このチャンクはすでに <yellow>{faction}</yellow> によって占領されています。"
+  not-your-land: "<red>自分のファクションの土地以外の占領解除はできません。"
+  not-enough-power: "<red>ファクションのパワーが不足しているため、これ以上の土地を占領できません。"
+  no-border: "<red>既存のテリトリーまたは荒野に隣接したチャンクを占領してください。"
+  cannot-claim-safezone: "<red>セーフゾーンまたはウォーゾーンを占領することはできません。"
+  cost-per-chunk: "<yellow>このチャンクの占領には <gold>{cost}</gold> かかります。現在の残高: <gold>{balance}</gold>。"
+  not-enough-money-claim: "<red>このチャンクを占領するための資金が足りません（費用: {cost}）。"
+  overclaimed: "<green><yellow>{faction}</yellow> からチャンクを奪取しました！"
+  overclaimed-victim: "<red><yellow>{attacker}</yellow> があなたのテリトリーのチャンクを奪取しました！残り <yellow>{remaining}</yellow> チャンク。"
+  enemy-not-raidable: "<red>{faction} はまだ十分なパワーを持っています — 今はまだ土地を奪取できません。"
+  enemy-offline-protected: "<red>{faction} はオフラインです — 全メンバーがオフライン中は土地を奪取できません。"
+  shield-active: "<red>{faction} はウォーシールドが有効です — 現在テリトリーは保護されています。"
+  enter-faction: "<gray><yellow>{faction}</yellow> のテリトリーに入りました。"
+  enter-wilderness: "<gray><green>荒野</green>に入りました。"
+  enter-safezone: "<gray><aqua>セーフゾーン</aqua>に入りました。"
+  enter-warzone: "<gray><red>ウォーゾーン</red>に入りました。"
+
+bank:
+  balance: "<gold>ファクション銀行残高: <yellow>{balance}</yellow>。"
+  deposited: "<green><yellow>{amount}</yellow> を預け入れました。新しい残高: <yellow>{balance}</yellow>。"
+  withdrew: "<green><yellow>{amount}</yellow> を引き出しました。新しい残高: <yellow>{balance}</yellow>。"
+  transferred: "<green><yellow>{from}</yellow> から <yellow>{to}</yellow> へ <yellow>{amount}</yellow> を送金しました。"
+  insufficient-funds: "<red>残高不足です。銀行残高: <yellow>{balance}</yellow>。"
+  invalid-amount: "<red>金額は正の数値で入力してください。"
+  tax-charged: "<gold>ファクション銀行税が請求されました: <yellow>{amount}</gold>。新しい残高: <yellow>{balance}</gold>。"
+
+home:
+  set: "<green>ファクションホームを現在の位置に設定しました。"
+  teleporting: "<yellow>ファクションホームにテレポートしています…"
+  teleported: "<green>ファクションホームにテレポートしました。"
+  teleport-failed: "<red>ファクションホームへのテレポートに失敗しました。"
+  no-home: "<red>あなたのファクションはホームを設定していません。"
+  set-in-own-territory: "<red>ファクションホームは自分のテリトリー内に設定してください。"
+  jailed: "<red>収監中はホームにテレポートできません。"
+
+warp:
+  set: "<green>ワープ <yellow>{name}</yellow> を設定しました。"
+  deleted: "<yellow>ワープ <yellow>{name}</yellow> を削除しました。"
+  not-found: "<red>ワープ <yellow>{name}</yellow> が見つかりません。"
+  teleporting: "<yellow>ワープ <yellow>{name}</yellow> にテレポートしています…"
+  teleported: "<green>ワープ <yellow>{name}</yellow> にテレポートしました。"
+  teleport-failed: "<red>ワープへのテレポートに失敗しました。"
+  limit-reached: "<red>あなたのファクションはワープの最大数（{max}）に達しています。"
+  set-in-own-territory: "<red>ワープは自分のテリトリー内に設定してください。"
+  jailed: "<red>収監中はワープを使用できません。"
+
+flag:
+  list-header: "<gold><bold>ファクションフラグ — {faction}</bold></gold>"
+  entry-on: "<gray>  {flag}: <green>ON</green>{edit_note}"
+  entry-off: "<gray>  {flag}: <red>OFF</red>{edit_note}"
+  set-on: "<green>フラグ '<white>{flag}</white>' を <green>ON</green> に設定しました。"
+  set-off: "<red>フラグ '<white>{flag}</white>' を <red>OFF</red> に設定しました。"
+  invalid: "<red>不明なフラグ '<white>{flag}</white>'。有効: pvp, friendly-fire, explosions, fire-spread, open"
+  not-editable: "<red>フラグ '<white>{flag}</white>' はサーバー管理者によってロックされています。"
+  officer-required: "<red>ファクションフラグはオフィサー以上のランクのみ変更できます。"
+  admin-override: "<gray>[Admin] '<white>{flag}</white>' を <white>{faction}</white> に設定しました。"
+
+relation:
+  set: "<green><yellow>{faction}</yellow> との関係を <yellow>{relation}</yellow> に設定しました。"
+  updated: "<yellow><yellow>{faction}</yellow> との関係が <yellow>{relation}</yellow> になりました。"
+  cannot-set-self: "<red>自分のファクションとの関係は設定できません。"
+  set-failed: "<red>関係の設定に失敗しました。"
+  pending-wish: >-
+    <yellow>関係の希望を <white>{relation}<yellow> に設定しました。対象:
+    <white>{faction}<yellow>。相手が同じ関係を設定すると確定します。
+  pending-received: "<yellow><white>{faction}</white> があなたのファクションに <white>{relation}</white> を要求しています。"
+  mutual-established: "<green><white>{faction}</white> と相互 <white>{relation}</white> が確立されました。"
+  mutual-established-target: "<green><white>{faction}</white> とあなたのファクションは <white>{relation}</white> になりました。"
+  updated-by-other: "<yellow><white>{faction}</white> が関係を <white>{relation}</white> に設定しました。"
+
+predefined:
+  disabled: "<red>事前定義ファクションは無効になっています。"
+  unknown: "<red>不明な事前定義ファクション: <white>{faction}"
+  create-not-allowed: "<red>このサーバーでは事前定義ファクションのみ作成できます。"
+  disband-blocked: "<red>事前定義ファクションは解散できません。"
+  claim-saved: "<green><yellow>{faction}</yellow> の事前定義占領を <white>{x}</white>,<white>{z}</white> に保存しました。"
+  home-saved: "<green><yellow>{faction}</yellow> の事前定義ホームを保存しました。"
+  reload-success: "<green>事前定義ファクションをリロードしました。"
+  reload-failed: "<red>事前定義ファクションのリロードに失敗しました。"
+  none: "<yellow>事前定義ファクションが設定されていません。"
+
+power:
+  too-low-raid: "<red>ファクションのパワーが不足しています — あなたの土地が襲撃される可能性があります！"
+  lost-on-death: "<red>死亡により <yellow>{amount}</yellow> パワーを失いました。"
+  kill-gained: "<green>キルにより <yellow>{amount}</yellow> パワーを獲得しました。"
+  buy-success: "<green><yellow>{cost}</yellow> で <yellow>{amount}</yellow> パワーを購入しました。"
+  buy-disabled: "<red>このサーバーではパワーの購入は有効になっていません。"
+  buy-no-vault: "<red>パワーを購入するには経済プラグインが必要です。"
+  buy-invalid-amount: "<red>正の数値を入力してください（1回の購入で最大 <yellow>{max}</yellow>）。"
+  buy-already-max: "<red>すでに最大パワーに達しています。"
+  buy-insufficient-funds: "<red>そのパワーを購入するには <yellow>{cost}</yellow> が必要です。"
+  death-streak-penalty: "<red>デスストリーク x{streak}！<yellow>{amount}</yellow> パワーを失いました。"
+  history-empty: "<yellow><white>{name}</white> のパワー履歴が見つかりません。"
+  history-console-usage: "<red>プレイヤーを指定してください: <yellow>/f powerhistory <player> [page]"
+  history-header: "<gold>== パワー履歴: <yellow>{name}<gold>（ページ {page}）=="
+  history-entry-gain: "<dark_aqua>{time}  <white>{reason}  <green>{delta}  <gray>→  <white>{power_after}"
+  history-entry-loss: "<dark_aqua>{time}  <white>{reason}  <red>{delta}  <gray>→  <white>{power_after}"
+  history-storage-error: "<red>ストレージエラーが発生しました。もう一度お試しください。"
+  blocked-frozen: "<yellow>フリーズ中のパワー変更はブロックされました。ソース: <white>{source}</white>。"
+  staff-blocked-frozen: "<gray>[パワー] <white>{player}</white> のフリーズによりブロックされました。ソース: <white>{source}</white>。"
+  change-actor: "<gray>パワー <white>{before}</white> -> <white>{after}</white> (<yellow>{delta}</yellow>)"
+  change-faction: "<gray>[ファクション] <white>{player}</white>: <yellow>{delta}</yellow> (<white>{after}</white>)"
+  change-staff: "<gray>[パワー] <white>{player}</white> {delta} ({before} -> {after}) <dark_gray>{source} {reason} {world} {zone}"
+  admin-view: "<gray>[パワー] <white>{player}</white> power=<yellow>{power}</yellow>, frozen=<yellow>{frozen}</yellow>"
+  admin-set-success: "<green><white>{player}</white> のパワーを設定しました: <yellow>{before}</yellow> -> <yellow>{after}</yellow>。"
+  admin-add-success: "<green><white>{player}</white> に <yellow>{delta}</yellow> パワーを追加しました（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。"
+  admin-remove-success: "<green><white>{player}</white> から <yellow>{delta}</yellow> パワーを削除しました（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。"
+  admin-reset-success: "<green><white>{player}</white> のパワーをリセットしました: <yellow>{before}</yellow> -> <yellow>{after}</yellow>。"
+  admin-freeze-success: "<green><white>{player}</white> のパワーフリーズ状態: <yellow>{state}</yellow>。"
+
+raidable:
+  became-raidable: "<red>⚠ あなたのファクションは今、襲撃可能です！敵があなたの土地を奪取できます。"
+  no-longer-raidable: "<green>✔ あなたのファクションは襲撃不可能になりました。"
+  server-announce: "<red>⚠ <yellow>{faction}</yellow> が今、襲撃可能です！"
+  server-announce-recovered: "<green>✔ <yellow>{faction}</yellow> は襲撃不可能になりました。"
+
+fly:
+  enabled: "<green>ファクションフライが有効になりました。"
+  disabled: "<yellow>ファクションフライが無効になりました。"
+  left-territory: "<red>テリトリーから出たため、ファクションフライが無効になりました。"
+  enemy-nearby: "<red>敵が近くにいるため、ファクションフライが無効になりました。"
+
+lwc:
+  stale-protection-removed: "<yellow>オーナーが建築権限を持っていないため、古いLWC保護を削除しました。"
+
+info:
+  header: "<gold>===== <yellow>{name}</yellow> ====="
+  leader: "<gray>リーダー: <white>{leader}"
+  members: "<gray>メンバー: <white>{count}/{max}"
+  power: "<gray>パワー: <white>{power}/{max_power}"
+  land: "<gray>土地: <white>{land}"
+  balance: "<gray>銀行: <white>{balance}"
+  home: "<gray>ホーム: <white>{home}"
+  relation: "<gray>あなたとの関係: <white>{relation}"
+  allies: "<gray>同盟: <white>{allies}"
+  description: "<gray>説明: <white>{description}"
+
+admin:
+  bypass-enabled: "<gold>[Admin] バイパスが有効になりました。"
+  bypass-disabled: "<gold>[Admin] バイパスが無効になりました。"
+  reload: "<green>設定をリロードしました。"
+
+shield:
+  set: "<green>ウォーシールドを設定しました — <yellow>{faction}</yellow>: <white>{start}:00 UTC</white> から <white>{duration}</white>時間。"
+  cleared: "<yellow><white>{faction}</white> のウォーシールドをクリアしました。"
+  feature-disabled: "<red>このサーバーではウォーシールドは有効になっていません。"
+  invalid-hour: "<red>開始時間は0〜23の範囲で入力してください。"
+  invalid-duration: "<red>期間は1〜{max}時間で入力してください。"
+
+notifications:
+  inbox-header: "<gold>未読のファクション通知 (<white>{count}</white> 件):"
+
+update:
+  available: "<yellow>Factions のアップデートがあります: <white>{current}</white> -> <green>{latest}</green> <gray>({source})"
+  url: "<gray>ダウンロード: <aqua><click:open_url:'{url}'>{url}</click>"
+
+ezcountdown:
+  relation-enemy: "<red>⚔ {source} が {target} に宣戦布告しました！"
+  relation-ally: "<green>🤝 {source} と {target} が同盟を結びました！"
+  relation-truce: "<yellow>🤝 {source} と {target} が休戦しました！"
+
+merge:
+  disabled: "<red>このサーバーではファクションの合併は有効になっていません。"
+  request-sent: "<green>合併リクエストを <yellow>{faction}</green> に送信しました。"
+  request-received: "<yellow>{faction}</yellow> があなたのファクションに合併リクエストを送信しました。<white>/f merge accept {faction}</white> で吸収できます。"
+  accepted: "<yellow>{faction}</yellow> があなたのファクションに合併しました！"
+  merged-into: "<green><yellow>{faction}</yellow> をあなたのファクションに合併しました。"
+  already-requested: "<red><yellow>{faction}</yellow> への合併リクエストはすでに保留中です。"
+  no-request-found: "<red><yellow>{faction}</yellow> からの保留中の合併リクエストが見つかりません。"
+  self-merge: "<red>自分のファクションを自分自身に合併することはできません。"
+  target-not-found: "<red>ファクション <yellow>{faction}</yellow> が見つかりません。"
+language:
+  system-unavailable: "<red>言語システムは利用できません。"
+  profile-load-failed: "<red>現在プロファイルを読み込めません。"
+  reset-success: "<green>言語をサーバーのデフォルトにリセットしました。"
+  invalid-code: "<red>サポートされていない言語コードです: <white>{code}</white>。"
+  set-success: "<green>言語を <white>{code}</white> に更新しました。"
+  save-failed: "<red>言語設定を保存できませんでした。"
+  current: "<gold>現在の言語: <white>{code}</white>"
+  default: "<gray>サーバーデフォルト: <white>{code}</white>"
+  available: "<gray>利用可能: <white>{list}</white>"
+  usage: "<gray>使用法: <white>/f language <code></white> または <white>/f language reset</white>"
+  override-disabled: "<red>??????????????????????????"
+custom:
+  protection:
+    no-break: "<red>このテリトリーではブロックを破壊できません。"
+    no-place: "<red>このテリトリーではブロックを設置できません。"
+    friendly-fire-disabled: "<red>あなたのファクションではフレンドリーファイアが無効です。"
+    pvp-safezone: "<red>セーフゾーンではPvPが無効です。"
+    pvp-territory: "<red>このテリトリーではPvPが無効です。"
+  move:
+    enter-claimed: "<gold>占領されたファクションテリトリーに入りました: <white>{faction}"
+    enter: "<gray>テリトリーに入りました: <white>{territory}"
+    info-leader: "<gray>リーダー: <white>{value}"
+    info-members: "<gray>メンバー: <white>{value}"
+    info-land: "<gray>土地: <white>{value}"
+    info-power: "<gray>パワー: <white>{value}"
+  warp:
+    none: "<yellow>あなたのファクションにはワープがありません。"
+    header: "<gold>== ファクションワープ =="
+    header-page: "<gold>== ファクションワープ（ページ {page}）=="
+    world-not-loaded: "<red>ワープのワールドが読み込まれていません。"
+    set-protected: "<red>この保護されたリージョンにはワープを設定できません。"
+    set-failed: "<red>ワープを設定できませんでした（上限に達しましたか？）。"
+  home:
+    set-protected: "<red>この保護されたリージョンにはファクションホームを設定できません。"
+    set: "<green>ファクションホームを設定しました。"
+    set-failed: "<red>ファクションホームの設定に失敗しました。"
+  fly:
+    disabled-global: "<red>ファクションフライは無効です。"
+    own-territory-required: "<red>ファクションフライは自分のテリトリー内でのみ使用できます。"
+  power:
+    usage-buy: "<gray>使用法: <yellow>/f power buy <amount>"
+  notify:
+    usage: "<red>使用法: /f notify [status|invites|territory|tax|all] [on|off]"
+    unknown-type: "<red>不明な通知タイプです。使用可能: invites, territory, tax, all, status。"
+    updated: "<green>通知設定を更新しました: <white>{type}</white> -> <white>{value}</white>"
+    update-failed: "<red>通知設定の更新に失敗しました。"
+    status-header: "<gold>通知設定:"
+    status-line: "<gray>- {type}: <white>{value}"
+  member:
+    owner-cannot-leave: "<red>あなたはオーナーです。/f disband で解散するか、オーナーシップを移譲してください。"
+    leave-failed: "<red>ファクションの退出に失敗しました。"
+    leader-confirm-self: "<red>自分自身のリーダーシップを再確認するには /f leader {name} confirm を使用してください。"
+    leader-transferred: "<green>ファクションのオーナーシップを <white>{name}</white> に移譲しました。"
+    leader-transfer-failed: "<red>オーナーシップの移譲に失敗しました。"
+    promoted: "<green><white>{name}</white> を昇格させました。"
+    promote-failed: "<red>そのプレイヤーを昇格できませんでした。"
+    kick-actor: "<yellow><white>{player}</white> を除名しました。"
+  faction:
+    disbanded: "<yellow>あなたのファクションが解散されました。"
+    disband-failed: "<red>ファクションの解散に失敗しました。"
+    desc-too-long: "<red>説明が長すぎます（最大250文字）。"
+    desc-updated: "<green>ファクションの説明を更新しました。"
+    desc-update-failed: "<red>ファクションの説明を更新できませんでした。"
+  list:
+    separator: "<dark_gray>----------------------------------------"
+    none: "<yellow>ファクションが見つかりません。"
+    header: "<gold> ファクション一覧 <gray>(ページ <white>{page}</gray>, 並び順 <white>{sort}</gray>)"
+    row: "<yellow>#{rank} <white>{name}<gray> | メンバー <white>{members}<gray> | 土地 <white>{land}<gray> | 銀行 <white>{bank}"
+  top:
+    header: "<gold> ファクション トップ <gray>(ページ <white>{page}</gray>, 並び順 <white>{sort}</gray>)"
+    row: "<yellow>#{rank} <white>{name}<gray> | パワー <white>{power}<gray> | 土地 <white>{land}<gray> | 銀行 <white>{bank}"
+  invite:
+    target-already-in-faction: "<red>そのプレイヤーはすでにファクションに所属しています。"
+    sent: "<green><white>{player}</white> を招待しました。"
+    already-pending: "<red>そのプレイヤーを招待できませんでした（すでに保留中ですか？）。"
+  gui:
+    menu-not-found: "<red>不明なGUIメニュー: <yellow>{menu}"
+    suggested-command: "<gray>提案: <yellow>{command}"
+    menu-not-configured: "<red>メニュー '{menu}' が設定されていません。"
+  merge:
+    help-title: "<gold>== ファクション合併 =="
+    help-send: "<yellow>/f merge send <faction> <gray>- 合併リクエストを送信"
+    help-accept: "<yellow>/f merge accept <faction> <gray>- 合併リクエストを承認"
+
+map:
+  separator: "<dark_gray>----------------------------------------"
+  header: "<gold> テリトリーマップ <gray>({world} @ {x}, {z})"
+  hint: "<gray><white>/f map on</white> でテリトリータイトルを常時表示できます。"
+  legend: "<gray>凡例: <white>■ <gray>あなた, <green>■ <gray>自分のファクション, <yellow>■ <gray>他のファクション, <aqua>■ <gray>セーフゾーン, <red>■ <gray>ウォーゾーン, <dark_gray>■ <gray>荒野"
+  enabled: "<green>テリトリータイトルが有効になりました。"
+  disabled: "<yellow>テリトリータイトルが無効になりました。"
+  error:
+    usage: "<red>使用法: /f map [on|off|once] [--size=<size>]"
+    size-nan: "<red>マップサイズは数値で入力してください。"
+    size-small: "<red>マップサイズは1以上にしてください。"
+    save-failed: "<red>マップ設定の更新に失敗しました。"
+
+gui:
+  items:
+    info:
+      name: "<gold><bold>あなたのファクション</bold></gold>"
+      lore:
+        - "<gray>ファクション: <white>{faction}</white>"
+        - "<gray>メンバー: <white>{faction_members}</white>"
+        - "<gray>土地: <white>{faction_land}</white>"
+        - "<gray>銀行: <white>${faction_bank}</white>"
+        - "<dark_gray>詳細情報を開く"
+    map:
+      name: "<aqua><bold>テリトリーマップ</bold></aqua>"
+      lore:
+        - "<gray>リアルタイムのテリトリーマップを表示。"
+        - "<dark_gray>クリックして /f map を実行"
+    claim:
+      name: "<green><bold>現在のチャンクを占領</bold></green>"
+      lore:
+        - "<gray>今いる場所を占領します。"
+        - "<dark_gray>クイック占領アクション"
+    unclaim:
+      name: "<red><bold>現在のチャンクの占領解除</bold></red>"
+      lore:
+        - "<gray>今いる場所の占領を解除します。"
+        - "<dark_gray>クイック占領解除アクション"
+    invites:
+      name: "<yellow><bold>招待</bold></yellow>"
+      lore:
+        - "<gray>保留中の招待を確認・承認します。"
+        - "<dark_gray>招待リストを開く"
+    home:
+      name: "<gold><bold>ファクションホーム</bold></gold>"
+      lore:
+        - "<gray>ファクションホームにテレポートします。"
+        - "<dark_gray>クリックして /f home を実行"
+    warps:
+      name: "<light_purple><bold>ワープ</bold></light_purple>"
+      lore:
+        - "<gray>ファクションワープを表示・使用します。"
+        - "<dark_gray>クリックして /f warp list を実行"
+    top:
+      name: "<#3ddad7><bold>トップファクション</bold></#3ddad7>"
+      lore:
+        - "<gray>ファクションランキングを開きます。"
+        - "<dark_gray>クリックして /f top を実行"
+    your-power:
+      name: "<white><bold>{player}</bold></white>"
+      lore:
+        - "<gray>パワー: <white>{power}</white><gray>/<white>{max_power}</white>"
+        - "<dark_gray>個人ファクションステータス"
+    language-status:
+      name: "<aqua><bold>言語</bold></aqua>"
+      lore:
+        - "<gray>現在: <white>{language_current}</white>"
+        - "<gray>デフォルト: <white>{language_default}</white>"
+        - "<dark_gray>変更後にリフレッシュをクリック"
+    language-reset:
+      name: "<yellow><bold>言語をリセット</bold></yellow>"
+      lore:
+        - "<gray>サーバーのデフォルト言語を使用"
+        - "<dark_gray>/f language reset と同等"
+    close:
+      name: "<red><bold>閉じる</bold></red>"
+      lore:
+        - "<gray>このメニューを閉じます。"
