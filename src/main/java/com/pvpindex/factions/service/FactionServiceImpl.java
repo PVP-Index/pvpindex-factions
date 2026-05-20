@@ -536,6 +536,76 @@ public class FactionServiceImpl implements FactionService {
         return changeMemberRank(actorUUID, targetUUID, false);
     }
 
+    @Override
+    public boolean mergeFaction(final String senderFactionId, final String targetFactionId, final UUID actorUUID) {
+        try {
+            final Optional<FactionModel> senderOpt = repos.factions().find(senderFactionId);
+            final Optional<FactionModel> targetOpt = repos.factions().find(targetFactionId);
+            if (senderOpt.isEmpty() || targetOpt.isEmpty()) {
+                return false;
+            }
+            final Optional<RankModel> defaultRankOpt = repos.ranks().findDefaultRank(targetFactionId);
+            if (defaultRankOpt.isEmpty()) {
+                return false;
+            }
+
+            final FactionModel senderFaction = senderOpt.get();
+            final FactionModel targetFaction = targetOpt.get();
+            final RankModel defaultRank = defaultRankOpt.get();
+
+            // Collect members before the transaction so we can fire events outside it
+            final List<UUID> migratedPlayers = repos.players().findByFactionId(senderFactionId)
+                .stream()
+                .map(pm -> UUID.fromString(pm.getId()))
+                .toList();
+
+            repos.factions().transaction(() -> {
+                // Transfer bank balance
+                targetFaction.setMoney(targetFaction.getMoney() + senderFaction.getMoney());
+                repos.factions().save(targetFaction);
+
+                // Transfer claims
+                for (final var entry : repos.board().findByFactionId(senderFactionId)) {
+                    entry.setFactionId(targetFactionId);
+                    repos.board().save(entry);
+                }
+
+                // Transfer warps
+                for (final var warp : repos.warps().findByFactionId(senderFactionId)) {
+                    warp.setFactionId(targetFactionId);
+                    repos.warps().save(warp);
+                }
+
+                // Migrate members to target faction at default rank
+                for (final var pm : repos.players().findByFactionId(senderFactionId)) {
+                    pm.setFactionId(targetFactionId);
+                    pm.setRankId(defaultRank.getId());
+                    pm.setJoinedAt(System.currentTimeMillis());
+                    repos.players().save(pm);
+                }
+
+                // Clean up sender faction (no disbandFaction() — assets already transferred)
+                repos.invitations().deleteByFactionId(senderFactionId);
+                repos.mergeRequests().deleteBySenderFactionId(senderFactionId);
+                repos.mergeRequests().deleteByTargetFactionId(senderFactionId);
+                repos.ranks().deleteByFactionId(senderFactionId);
+                clearIncomingRelations(senderFactionId);
+                repos.factions().delete(senderFactionId);
+            });
+
+            // Fire join events for migrated players outside the transaction
+            for (final UUID playerUUID : migratedPlayers) {
+                Bukkit.getPluginManager().callEvent(new FactionJoinEvent(targetFaction, playerUUID));
+            }
+
+            auditService.record(targetFactionId, actorUUID, FactionAuditAction.MERGE_ACCEPT, senderFaction.getName());
+            return true;
+        } catch (StorageException e) {
+            logger.log(Level.SEVERE, "Failed to merge faction " + senderFactionId + " into " + targetFactionId, e);
+            return false;
+        }
+    }
+
     // -------------------------------------------------------------------------
     // Package-level helper used by adapters
     // -------------------------------------------------------------------------

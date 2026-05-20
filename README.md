@@ -32,7 +32,7 @@ The plugin starts without any of these. Each integration is enabled only when th
 | Vault | Economy costs for faction creation and land claiming |
 | WorldGuard / WorldEdit | Territory protection hooks |
 | PlaceholderAPI | Faction placeholders for scoreboards and chat |
-| TeamsAPI | Team synchronization adapter; exposes faction, power, and power-history data through a standard API surface (1.8.0+ for power history) |
+| TeamsAPI | Team synchronization adapter; exposes faction, power, and power-history data through a standard API surface (2.0.0+ recommended) |
 | EssentialsX | Route `/f home` through the Essentials teleport system |
 | dynmap | Render faction territory on the dynmap web map |
 | EzEconomy | Alternative economy provider |
@@ -159,6 +159,8 @@ Admin commands use `/fa` (aliases: `/factionadmin`) and require the `factions.ad
 | `relation <faction> <ally\|truce\|enemy\|neutral>` | Set relation with another faction |
 | `relation list` | List current relations |
 | `relation wishes` | List pending relation requests |
+| `merge send <faction>` | Send a merge request to another faction (officer+) |
+| `merge accept <faction>` | Accept a merge request from another faction (officer+) |
 | `warp <name>` | Teleport to a faction warp |
 | `warp set <name>` | Create or update a faction warp |
 | `warp delete <name>` | Delete a faction warp |
@@ -198,6 +200,7 @@ Admin commands use `/fa` (aliases: `/factionadmin`) and require the `factions.ad
 |---|---|---|
 | `factions.admin` | op | Access to all `/fa` admin commands |
 | `factions.cmd.audit` | op | View the faction audit log (`/f audit`) |
+| `factions.cmd.merge` | true | Send and accept faction merge requests (`/f merge`) |
 | `factions.cmd.admin.power` | op | Root access to `/fa power` |
 | `factions.cmd.admin.power.view` | op | View target player power |
 | `factions.cmd.admin.power.set` | op | Set exact player power |

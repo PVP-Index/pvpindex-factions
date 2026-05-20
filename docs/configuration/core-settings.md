@@ -48,6 +48,10 @@ Key groups:
 ## War shield
 
 - `factions.war.shield.enabled` (default `false`) — enable the daily UTC protection window system (F6)
+
+## Merge
+
+- `factions.merge.enabled` (default `false`) — opt-in to allow factions to absorb one another via `/f merge send` / `/f merge accept`
 - `factions.war.shield.max-duration-hours` (default `8`) — maximum window an admin may assign (F6)
 
 ## Other tuning knobs

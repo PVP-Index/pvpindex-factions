@@ -4,7 +4,7 @@ The goal is simple: revive Factions with a timeless architecture, reliable persi
 
 If you love classic Factions gameplay but need something maintainable, scalable, and integration-ready, PvPIndex Factions is built for exactly that.
 
-> **TeamsAPI integration available** - PvPIndex Factions connects natively with TeamsAPI to expose faction data to other compatible plugins and services, including the 1.8.0 power history service. [Download TeamsAPI on Modrinth →](https://modrinth.com/plugin/teams-api)
+> **TeamsAPI integration available** - PvPIndex Factions connects natively with TeamsAPI to expose faction data to other compatible plugins and services. Requires TeamsAPI 2.0.0+. [Download TeamsAPI on Modrinth →](https://modrinth.com/plugin/teams-api)
 
 ## Supported platforms
 
@@ -90,8 +90,15 @@ You keep the Factions gameplay loop, but gain a modern operational foundation.
 
 - Officers and above can page through their faction's action history with `/f audit [page] [--action=<action>]`
 - Staff can view any faction's history with `/fa audit <faction> [page] [--action=<action>]`
-- Tracks claims, unclaims, relation changes, kicks, promotions, demotions, and bank transactions
+- Tracks claims, unclaims, relation changes, kicks, promotions, demotions, bank transactions, and merge events
 - Page size configurable via `factions.audit.page-size` in `config.yml`
+
+### Faction merges
+
+- `/f merge send <faction>` — officers can propose dissolving their faction into another
+- `/f merge accept <faction>` — officers of the target faction accept the request
+- All claims, warps, bank balance, and members are transferred atomically; the sender faction is then disbanded
+- Online target members are notified immediately when a request arrives
 
 ### Power and war mechanics
 

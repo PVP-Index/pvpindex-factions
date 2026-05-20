@@ -215,6 +215,11 @@ permissions:
     description: Set or view faction relations (ally, truce, enemy, neutral).
     default: true
 
+  # Merge
+  factions.cmd.merge:
+    description: Send or accept faction merge requests.
+    default: true
+
   factions.cmd.predefined:
     description: Root command for predefined faction management.
     default: op

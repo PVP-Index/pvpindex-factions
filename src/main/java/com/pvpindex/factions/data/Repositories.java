@@ -10,6 +10,7 @@ import com.pvpindex.factions.data.repository.InvitationRepository;
 import com.pvpindex.factions.data.repository.PlayerRepository;
 import com.pvpindex.factions.data.repository.PowerHistoryRepository;
 import com.pvpindex.factions.data.repository.RankRepository;
+import com.pvpindex.factions.data.repository.MergeRequestRepository;
 import com.pvpindex.factions.data.repository.WarpRepository;
 
 /**
@@ -31,6 +32,7 @@ public class Repositories {
     private final PowerHistoryRepository powerHistory;
     private final FactionInboxRepository inbox;
     private final AuditLogRepository auditLogs;
+    private final MergeRequestRepository mergeRequests;
 
     public Repositories(final DataSourceJdbcStore store) {
         this.factions = new FactionRepository(store);
@@ -43,6 +45,7 @@ public class Repositories {
         this.powerHistory = new PowerHistoryRepository(store);
         this.inbox = new FactionInboxRepository(store);
         this.auditLogs = new AuditLogRepository(store);
+        this.mergeRequests = new MergeRequestRepository(store);
     }
 
     public FactionRepository factions() {
@@ -83,5 +86,9 @@ public class Repositories {
 
     public AuditLogRepository auditLogs() {
         return auditLogs;
+    }
+
+    public MergeRequestRepository mergeRequests() {
+        return mergeRequests;
     }
 }

@@ -244,3 +244,14 @@ ezcountdown:
   relation-enemy: "<red>\u2694 {source} declared war on {target}!"
   relation-ally: "<green>\ud83e\udd1d {source} and {target} are now allies!"
   relation-truce: "<yellow>\ud83e\udd1d {source} and {target} have called a truce!"
+
+merge:
+  disabled: "<red>Faction merging is not enabled on this server."
+  request-sent: "<green>Merge request sent to <yellow>{faction}<green>."
+  request-received: "<yellow>{faction}<green> has sent a merge request to your faction. Use <white>/f merge accept {faction}<green> to absorb them."
+  accepted: "<yellow>{faction}<green> has merged into your faction!"
+  merged-into: "<green>Successfully merged <yellow>{faction}<green> into your faction."
+  already-requested: "<red>A merge request to <yellow>{faction}<red> is already pending."
+  no-request-found: "<red>No pending merge request from <yellow>{faction}<red> was found."
+  self-merge: "<red>You cannot merge your faction into itself."
+  target-not-found: "<red>Faction <yellow>{faction}<red> not found."

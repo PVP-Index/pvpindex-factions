@@ -8,6 +8,7 @@ import com.pvpindex.factions.service.AuditServiceImpl;
 import com.pvpindex.factions.service.FactionServiceImpl;
 import com.pvpindex.factions.service.FlagServiceImpl;
 import com.pvpindex.factions.service.InviteServiceImpl;
+import com.pvpindex.factions.service.MergeServiceImpl;
 import com.pvpindex.factions.service.PowerServiceImpl;
 import com.pvpindex.factions.service.WarpServiceImpl;
 
@@ -53,6 +54,8 @@ public final class ServicesBootstrapComponent extends AbstractBootstrapComponent
         final AuditServiceImpl auditImpl = new AuditServiceImpl(repos, logger(context));
         context.services().setAuditService(auditImpl);
         factionImpl.setAuditService(auditImpl);
+
+        context.services().setMergeService(new MergeServiceImpl(factionImpl, repos, logger(context)));
 
         if (!isTeamsApiAvailable(context)) {
             logger(context).info("TeamsAPI not found — running standalone.");

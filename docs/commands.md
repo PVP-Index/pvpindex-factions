@@ -85,6 +85,13 @@ nav_order: 1
 | `/f relation list [ally\|truce\|neutral\|enemy]` | `factions.cmd.relation` | List faction relations. |
 | `/f relation wishes` | `factions.cmd.relation` | Show your faction's pending relation wishes. |
 
+### `/f merge`
+
+| Command | Permission | Description |
+|---|---|---|
+| `/f merge send <faction>` | `factions.cmd.merge` | Send a merge request proposing your faction be absorbed by another (officer+). |
+| `/f merge accept <faction>` | `factions.cmd.merge` | Accept a pending merge request from another faction (officer+). Transfers all claims, warps, bank balance, and members to your faction; sender faction is then disbanded. |
+
 ### `/f bank`
 
 Requires Vault economy.
@@ -102,7 +109,7 @@ Requires Vault economy.
 | Command | Permission | Description |
 |---|---|---|
 | `/f audit [page]` | `factions.cmd.audit` | View your faction's audit log (officer or above). |
-| `/f audit [page] --action=<action>` | `factions.cmd.audit` | Filter audit log by action type (`claim`, `unclaim`, `relation-change`, `kick`, `promote`, `demote`, `bank-deposit`, `bank-withdraw`, `bank-transfer`). |
+| `/f audit [page] --action=<action>` | `factions.cmd.audit` | Filter audit log by action type (`claim`, `unclaim`, `relation-change`, `kick`, `promote`, `demote`, `bank-deposit`, `bank-withdraw`, `bank-transfer`, `merge-request`, `merge-accept`). |
 
 ### `/f warp`
 

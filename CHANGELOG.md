@@ -10,6 +10,24 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Changed
 
+## [1.0.11] - 2026-05-20
+
+### Added
+
+- **Faction merge** (`/f merge send <faction>`, `/f merge accept <faction>`):
+  - Officers and above can send a merge request proposing their faction be absorbed by another.
+  - Officers and above of the target faction can accept the request to complete the merge.
+  - On acceptance, all claims, warps, bank balance, and members are transferred to the target faction; members join at the target's default rank; the sender faction is disbanded.
+  - Online members of the target faction are notified when a merge request arrives.
+  - New permission `factions.cmd.merge` (default: true).
+  - New `MergeRequestModel` / `MergeRequestRepository` data layer and `MergeService` / `MergeServiceImpl` service layer.
+  - New audit actions `merge-request` and `merge-accept` for the audit log.
+
+### Changed
+
+- Upgraded TeamsAPI integration to **2.0.0**:
+  - `getRelation(id, id)` now returns `TeamRelation.MEMBER` when both team UUIDs are equal (new TeamsAPI 2.0.0 contract).
+
 ## [1.0.10] - 2026-05-20
 
 ### Added

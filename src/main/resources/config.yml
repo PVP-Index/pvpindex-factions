@@ -228,6 +228,11 @@ factions:
       # Maximum window length an admin may assign to a single faction.
       max-duration-hours: 8
 
+  merge:
+    # Allow factions to send and accept merge requests via /f merge send / /f merge accept.
+    # When disabled, both commands are blocked regardless of permission.
+    enabled: false
+
 # Soft-integration toggles. The plugin checks for the provider plugin at startup
 # and gracefully disables the integration if it is absent.
 integrations:

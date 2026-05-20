@@ -155,6 +155,12 @@ Each built-in flag has two keys: `default` (boolean) and `player-editable` (bool
 | `factions.updates.enabled` | Check for new plugin versions on startup (opt-in, disabled by default). | `enabled: false` |
 | `factions.updates.notify-ops-on-join` | Notify online operators about available updates when they join. | `notify-ops-on-join: false` |
 
+### `factions.merge.*`
+
+| Key | Description | Example |
+|---|---|---|
+| `factions.merge.enabled` | Enable the `/f merge send` and `/f merge accept` commands. Off by default — turn on to allow factions to absorb one another. | `enabled: false` |
+
 ### `integrations.*`
 
 | Key | Description | Example |
