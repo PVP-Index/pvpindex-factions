@@ -212,6 +212,10 @@ Audit log:
 
 ![Faction audit log](https://i.ibb.co/Q3vFWYDq/image.png)
 
+Admin power history:
+
+![Admin power history command output](https://i.ibb.co/XZvQDyLm/image.png)
+
 ## Commands at a glance
 
 - Player root: `/f` (`/faction`, `/factions`)

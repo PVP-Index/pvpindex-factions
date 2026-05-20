@@ -38,6 +38,7 @@ import com.pvpindex.factions.command.sub.admin.CmdAdminClaim;
 import com.pvpindex.factions.command.sub.admin.CmdAdminDisband;
 import com.pvpindex.factions.command.sub.admin.CmdAdminFlag;
 import com.pvpindex.factions.command.sub.admin.CmdAdminHelp;
+import com.pvpindex.factions.command.sub.admin.CmdAdminPower;
 import com.pvpindex.factions.command.sub.admin.CmdAdminReload;
 import com.pvpindex.factions.command.sub.admin.CmdAdminSafezone;
 import com.pvpindex.factions.command.sub.admin.CmdAdminShield;
@@ -100,7 +101,8 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         commandRegistry.register(new CmdWarp(factionSvc, warpSvc, context.infra().getTerritoryGuard(),
             context.infra().getEssentialsInterop()));
         commandRegistry.register(new CmdBank(factionSvc, economy));
-        commandRegistry.register(new CmdPower(context.infra().getVaultEconomy(), cfg, repos));
+        commandRegistry.register(new CmdPower(
+            context.infra().getVaultEconomy(), cfg, repos, context.services().getPowerService()));
         commandRegistry.register(new CmdPowerHistory());
         commandRegistry.register(new CmdList(factionSvc));
         commandRegistry.register(new CmdMap());
@@ -143,6 +145,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         adminRegistry.register(new CmdAdminShield());
         adminRegistry.register(new CmdAdminFlag(factionSvc, flagSvc));
         adminRegistry.register(new CmdAdminAudit(factionSvc));
+        adminRegistry.register(new CmdAdminPower(context.services().getPowerService()));
         adminRegistry.register(new CmdAdminHelp(adminRegistry));
 
         final AdminCommandExecutor adminExecutor = new AdminCommandExecutor(

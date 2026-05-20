@@ -50,6 +50,43 @@ factions:
       enabled: false
       cost-per-point: 100.0
       max-per-purchase: 5.0
+    # Source-specific controls for power changes.
+    sources:
+      regen-online:
+        enabled: true
+        amount: 6.0
+      regen-offline:
+        enabled: true
+        amount: 3.0
+      death-loss:
+        enabled: true
+        amount: 4.0
+      kill-gain:
+        enabled: true
+        amount: 2.0
+      buy:
+        enabled: true
+    constraints:
+      min-power: 0.0
+      max-power: 10.0
+      # 0 disables per-event clamp.
+      max-change-per-event: 0.0
+    multipliers:
+      worlds: {}
+      zones:
+        safezone: 1.0
+        warzone: 1.0
+        own_claimed: 1.0
+        enemy_claimed: 1.0
+        wilderness: 1.0
+    freeze:
+      blocks-automatic: true
+      blocks-regen: true
+      allow-admin-bypass: true
+    notifications:
+      actor: true
+      faction: false
+      staff: false
 
   map:
     # Radius used by /f map once rendering.

@@ -27,7 +27,8 @@ public class PlayerModel extends Model {
         Map.entry("notify_invites", "TINYINT NOT NULL DEFAULT 1"),
         Map.entry("notify_bank_tax", "TINYINT NOT NULL DEFAULT 1"),
         Map.entry("last_death_at", "BIGINT NOT NULL DEFAULT 0"),
-        Map.entry("death_streak", "TINYINT NOT NULL DEFAULT 0")
+        Map.entry("death_streak", "TINYINT NOT NULL DEFAULT 0"),
+        Map.entry("power_frozen", "TINYINT NOT NULL DEFAULT 0")
     );
 
     public PlayerModel(final String id) {
@@ -44,6 +45,7 @@ public class PlayerModel extends Model {
         setBankTaxNotifications(true);
         setLastDeathAt(0L);
         setDeathStreak(0);
+        setPowerFrozen(false);
     }
 
     // -------------------------------------------------------------------------
@@ -169,6 +171,14 @@ public class PlayerModel extends Model {
 
     public void setDeathStreak(final int streak) {
         set("death_streak", streak);
+    }
+
+    public boolean isPowerFrozen() {
+        return getAs("power_frozen", Integer.class, 0) == 1;
+    }
+
+    public void setPowerFrozen(final boolean frozen) {
+        set("power_frozen", frozen ? 1 : 0);
     }
 
     public AutoTerritoryMode getAutoTerritoryMode() {

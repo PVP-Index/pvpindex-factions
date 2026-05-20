@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 
 import com.pvpindex.factions.command.CommandTestBase;
 import com.pvpindex.factions.integration.vault.VaultEconomy;
+import com.pvpindex.factions.service.PowerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import com.pvpindex.factions.command.StorageTest;
@@ -24,6 +25,7 @@ class CmdPowerTest extends CommandTestBase {
 
 
     @Mock private VaultEconomy vaultEconomy;
+    @Mock private PowerService powerService;
 
 
     private CmdPower cmd;
@@ -31,7 +33,7 @@ class CmdPowerTest extends CommandTestBase {
 
     @BeforeEach
     void setUp() {
-        cmd = new CmdPower(vaultEconomy, config, repos);
+        cmd = new CmdPower(vaultEconomy, config, repos, powerService);
     }
 
 

@@ -6,6 +6,10 @@ import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.data.model.BoardEntry;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.model.PlayerModel;
+import com.pvpindex.factions.service.PowerService;
+import com.pvpindex.factions.service.PowerService.Source;
+import com.pvpindex.factions.service.PowerService.ZoneContext;
+import com.pvpindex.factions.service.PowerServiceImpl;
 import com.pvpindex.factions.scheduler.CancelableTask;
 import com.pvpindex.factions.scheduler.TaskScheduler;
 import com.pvpindex.factions.util.MsgUtil;
@@ -32,6 +36,7 @@ public final class EnginePower implements Runnable, Listener {
     private final FactionsConfig config;
     private final Logger logger;
     private final TaskScheduler taskScheduler;
+    private final PowerService powerService;
     private CancelableTask timerTask;
     private final long startedAt = System.currentTimeMillis();
 
@@ -39,11 +44,13 @@ public final class EnginePower implements Runnable, Listener {
             final Repositories repos,
             final FactionsConfig config,
             final Logger logger,
-            final TaskScheduler taskScheduler) {
+            final TaskScheduler taskScheduler,
+            final PowerService powerService) {
         this.repos = repos;
         this.config = config;
         this.logger = logger;
         this.taskScheduler = taskScheduler;
+        this.powerService = powerService;
     }
 
     /**
@@ -112,16 +119,11 @@ public final class EnginePower implements Runnable, Listener {
         final double max = config.getMaxPower();
         final Player online = Bukkit.getPlayer(java.util.UUID.fromString(pm.getId()));
 
-        double regen;
-        if (online != null) {
-            regen = config.getPowerRegenOnline();
-        } else {
-            regen = config.getPowerRegenOffline();
-        }
+        final Source source = online != null ? Source.REGEN_ONLINE : Source.REGEN_OFFLINE;
 
         if (current < max) {
-            pm.setPower(Math.min(max, current + regen));
-            repos.players().save(pm);
+            powerService.apply(new PowerService.Request(
+                pm.getId(), source, 0.0, "system", source.name(), null, null, false));
         }
     }
 
@@ -143,6 +145,9 @@ public final class EnginePower implements Runnable, Listener {
 
             // Skip power changes in safezone territory when safe zones are active.
             final Optional<BoardEntry> claim = repos.board().findByChunk(worldName, chunkX, chunkZ);
+            final Optional<PlayerModel> deadOpt = repos.players().find(deadId);
+            final String deadFactionId = deadOpt.map(PlayerModel::getFactionId).orElse(null);
+            final ZoneContext zone = PowerServiceImpl.zoneFromClaim(claim, deadFactionId);
             if (config.isSafeZoneEnabled()
                     && claim.isPresent()
                     && FactionModel.SAFEZONE_ID.equals(claim.get().getFactionId())) {
@@ -150,7 +155,6 @@ public final class EnginePower implements Runnable, Listener {
             }
 
             // Apply power loss to dead player.
-            final Optional<PlayerModel> deadOpt = repos.players().find(deadId);
             if (deadOpt.isPresent()) {
                 final PlayerModel deadModel = deadOpt.get();
 
@@ -175,12 +179,11 @@ public final class EnginePower implements Runnable, Listener {
                     deadModel.setDeathStreak(streak);
                 }
 
-                final double newPower = Math.max(0.0, deadModel.getPower() - loss);
-                deadModel.setPower(newPower);
-                repos.players().save(deadModel);
-                repos.powerHistory().record(deadId, -loss, "DEATH", newPower);
+                final PowerService.Result deathResult = powerService.apply(new PowerService.Request(
+                    deadId, Source.DEATH, -loss, "system", "DEATH", worldName, zone, false));
+                final double actualLoss = Math.abs(deathResult.effectiveDelta());
 
-                final double finalLoss = loss;
+                final double finalLoss = actualLoss;
                 final int finalStreak = streak;
                 taskScheduler.runSync(() -> {
                     final Player deadPlayer = Bukkit.getPlayer(UUID.fromString(deadId));
@@ -224,12 +227,9 @@ public final class EnginePower implements Runnable, Listener {
                             }
                         }
 
-                        final double maxPower = config.getMaxPower();
-                        final double newKillerPower = Math.min(maxPower, killerModel.getPower() + gain);
-                        killerModel.setPower(newKillerPower);
-                        repos.players().save(killerModel);
-                        repos.powerHistory().record(killerId, gain, "KILL", newKillerPower);
-                        final double finalGain = gain;
+                        final PowerService.Result killResult = powerService.apply(new PowerService.Request(
+                            killerId, Source.KILL, gain, "system", "KILL", worldName, zone, false));
+                        final double finalGain = killResult.effectiveDelta();
                         final String gainMsg = MsgUtil.replace(
                             MsgUtil.message("power.kill-gained",
                                 "<green>You gained <yellow>{amount}<green> power from your kill."),
@@ -255,12 +255,7 @@ public final class EnginePower implements Runnable, Listener {
      * @return total power
      */
     public double computeTotalPower(final String factionId) throws StorageException {
-        final Optional<FactionModel> faction = repos.factions().find(factionId);
-        double total = faction.map(FactionModel::getPowerBoost).orElse(0.0);
-        for (final PlayerModel pm : repos.players().findByFactionId(factionId)) {
-            total += effectivePower(pm);
-        }
-        return total;
+        return powerService.getFactionPower(factionId);
     }
 
     // -------------------------------------------------------------------------
@@ -278,10 +273,7 @@ public final class EnginePower implements Runnable, Listener {
             if (!faction.isNormal()) {
                 continue;
             }
-            double totalPower = faction.getPowerBoost();
-            for (final PlayerModel pm : repos.players().findByFactionId(faction.getId())) {
-                totalPower += effectivePower(pm);
-            }
+            final double totalPower = powerService.getFactionPower(faction.getId());
             final int maxLand = landPerPower <= 0
                     ? config.getMaxLand()
                     : Math.min(config.getMaxLand(), (int) (totalPower / landPerPower));
@@ -335,19 +327,4 @@ public final class EnginePower implements Runnable, Listener {
         }
     }
 
-    /**
-     * Returns the power contribution of a player, respecting the inactive-exclusion
-     * setting (F1). Members inactive longer than the configured threshold contribute 0.
-     */
-    private double effectivePower(final PlayerModel pm) {
-        if (!config.isPowerInactiveExclusionEnabled()) {
-            return pm.getPower();
-        }
-        final long inactiveMs = config.getPowerInactiveDays() * 24L * 3600L * 1000L;
-        final long last = pm.getLastActivity();
-        if (last > 0 && System.currentTimeMillis() - last > inactiveMs) {
-            return 0.0;
-        }
-        return pm.getPower();
-    }
 }

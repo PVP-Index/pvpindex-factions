@@ -6,6 +6,7 @@ import com.pvpindex.factions.config.FactionsConfig;
 import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.data.model.PlayerModel;
 import com.pvpindex.factions.integration.vault.VaultEconomy;
+import com.pvpindex.factions.service.PowerService;
 import com.pvpindex.factions.util.MoneyParser;
 import com.pvpindex.factions.util.MsgUtil;
 import java.util.List;
@@ -19,11 +20,13 @@ public final class CmdPowerBuy extends FactionCommand {
     private final VaultEconomy vaultEconomy;
     private final FactionsConfig factionsConfig;
     private final Repositories repos;
+    private final PowerService powerService;
 
     public CmdPowerBuy(
             final VaultEconomy vaultEconomy,
             final FactionsConfig factionsConfig,
-            final Repositories repos) {
+            final Repositories repos,
+            final PowerService powerService) {
         super("buy");
         setPermission("factions.cmd.power.buy");
         setDescription("Purchase personal power with money.");
@@ -32,6 +35,7 @@ public final class CmdPowerBuy extends FactionCommand {
         this.vaultEconomy = vaultEconomy;
         this.factionsConfig = factionsConfig;
         this.repos = repos;
+        this.powerService = powerService;
     }
 
     @Override
@@ -89,9 +93,8 @@ public final class CmdPowerBuy extends FactionCommand {
                 return;
             }
 
-            pm.setPower(pm.getPower() + actualAmount);
-            repos.players().save(pm);
-            repos.powerHistory().record(playerId, actualAmount, "BUY", pm.getPower());
+            powerService.apply(new PowerService.Request(
+                playerId, PowerService.Source.BUY, actualAmount, player.getName(), "BUY", null, null, false));
 
             MsgUtil.sendKey(player, "power.buy-success",
                 "<green>You purchased <yellow>{amount}<green> power for <yellow>{cost}<green>.",

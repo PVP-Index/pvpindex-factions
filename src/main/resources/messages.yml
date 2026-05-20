@@ -182,6 +182,17 @@ power:
   history-entry-gain: "<dark_aqua>{time}  <white>{reason}  <green>{delta}  <gray>\u2192  <white>{power_after}"
   history-entry-loss: "<dark_aqua>{time}  <white>{reason}  <red>{delta}  <gray>\u2192  <white>{power_after}"
   history-storage-error: "<red>A storage error occurred. Please try again."
+  blocked-frozen: "<yellow>Power change blocked while frozen. Source: <white>{source}</white>."
+  staff-blocked-frozen: "<gray>[Power] <white>{player}</white> blocked by freeze. Source: <white>{source}</white>."
+  change-actor: "<gray>Power <white>{before}</white> -> <white>{after}</white> (<yellow>{delta}</yellow>)"
+  change-faction: "<gray>[Faction] <white>{player}</white>: <yellow>{delta}</yellow> (<white>{after}</white>)"
+  change-staff: "<gray>[Power] <white>{player}</white> {delta} ({before} -> {after}) <dark_gray>{source} {reason} {world} {zone}"
+  admin-view: "<gray>[Power] <white>{player}</white> power=<yellow>{power}</yellow>, frozen=<yellow>{frozen}</yellow>"
+  admin-set-success: "<green>Set power for <white>{player}</white>: <yellow>{before}</yellow> -> <yellow>{after}</yellow>."
+  admin-add-success: "<green>Added <yellow>{delta}</yellow> power to <white>{player}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>)."
+  admin-remove-success: "<green>Removed <yellow>{delta}</yellow> power from <white>{player}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>)."
+  admin-reset-success: "<green>Reset power for <white>{player}</white>: <yellow>{before}</yellow> -> <yellow>{after}</yellow>."
+  admin-freeze-success: "<green>Power freeze for <white>{player}</white> is now <yellow>{state}</yellow>."
 
 raidable:
   became-raidable: "<red>\u26a0 Your faction is now raidable! Enemies can overclaim your land."

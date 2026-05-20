@@ -75,7 +75,7 @@ public final class EnginesBootstrapComponent extends AbstractBootstrapComponent 
         final EngineChat chat = new EngineChat(repos, cfg, logger(context));
         chat.register(context.plugin());
 
-        powerEngine = new EnginePower(repos, cfg, logger(context), scheduler);
+        powerEngine = new EnginePower(repos, cfg, logger(context), scheduler, context.services().getPowerService());
         powerEngine.start(context.plugin());
 
         final EngineNotifications notifications = new EngineNotifications(

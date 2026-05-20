@@ -62,6 +62,14 @@ permissions:
       factions.cmd.shield: true
       factions.cmd.flag.set: true
       factions.cmd.audit: true
+      factions.cmd.admin.power: true
+      factions.cmd.admin.power.view: true
+      factions.cmd.admin.power.set: true
+      factions.cmd.admin.power.add: true
+      factions.cmd.admin.power.remove: true
+      factions.cmd.admin.power.reset: true
+      factions.cmd.admin.power.freeze: true
+      factions.cmd.admin.power.history: true
 
   factions.bypass:
     description: Bypass faction territory protection (build, interact, PvP).
@@ -77,6 +85,38 @@ permissions:
 
   factions.cmd.power.history.other:
     description: View another player's power change history.
+    default: op
+
+  factions.cmd.admin.power:
+    description: Root permission for /fa power commands.
+    default: op
+
+  factions.cmd.admin.power.view:
+    description: View target player power.
+    default: op
+
+  factions.cmd.admin.power.set:
+    description: Set exact player power.
+    default: op
+
+  factions.cmd.admin.power.add:
+    description: Add power to a player.
+    default: op
+
+  factions.cmd.admin.power.remove:
+    description: Remove power from a player.
+    default: op
+
+  factions.cmd.admin.power.reset:
+    description: Reset player power to configured max.
+    default: op
+
+  factions.cmd.admin.power.freeze:
+    description: Toggle frozen state for power updates.
+    default: op
+
+  factions.cmd.admin.power.history:
+    description: View power history through /fa power history.
     default: op
 
   # Faction lifecycle

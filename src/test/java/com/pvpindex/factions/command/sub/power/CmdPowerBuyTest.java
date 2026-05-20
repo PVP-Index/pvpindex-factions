@@ -13,6 +13,7 @@ import com.pvpindex.factions.data.model.PlayerModel;
 import com.pvpindex.factions.data.repository.PlayerRepository;
 import com.pvpindex.factions.data.repository.PowerHistoryRepository;
 import com.pvpindex.factions.integration.vault.VaultEconomy;
+import com.pvpindex.factions.service.PowerService;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,7 @@ class CmdPowerBuyTest extends CommandTestBase {
 
 
     @Mock private VaultEconomy vaultEconomy;
+    @Mock private PowerService powerService;
     @Mock private PlayerRepository playerRepository;
     @Mock private PowerHistoryRepository powerHistoryRepository;
     @Mock private PlayerModel playerModel;
@@ -43,7 +45,7 @@ class CmdPowerBuyTest extends CommandTestBase {
 
     @BeforeEach
     void setUp() {
-        cmd = new CmdPowerBuy(vaultEconomy, config, repos);
+        cmd = new CmdPowerBuy(vaultEconomy, config, repos, powerService);
         when(player.getUniqueId()).thenReturn(uuid);
         when(repos.players()).thenReturn(playerRepository);
         when(repos.powerHistory()).thenReturn(powerHistoryRepository);

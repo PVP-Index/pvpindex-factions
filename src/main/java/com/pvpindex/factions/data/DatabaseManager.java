@@ -10,6 +10,7 @@ import com.pvpindex.factions.data.model.FactionInboxEntry;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.model.InvitationModel;
 import com.pvpindex.factions.data.model.PlayerModel;
+import com.pvpindex.factions.data.model.PowerHistoryModel;
 import com.pvpindex.factions.data.model.RankModel;
 import com.pvpindex.factions.data.model.WarpModel;
 import com.zaxxer.hikari.HikariConfig;
@@ -125,6 +126,7 @@ public final class DatabaseManager {
             stmt.executeUpdate(createTableSql("invitations", InvitationModel.COLUMNS, "id"));
             stmt.executeUpdate(createTableSql("ranks", RankModel.COLUMNS, "id"));
             stmt.executeUpdate(createTableSql("bank_transactions", BankTransactionModel.COLUMNS, "id"));
+            stmt.executeUpdate(createTableSql("power_history", PowerHistoryModel.COLUMNS, "id"));
             stmt.executeUpdate(createTableSql("faction_inbox", FactionInboxEntry.COLUMNS, "id"));
             stmt.executeUpdate(createTableSql("audit_logs", AuditLogModel.COLUMNS, "id"));
             ensureColumn(
@@ -145,6 +147,12 @@ public final class DatabaseManager {
                 "players",
                 "notify_bank_tax",
                 "TINYINT NOT NULL DEFAULT 1");
+            ensureColumn(
+                stmt,
+                logger,
+                "players",
+                "power_frozen",
+                "TINYINT NOT NULL DEFAULT 0");
             createIndexes(stmt, logger);
 
         } catch (SQLException e) {
@@ -171,6 +179,10 @@ public final class DatabaseManager {
         createIndex(stmt, logger, "idx_bank_tx_faction_id", "bank_transactions", "faction_id");
         createIndex(
             stmt, logger, "idx_bank_tx_faction_created_at", "bank_transactions", "faction_id, created_at");
+        // Power history scans by player and time.
+        createIndex(stmt, logger, "idx_power_history_player_uuid", "power_history", "player_uuid");
+        createIndex(
+            stmt, logger, "idx_power_history_player_created_at", "power_history", "player_uuid, created_at");
         // Inbox entries per player.
         createIndex(stmt, logger, "idx_inbox_player_id", "faction_inbox", "player_id");
         // Audit log scans per faction, ordered by time.
