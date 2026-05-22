@@ -6,7 +6,25 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
-## [1.1.2] - 2026-05-22
+## [1.1.3] - 2026-05-22
+
+### Changed
+
+- **Dependency upgrades (maintenance):** all outdated compile and test dependencies
+  bumped to their latest compatible versions:
+  - `EssentialsX` 2.21.0 → 2.21.2
+  - `worldedit-bukkit` 7.3.9 → 7.4.3
+  - `worldguard-bukkit` 7.0.12 → 7.0.16
+  - `placeholderapi` 2.11.6 → 2.12.2 (repo URL updated to `repo.helpch.at`)
+  - `mysql-connector-j` 9.1.0 → 9.7.0
+  - `h2` 2.3.232 → 2.4.240
+  - `HikariCP` 6.2.1 → 7.0.2
+  - `junit-jupiter` 5.11.4 → 5.14.4
+  - `mockito-core` / `mockito-junit-jupiter` 5.14.2 → 5.23.0
+  - `maven-shade-plugin` 3.6.0 → 3.6.2
+  - `asm` / `asm-commons` override 9.8 → 9.10
+  - `jacoco-maven-plugin` 0.8.12 → 0.8.14
+  - `maven-surefire-plugin` 3.5.2 → 3.5.5
 
 ### Fixed
 
