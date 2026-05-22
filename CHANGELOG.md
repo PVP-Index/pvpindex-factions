@@ -26,6 +26,8 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   - `jacoco-maven-plugin` 0.8.12 → 0.8.14
   - `maven-surefire-plugin` 3.5.2 → 3.5.5
 
+## [1.1.2] - 2026-05-22
+
 ### Fixed
 
 - **dynmap compatibility expanded to 3.x (3.4 – 3.8):** the vendored compile-time
