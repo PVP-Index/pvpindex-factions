@@ -266,6 +266,7 @@ language:
   default: "<gray>Predeterminado del servidor: <white>{code}</white>"
   available: "<gray>Disponibles: <white>{list}</white>"
   usage: "<gray>Uso: <white>/f language <code></white> o <white>/f language reset</white>"
+  override-disabled: "<red>Las anulaciones de idioma por jugador est?n desactivadas por el servidor."
 custom:
   protection:
     no-break: "<red>No puedes romper bloques en este territorio."

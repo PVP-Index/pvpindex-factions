@@ -7,8 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
+import com.pvpindex.factions.command.TestDatabase;
 import com.pvpindex.factions.config.DatabaseConfig;
+import com.pvpindex.factions.data.DatabaseManager.H2CompatJdbcStore;
+import com.pvpindex.factions.data.model.FactionModel;
 import java.io.File;
+import java.util.Optional;
 import java.util.logging.Logger;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.junit.jupiter.api.AfterEach;
@@ -119,5 +123,59 @@ class DatabaseManagerTest {
         manager.initialize(config, tempDir, logger);
         manager.close();
         manager.close();
+    }
+
+    // -------------------------------------------------------------------------
+    // H2CompatJdbcStore — SQL rewrite unit tests
+    // -------------------------------------------------------------------------
+
+    @Test
+    @DisplayName("H2CompatJdbcStore.h2Upsert — rewrites ON DUPLICATE KEY UPDATE to MERGE INTO")
+    void testH2UpsertRewrite() {
+        final String input = "INSERT INTO `factions` (`id`, `name`, `motd`) VALUES (?, ?, ?)"
+            + " ON DUPLICATE KEY UPDATE `name`=VALUES(`name`), `motd`=VALUES(`motd`)";
+        final String expected = "MERGE INTO `factions` (`id`, `name`, `motd`) KEY(`id`) VALUES (?, ?, ?)";
+
+        assertEquals(expected, H2CompatJdbcStore.h2Upsert(input));
+    }
+
+    @Test
+    @DisplayName("H2CompatJdbcStore.h2Upsert — leaves unrelated SQL unchanged")
+    void testH2UpsertNoOp() {
+        final String select = "SELECT * FROM `factions` WHERE `id` = ?";
+        assertEquals(select, H2CompatJdbcStore.h2Upsert(select));
+
+        final String insert = "INSERT INTO `factions` (`id`) VALUES (?)";
+        assertEquals(insert, H2CompatJdbcStore.h2Upsert(insert));
+    }
+
+    // -------------------------------------------------------------------------
+    // H2 upsert integration — regression for JdbcSQLSyntaxErrorException
+    // -------------------------------------------------------------------------
+
+    @Test
+    @DisplayName("H2 upsert — save and update FactionModel without SQL syntax error")
+    void testH2UpsertIntegration() throws Exception {
+        try (TestDatabase db = TestDatabase.h2()) {
+            final FactionModel faction = new FactionModel("test-upsert-id");
+            faction.set("name", "TestFaction");
+            faction.set("created_at", System.currentTimeMillis());
+
+            // First save — INSERT path
+            db.repositories().factions().save(faction);
+
+            // Reload and verify the row exists
+            final Optional<FactionModel> loaded = db.repositories().factions().find("test-upsert-id");
+            assertTrue(loaded.isPresent(), "Faction should exist after first save");
+            assertEquals("TestFaction", loaded.get().getAs("name", String.class));
+
+            // Mutate and save again — ON DUPLICATE KEY / MERGE path
+            faction.set("name", "RenamedFaction");
+            db.repositories().factions().save(faction);
+
+            final Optional<FactionModel> updated = db.repositories().factions().find("test-upsert-id");
+            assertTrue(updated.isPresent(), "Faction should exist after second save");
+            assertEquals("RenamedFaction", updated.get().getAs("name", String.class));
+        }
     }
 }

@@ -113,7 +113,7 @@ public final class InfrastructureBootstrapComponent extends AbstractBootstrapCom
         if (!messagesDir.exists()) {
             messagesDir.mkdirs();
         }
-        final Set<String> shippedLocales = Set.of("en", "es", "de", "fr", "pt-BR");
+        final Set<String> shippedLocales = Set.of("en", "es", "de", "fr", "pt-BR", "zh", "ru", "ja");
         for (final String locale : shippedLocales) {
             final String name = "messages/messages_" + locale + ".yml";
             final File dest = new File(dataFolder, name);

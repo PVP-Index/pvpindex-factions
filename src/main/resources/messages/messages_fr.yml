@@ -266,6 +266,7 @@ language:
   default: "<gray>Serveur par défaut : <white>{code}</white>"
   available: "<gray>Disponible : <white>{list}</white>"
   usage: "<gray>Utilisation : <white>/f langue <code></white> ou <white>/f réinitialisation de la langue</white>"
+  override-disabled: "<red>Les remplacements de langue par joueur sont d?sactiv?s sur ce serveur."
 custom:
   protection:
     no-break: "<red>Vous ne pouvez pas casser de blocs sur ce territoire."

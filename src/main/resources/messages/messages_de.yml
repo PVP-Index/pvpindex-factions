@@ -266,6 +266,7 @@ language:
   default: "<gray>Server-Standard: <white>{code}</white>"
   available: "<gray>Verfügbar: <white>{list}</white>"
   usage: "<gray>Verwendung: <white>/f Sprache <code></white> oder <white>/f Sprache zurücksetzen</white>"
+  override-disabled: "<red>Spieler-Sprach?berschreibungen sind auf diesem Server deaktiviert."
 custom:
   protection:
     no-break: "<red>Sie dürfen in diesem Gebiet keine Blöcke zerstören."

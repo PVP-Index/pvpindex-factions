@@ -266,6 +266,7 @@ language:
   default: "<gray>Server default: <white>{code}</white>"
   available: "<gray>Available: <white>{list}</white>"
   usage: "<gray>Usage: <white>/f language <code></white> or <white>/f language reset</white>"
+  override-disabled: "<red>Player language overrides are disabled by the server."
 custom:
   protection:
     no-break: "<red>You may not break blocks in this territory."

@@ -7,7 +7,7 @@
 
     <groupId>com.pvpindex</groupId>
     <artifactId>pvpindex-factions</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <packaging>jar</packaging>
 
     <name>PvPIndex Factions</name>
@@ -52,15 +52,14 @@
             <id>essentialsx-releases</id>
             <url>https://repo.essentialsx.net/releases/</url>
         </repository>
+        <!-- dynmap-api 3.4-beta-3 is only on repo.mikeprimm.com which is unreliable in CI.
+             The JAR is vendored in libs/ so CI never needs to contact the upstream repo.
+             To upgrade dynmap: mvn install:install-file -Dfile=<jar> -DgroupId=us.dynmap
+               -DartifactId=dynmap-api -Dversion=<ver> -Dpackaging=jar
+               -DlocalRepositoryPath=./libs -->
         <repository>
-            <id>dynmap-repo</id>
-            <url>https://repo.mikeprimm.com/</url>
-            <releases>
-                <checksumPolicy>warn</checksumPolicy>
-            </releases>
-            <snapshots>
-                <checksumPolicy>warn</checksumPolicy>
-            </snapshots>
+            <id>local-libs</id>
+            <url>file://${project.basedir}/libs</url>
         </repository>
     </repositories>
 

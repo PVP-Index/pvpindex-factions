@@ -3,6 +3,9 @@ package com.pvpindex.factions.data;
 import com.github.ezframework.jaloquent.config.JaloquentConfig;
 import com.github.ezframework.jaloquent.store.sql.DataSourceJdbcStore;
 import com.pvpindex.factions.config.DatabaseConfig;
+import java.util.List;
+import java.util.Locale;
+import javax.sql.DataSource;
 import com.pvpindex.factions.data.model.AuditLogModel;
 import com.pvpindex.factions.data.model.BankTransactionModel;
 import com.pvpindex.factions.data.model.BoardEntry;
@@ -29,8 +32,10 @@ import java.util.logging.Logger;
  * <ul>
  *   <li><b>H2</b> — embedded file-based database opened in MySQL-compatibility
  *   mode. Requires no external server; suitable for solo / small servers.
- *   The {@code ON DUPLICATE KEY UPDATE} upsert syntax used by Jaloquent is
- *   supported by H2 in this mode.
+ *   H2 2.x does not implement the {@code VALUES(col)} function reference that
+ *   Jaloquent uses inside {@code ON DUPLICATE KEY UPDATE}, so upsert SQL is
+ *   transparently rewritten to {@code MERGE INTO … KEY(id)} by the internal
+ *   {@code H2CompatJdbcStore} before execution.
  *   The H2 driver is shaded into the plugin JAR and loaded explicitly via
  *   {@code driverClassName} to avoid Bukkit classloader isolation issues.</li>
  *   <li><b>MySQL / MariaDB</b> — external server via JDBC. The mysql-connector-java
@@ -61,6 +66,8 @@ public final class DatabaseManager {
             final DatabaseConfig dbCfg, final File dataDir, final Logger logger) {
 
         final HikariConfig hk = new HikariConfig();
+
+        final boolean isH2 = !"mysql".equalsIgnoreCase(dbCfg.getType());
 
         if ("mysql".equalsIgnoreCase(dbCfg.getType())) {
             hk.setJdbcUrl("jdbc:mysql://" + dbCfg.getMysqlHost() + ":" + dbCfg.getMysqlPort()
@@ -100,7 +107,7 @@ public final class DatabaseManager {
             throw new IllegalStateException("Failed to open database connection pool", e);
         }
 
-        store = new DataSourceJdbcStore(dataSource);
+        store = isH2 ? new H2CompatJdbcStore(dataSource) : new DataSourceJdbcStore(dataSource);
         createTables(logger);
     }
 
@@ -310,6 +317,57 @@ public final class DatabaseManager {
             return "com.pvpindex.lib.mysql.cj.jdbc.Driver";
         } catch (ClassNotFoundException ignored) {
             return "com.mysql.cj.jdbc.Driver";
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // H2 upsert compatibility
+    // -------------------------------------------------------------------------
+
+    /**
+     * Wraps {@link DataSourceJdbcStore} and rewrites MySQL-specific upsert SQL
+     * into the H2-compatible {@code MERGE INTO} syntax before execution.
+     *
+     * <p>Jaloquent generates:
+     * <pre>INSERT INTO `t` (`id`, `col`) VALUES (?) ON DUPLICATE KEY UPDATE `col`=VALUES(`col`)</pre>
+     * H2 2.x does not implement the {@code VALUES(col)} function reference inside
+     * {@code ON DUPLICATE KEY UPDATE}. This rewrite converts the statement to:
+     * <pre>MERGE INTO `t` (`id`, `col`) KEY(`id`) VALUES (?)</pre>
+     * which H2 fully supports in both embedded and MySQL-compat-mode configurations.
+     */
+    static final class H2CompatJdbcStore extends DataSourceJdbcStore {
+
+        H2CompatJdbcStore(final DataSource dataSource) {
+            super(dataSource);
+        }
+
+        @Override
+        public int executeUpdate(final String sql, final List<Object> params) throws Exception {
+            return super.executeUpdate(h2Upsert(sql), params);
+        }
+
+        /**
+         * Rewrites a MySQL {@code ON DUPLICATE KEY UPDATE col=VALUES(col)} upsert
+         * to an H2-compatible {@code MERGE INTO ... KEY(`id`) VALUES (...)} statement.
+         *
+         * @param sql original SQL string from Jaloquent
+         * @return rewritten SQL, or the original if no rewrite is needed
+         */
+        static String h2Upsert(final String sql) {
+            final int odku = sql.indexOf(" ON DUPLICATE KEY UPDATE ");
+            if (odku < 0) {
+                return sql;
+            }
+            final String beforeOdku = sql.substring(0, odku);
+            final int valuesIdx = beforeOdku.toUpperCase(Locale.ROOT).lastIndexOf(" VALUES ");
+            if (valuesIdx < 0) {
+                return sql;
+            }
+            // "INSERT INTO `t` (cols) VALUES (?)" → "MERGE INTO `t` (cols) KEY(`id`) VALUES (?)"
+            return "MERGE INTO"
+                + beforeOdku.substring("INSERT INTO".length(), valuesIdx)
+                + " KEY(`id`)"
+                + beforeOdku.substring(valuesIdx);
         }
     }
 }

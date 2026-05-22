@@ -10,10 +10,13 @@ import com.github.ezframework.jaloquent.exception.StorageException;
 import com.pvpindex.factions.service.FactionService;
 import com.pvpindex.factions.util.MsgUtil;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -93,6 +96,9 @@ public class FactionsGuiManager implements Listener {
                 if (slot < 0 || slot >= size) {
                     continue;
                 }
+                if (shouldHideItem(itemSection)) {
+                    continue;
+                }
                 inventory.setItem(slot, buildItem(key, itemSection, player));
             }
         }
@@ -164,6 +170,11 @@ public class FactionsGuiManager implements Listener {
                 }
             }
             case "LANGUAGE_SET" -> {
+                if (!cfg.isLanguagePlayerOverrideEnabled()) {
+                    MsgUtil.sendKey(player, "language.override-disabled",
+                        "<red>Player language overrides are disabled by the server.");
+                    return;
+                }
                 final String requested = section.getString("locale", "").trim();
                 final MessagesConfig messagesConfig = MsgUtil.getMessagesConfig();
                 if (messagesConfig == null) {
@@ -172,7 +183,7 @@ public class FactionsGuiManager implements Listener {
                     return;
                 }
                 final String normalized = MessagesConfig.normalizeLocale(requested);
-                if (!messagesConfig.isSupportedLocale(normalized)) {
+                if (!resolveVisibleLocales(messagesConfig).contains(normalized)) {
                     MsgUtil.sendKey(player, "language.invalid-code",
                         "<red>Unsupported language code: <white>{code}</white>.", "code", requested);
                     return;
@@ -190,6 +201,11 @@ public class FactionsGuiManager implements Listener {
                 }
             }
             case "LANGUAGE_RESET" -> {
+                if (!cfg.isLanguagePlayerOverrideEnabled()) {
+                    MsgUtil.sendKey(player, "language.override-disabled",
+                        "<red>Player language overrides are disabled by the server.");
+                    return;
+                }
                 try {
                     final PlayerModel model = repos.players().findOrCreate(player.getUniqueId().toString());
                     model.setLocale(null);
@@ -305,6 +321,43 @@ public class FactionsGuiManager implements Listener {
         final int capped = Math.max(9, Math.min(54, configured));
         final int rows = (int) Math.ceil(capped / 9.0D);
         return rows * 9;
+    }
+
+    private boolean shouldHideItem(final ConfigurationSection itemSection) {
+        final String action = itemSection.getString("action", "").toUpperCase(Locale.ROOT);
+        if (("LANGUAGE_SET".equals(action) || "LANGUAGE_RESET".equals(action))
+            && !cfg.isLanguagePlayerOverrideEnabled()) {
+            return true;
+        }
+        if (!"LANGUAGE_SET".equals(action)) {
+            return false;
+        }
+        final String requested = itemSection.getString("locale", "").trim();
+        if (requested.isBlank()) {
+            return true;
+        }
+        final MessagesConfig messagesConfig = MsgUtil.getMessagesConfig();
+        if (messagesConfig == null) {
+            return true;
+        }
+        final String normalized = MessagesConfig.normalizeLocale(requested);
+        return !resolveVisibleLocales(messagesConfig).contains(normalized);
+    }
+
+    private Set<String> resolveVisibleLocales(final MessagesConfig messagesConfig) {
+        final Set<String> available = messagesConfig.getAvailableLocales();
+        final Collection<String> configured = cfg.getLanguageVisibleLocales();
+        if (configured == null || configured.isEmpty()) {
+            return available;
+        }
+        final Set<String> filtered = new LinkedHashSet<>();
+        for (String raw : configured) {
+            final String normalized = MessagesConfig.normalizeLocale(raw);
+            if (available.contains(normalized)) {
+                filtered.add(normalized);
+            }
+        }
+        return filtered.isEmpty() ? available : filtered;
     }
 
     private record MenuHolder(String id) implements InventoryHolder {

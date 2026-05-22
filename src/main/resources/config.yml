@@ -14,6 +14,15 @@ factions:
     # Server default locale for faction messages.
     # Players may override with /f language <code>.
     default: en
+    # Allow players to set a personal language override.
+    allow-player-override: true
+    # Open the language GUI when running /f language with no args.
+    command-opens-gui: true
+    # Re-open the language GUI after /f language <code> or /f language reset.
+    command-open-gui-after-set: true
+    # Optional whitelist of locales shown/selectable in command suggestions and GUI.
+    # Empty list means all loaded locales are available.
+    visible-locales: []
 
   power:
     # Maximum power each online player contributes to the faction.
@@ -182,10 +191,12 @@ factions:
       default: false
       player-editable: true
 
+  # For advanced chat options this project will be updated soon:
+  # https://github.com/JeremyFail/FactionsChat
   chat:
     # Show faction tag before player name in global chat.
-    show-tag: true
-    # MiniMessage format — placeholders: {faction_name}, {rank_prefix}
+    show-tag: false
+    # MiniMessage format - placeholders: {faction_name}, {rank_prefix}
     tag-format: "<gray>[<gold>{faction_name}</gold>]</gray> "
 
   metrics:
