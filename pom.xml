@@ -52,11 +52,16 @@
             <id>essentialsx-releases</id>
             <url>https://repo.essentialsx.net/releases/</url>
         </repository>
-        <!-- dynmap-api 3.4-beta-3 is only on repo.mikeprimm.com which is unreliable in CI.
-             The JAR is vendored in libs/ so CI never needs to contact the upstream repo.
-             To upgrade dynmap: mvn install:install-file -Dfile=<jar> -DgroupId=us.dynmap
-               -DartifactId=dynmap-api -Dversion=<ver> -Dpackaging=jar
-               -DlocalRepositoryPath=./libs -->
+        <!-- dynmap-api and DynmapCoreAPI are vendored in libs/ (file-based local repo)
+             so CI never needs to contact the upstream repo.mikeprimm.com.
+             Compiled against 3.8 (latest stable as of 2026-01-14); runtime-compatible
+             with any Dynmap 3.x because only stable marker APIs are used.
+             To upgrade: download the new dynmap-api-<ver>.jar and DynmapCoreAPI-<ver>.jar,
+             run mvn install:install-file -Dfile=<jar> -DgroupId=us.dynmap
+               -DartifactId=dynmap-api -Dversion=<ver> -Dpackaging=jar -DgeneratePom=false
+               -DlocalRepositoryPath=./libs
+             then write a minimal POM in libs/us/dynmap/dynmap-api/<ver>/ and update
+             the version below. -->
         <repository>
             <id>local-libs</id>
             <url>file://${project.basedir}/libs</url>
@@ -116,7 +121,7 @@
         <dependency>
             <groupId>us.dynmap</groupId>
             <artifactId>dynmap-api</artifactId>
-            <version>3.4-beta-3</version>
+            <version>3.8</version>
             <scope>provided</scope>
         </dependency>
 

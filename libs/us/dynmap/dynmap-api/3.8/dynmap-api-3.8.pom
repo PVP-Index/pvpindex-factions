@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>us.dynmap</groupId>
+  <artifactId>dynmap-api</artifactId>
+  <version>3.8</version>
+  <packaging>jar</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>us.dynmap</groupId>
+      <artifactId>DynmapCoreAPI</artifactId>
+      <version>3.8</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+</project>
