@@ -147,7 +147,7 @@ PvPIndex Factions runs standalone, and integrates when available:
 - PlaceholderAPI
 - TeamsAPI
 - WorldGuard / WorldEdit
-- dynmap
+- dynmap (3.x, tested 3.4 – 3.8)
 - EssentialsX
 - LWC / LWCX
 - EzAuction (faction auctions)

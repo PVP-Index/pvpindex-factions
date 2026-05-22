@@ -1,0 +1,167 @@
+name: Dynmap Smoke
+
+on:
+  pull_request:
+    branches: ["main", "develop"]
+  workflow_dispatch:
+
+concurrency:
+  group: dynmap-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dynmap-startup:
+    name: dynmap smoke — Paper ${{ matrix.mc }}
+    runs-on: ubuntu-latest
+    # Allow enough time for Paper to initialise and both plugins to start.
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        mc: ["1.21.4", "1.21.11"]
+        include:
+          - mc: "1.21.4"
+            java: "21"
+          - mc: "1.21.11"
+            java: "25"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+
+      - name: Build plugin jar (tests skipped)
+        run: mvn --batch-mode --no-transfer-progress package -DskipTests
+
+      # ── Paper server jar ─────────────────────────────────────────────────────
+      - name: Resolve latest Paper ${{ matrix.mc }} build
+        id: resolve
+        run: |
+          BUILDS_JSON=$(curl -fsSL \
+            "https://api.papermc.io/v2/projects/paper/versions/${{ matrix.mc }}/builds")
+          BUILD=$(echo "$BUILDS_JSON" | jq -re '.builds[-1].build')
+          JAR="paper-${{ matrix.mc }}-${BUILD}.jar"
+          echo "build=${BUILD}" >> "$GITHUB_OUTPUT"
+          echo "jar=${JAR}"     >> "$GITHUB_OUTPUT"
+
+      - name: Cache Paper server jar
+        id: cache-paper
+        uses: actions/cache@v4
+        with:
+          path: server-env/server.jar
+          key: paper-${{ matrix.mc }}-${{ steps.resolve.outputs.build }}
+
+      - name: Download Paper build ${{ steps.resolve.outputs.build }}
+        if: steps.cache-paper.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p server-env
+          curl -fsSL \
+            "https://api.papermc.io/v2/projects/paper/versions/${{ matrix.mc }}/builds/${{ steps.resolve.outputs.build }}/downloads/${{ steps.resolve.outputs.jar }}" \
+            -o server-env/server.jar
+
+      # ── Dynmap plugin jar ────────────────────────────────────────────────────
+      - name: Download Dynmap plugin (latest Modrinth release for Paper)
+        id: dynmap
+        run: |
+          MC="${{ matrix.mc }}"
+          # Prefer a release that declares this exact MC version; fall back to the
+          # most recent Paper-compatible release if none matches exactly.
+          DL=$(curl -sSfL 'https://api.modrinth.com/v2/project/dynmap/version' \
+            | jq -re --arg mc "$MC" \
+              '[ .[] | select(.loaders[] == "paper") ]
+               | (map(select(.game_versions[] == $mc))[0] // .[0])
+               | .files[0].url')
+          if [ -z "$DL" ] || [ "$DL" = "null" ]; then
+            echo "ERROR: Could not determine Dynmap download URL from Modrinth." >&2
+            exit 1
+          fi
+          mkdir -p server-env/plugins
+          curl -fsSL "$DL" -o server-env/plugins/dynmap.jar
+          echo "Dynmap plugin: $(wc -c < server-env/plugins/dynmap.jar) bytes  (${DL})"
+          echo "url=${DL}" >> "$GITHUB_OUTPUT"
+
+      # ── Server environment ───────────────────────────────────────────────────
+      - name: Prepare server environment
+        run: |
+          mkdir -p server-env/plugins
+          cp target/pvpindex-factions-*.jar server-env/plugins/
+          printf 'eula=true\n'                   > server-env/eula.txt
+          printf 'online-mode=false\n'           > server-env/server.properties
+          printf 'level-type=minecraft:flat\n'  >> server-env/server.properties
+          printf 'generate-structures=false\n'  >> server-env/server.properties
+
+      # ── Smoke check ──────────────────────────────────────────────────────────
+      - name: Start server and assert dynmap hook enabled
+        run: |
+          cd server-env
+          java -Xmx768M -Xms256M -jar server.jar nogui > server.log 2>&1 &
+          SERVER_PID=$!
+
+          echo "Server started (PID $SERVER_PID) — waiting for PvPIndex Factions + dynmap hook…"
+          TIMEOUT=180
+          ELAPSED=0
+          RESULT=timeout
+
+          while [ "$ELAPSED" -lt "$TIMEOUT" ]; do
+            if grep -q "PvPIndex Factions is now online\." server.log 2>/dev/null; then
+              if grep -q "dynmap hooked" server.log 2>/dev/null; then
+                RESULT=success
+              else
+                RESULT=dynmap_not_hooked
+              fi
+              break
+            fi
+            if grep -q "Bootstrap phase failed" server.log 2>/dev/null; then
+              RESULT=bootstrap_failed
+              break
+            fi
+            sleep 3
+            ELAPSED=$((ELAPSED + 3))
+          done
+
+          echo "Stopping server…"
+          kill "$SERVER_PID" 2>/dev/null || true
+          wait "$SERVER_PID" 2>/dev/null || true
+
+          echo ""
+          echo "=== Full server log ==="
+          cat server.log
+
+          case "$RESULT" in
+            success)
+              echo ""
+              echo "PASS: PvPIndex Factions enabled with dynmap hooked on Paper ${{ matrix.mc }}."
+              exit 0
+              ;;
+            dynmap_not_hooked)
+              echo ""
+              echo "FAIL: Plugin started but 'dynmap hooked' was not logged."
+              echo "Check that the Dynmap plugin initialised correctly and that"
+              echo "integrations.dynmap is enabled in config.yml (it is by default)."
+              exit 1
+              ;;
+            bootstrap_failed)
+              echo ""
+              echo "FAIL: Bootstrap failure detected in server log."
+              exit 1
+              ;;
+            timeout)
+              echo ""
+              echo "FAIL: Plugin did not report online within ${TIMEOUT}s."
+              exit 1
+              ;;
+          esac
+
+      - name: Upload server log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-log-dynmap-${{ matrix.mc }}
+          path: server-env/server.log
+          if-no-files-found: warn
