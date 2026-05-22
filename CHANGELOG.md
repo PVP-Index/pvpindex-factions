@@ -6,6 +6,25 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-05-22
+
+### Fixed
+
+- **dynmap compatibility expanded to 3.x (3.4 – 3.8):** the vendored compile-time
+  `dynmap-api` dependency was upgraded from `3.4-beta-3` to `3.8` (latest stable,
+  released 2026-01-14). In dynmap 3.8 the marker API was split into a separate
+  `DynmapCoreAPI` JAR; both JARs are now vendored under `libs/` with minimal POMs so
+  CI never contacts `repo.mikeprimm.com`. The runtime hook code only uses stable
+  `org.dynmap` marker APIs that are present in every 3.x release, so the plugin
+  continues to work with any installed dynmap 3.x version.
+
+### Added
+
+- **Dynmap startup smoke test** (`.github/workflows/dynmap-smoke.yml`): downloads the
+  latest dynmap plugin from Modrinth, starts a Paper server with both plugins, and
+  asserts `dynmap hooked - faction territory layer enabled.` is logged. Runs on Paper
+  1.21.4 and 1.21.11 on every PR to `main`/`develop`.
+
 ## [1.1.1] - 2026-05-22
 
 ### Fixed
