@@ -1,6 +1,7 @@
-gui:
+﻿gui:
   enabled: true
   default-menu: main
+  language-menu: language
   menus:
     main:
       title: "<gradient:#f6d365:#fda085><bold>Factions Control</bold></gradient>"
@@ -81,6 +82,16 @@ gui:
             - "<dark_gray>Click to run /f top"
           action: RUN_COMMAND
           command: "/f top"
+        language:
+          slot: 46
+          material: GLOBE_BANNER_PATTERN
+          name: "<aqua><bold>Language</bold></aqua>"
+          lore:
+            - "<gray>Current: <white>{language_current}</white>"
+            - "<gray>Default: <white>{language_default}</white>"
+            - "<dark_gray>Open language selector"
+          action: OPEN_MENU
+          menu: language
         your-power:
           slot: 49
           material: PLAYER_HEAD
@@ -90,63 +101,6 @@ gui:
             - "<gray>Power: <white>{power}</white><gray>/<white>{max_power}</white>"
             - "<dark_gray>Personal faction status"
           action: REFRESH
-        language-status:
-          slot: 46
-          material: GLOBE_BANNER_PATTERN
-          name: "<aqua><bold>Language</bold></aqua>"
-          lore:
-            - "<gray>Current: <white>{language_current}</white>"
-            - "<gray>Default: <white>{language_default}</white>"
-            - "<dark_gray>Click refresh after changing"
-          action: REFRESH
-        language-en:
-          slot: 37
-          material: WHITE_BANNER
-          name: "<green><bold>English (en)</bold></green>"
-          lore:
-            - "<gray>Set your language to English"
-          action: LANGUAGE_SET
-          locale: "en"
-        language-es:
-          slot: 38
-          material: RED_BANNER
-          name: "<green><bold>Español (es)</bold></green>"
-          lore:
-            - "<gray>Set your language to Spanish"
-          action: LANGUAGE_SET
-          locale: "es"
-        language-de:
-          slot: 39
-          material: BLACK_BANNER
-          name: "<green><bold>Deutsch (de)</bold></green>"
-          lore:
-            - "<gray>Set your language to German"
-          action: LANGUAGE_SET
-          locale: "de"
-        language-fr:
-          slot: 40
-          material: BLUE_BANNER
-          name: "<green><bold>Français (fr)</bold></green>"
-          lore:
-            - "<gray>Set your language to French"
-          action: LANGUAGE_SET
-          locale: "fr"
-        language-ptbr:
-          slot: 41
-          material: GREEN_BANNER
-          name: "<green><bold>Português (pt-BR)</bold></green>"
-          lore:
-            - "<gray>Set your language to Brazilian Portuguese"
-          action: LANGUAGE_SET
-          locale: "pt-BR"
-        language-reset:
-          slot: 48
-          material: FEATHER
-          name: "<yellow><bold>Reset Language</bold></yellow>"
-          lore:
-            - "<gray>Use server default locale"
-            - "<dark_gray>Equivalent to /f language reset"
-          action: LANGUAGE_RESET
         close:
           slot: 53
           material: STRUCTURE_VOID
@@ -154,3 +108,104 @@ gui:
           lore:
             - "<gray>Close this menu."
           action: CLOSE
+    language:
+      title: "<gradient:#84fab0:#8fd3f4><bold>Language Selection</bold></gradient>"
+      size: 54
+      items:
+        language-status:
+          slot: 4
+          material: GLOBE_BANNER_PATTERN
+          name: "<aqua><bold>Language</bold></aqua>"
+          lore:
+            - "<gray>Current: <white>{language_current}</white>"
+            - "<gray>Default: <white>{language_default}</white>"
+            - "<gray>Available: <white>{language_available}</white>"
+          action: REFRESH
+        language-en:
+          slot: 19
+          material: WHITE_BANNER
+          name: "<green><bold>English (en)</bold></green>"
+          lore:
+            - "<gray>Set your language to English"
+          action: LANGUAGE_SET
+          locale: "en"
+        language-es:
+          slot: 20
+          material: RED_BANNER
+          name: "<green><bold>Español (es)</bold></green>"
+          lore:
+            - "<gray>Set your language to Spanish"
+          action: LANGUAGE_SET
+          locale: "es"
+        language-de:
+          slot: 21
+          material: BLACK_BANNER
+          name: "<green><bold>Deutsch (de)</bold></green>"
+          lore:
+            - "<gray>Set your language to German"
+          action: LANGUAGE_SET
+          locale: "de"
+        language-fr:
+          slot: 22
+          material: BLUE_BANNER
+          name: "<green><bold>Français (fr)</bold></green>"
+          lore:
+            - "<gray>Set your language to French"
+          action: LANGUAGE_SET
+          locale: "fr"
+        language-ptbr:
+          slot: 23
+          material: GREEN_BANNER
+          name: "<green><bold>Português (pt-BR)</bold></green>"
+          lore:
+            - "<gray>Set your language to Brazilian Portuguese"
+          action: LANGUAGE_SET
+          locale: "pt-BR"
+        language-zh:
+          slot: 24
+          material: RED_BANNER
+          name: "<green><bold>Chinese (zh)</bold></green>"
+          lore:
+            - "<gray>Set your language to Chinese"
+          action: LANGUAGE_SET
+          locale: "zh"
+        language-ru:
+          slot: 25
+          material: BLUE_BANNER
+          name: "<green><bold>Russian (ru)</bold></green>"
+          lore:
+            - "<gray>Set your language to Russian"
+          action: LANGUAGE_SET
+          locale: "ru"
+        language-ja:
+          slot: 31
+          material: WHITE_BANNER
+          name: "<green><bold>Japanese (ja)</bold></green>"
+          lore:
+            - "<gray>Set your language to Japanese"
+          action: LANGUAGE_SET
+          locale: "ja"
+        language-reset:
+          slot: 49
+          material: FEATHER
+          name: "<yellow><bold>Reset Language</bold></yellow>"
+          lore:
+            - "<gray>Use server default locale"
+            - "<dark_gray>Equivalent to /f language reset"
+          action: LANGUAGE_RESET
+        back:
+          slot: 45
+          material: ARROW
+          name: "<yellow><bold>Back</bold></yellow>"
+          lore:
+            - "<gray>Return to main menu"
+          action: OPEN_MENU
+          menu: main
+        close:
+          slot: 53
+          material: STRUCTURE_VOID
+          name: "<red><bold>Close</bold></red>"
+          lore:
+            - "<gray>Close this menu."
+          action: CLOSE
+

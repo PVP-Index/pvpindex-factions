@@ -6,6 +6,44 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-05-22
+
+### Fixed
+
+- **Chat crash on Paper 26.x** (`ClassNotFoundException` / `AbstractMethodError` in
+  `EngineChat$PaperChatListener`): multiple layers of shade-related breakage were
+  present and are fully resolved:
+  - maven-shade rewrites `net.kyori.adventure.*` string literals in the bytecode
+    constant pool to `com.pvpindex.lib.adventure.*`.  At runtime Paper's classloader
+    cannot find that relocated namespace, causing `ClassNotFoundException`.  String
+    literals are now constructed at runtime via `String.valueOf` concatenation so shade
+    never sees the full class name in the constant pool.
+  - The chat renderer was originally a raw 4-parameter lambda targeting `ChatRenderer`
+    directly; LambdaMetafactory cannot reliably link it against Paper 26.x runtime
+    classes.  The renderer now uses `ChatRenderer.viewerUnaware()` and a `Proxy`-based
+    `InvocationHandler` that implements only the 3-parameter `ViewerUnaware.render`
+    method, eliminating cross-version descriptor mismatches.
+  - `EngineChat` now contains **zero `net.kyori.adventure` imports**; all adventure
+    interactions go through `java.lang.reflect` against classes loaded from Paper's own
+    classloader, so shade has nothing to rewrite in type descriptors either.
+- **Chat listener rebuilt as clean OOP dual-path design**: Paper/Folia servers use a
+  `PaperChatListener` that installs a `ChatRenderer.ViewerUnaware` proxy; Spigot/Bukkit
+  servers use a `LegacyChatListener` with `AsyncPlayerChatEvent.setFormat`.  Reflection
+  handles and the cached MiniMessage instance are resolved once at listener construction
+  time to avoid per-message overhead.
+- **H2 database crash on first command** (`/f create`, `/f join`, and any other
+  command that saves a model): H2 2.x does not implement the `VALUES(col)` function
+  reference inside `ON DUPLICATE KEY UPDATE` that Jaloquent generates, causing a
+  `JdbcSQLSyntaxErrorException` (error code 42122) on every save against an H2
+  backend. Upsert SQL is now transparently rewritten to `MERGE INTO … KEY(id)` before
+  execution, which H2 fully supports. MySQL/MariaDB backends are unaffected.
+
+### Changed
+
+- **Chat formatting is now disabled by default** (`factions.chat.show-tag: false` in
+  `config.yml`). Operators must opt in by setting `show-tag: true`. Previously it was
+  enabled for all players by default.
+
 ## [1.1.0] - 2026-05-21
 
 ### Added

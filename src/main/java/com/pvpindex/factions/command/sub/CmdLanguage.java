@@ -3,11 +3,16 @@ package com.pvpindex.factions.command.sub;
 import com.github.ezframework.jaloquent.exception.StorageException;
 import com.pvpindex.factions.command.CommandContext;
 import com.pvpindex.factions.command.FactionCommand;
+import com.pvpindex.factions.config.FactionsConfig;
+import com.pvpindex.factions.config.GuiConfig;
 import com.pvpindex.factions.config.MessagesConfig;
 import com.pvpindex.factions.data.model.PlayerModel;
+import com.pvpindex.factions.gui.FactionsGuiManager;
 import com.pvpindex.factions.util.MsgUtil;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.bukkit.entity.Player;
@@ -15,19 +20,29 @@ import org.bukkit.entity.Player;
 /** {@code /f language} - view or change personal language. */
 public final class CmdLanguage extends FactionCommand {
 
+    private final FactionsGuiManager guiManager;
+    private final GuiConfig guiConfig;
+
     public CmdLanguage() {
+        this(null, null);
+    }
+
+    public CmdLanguage(final FactionsGuiManager guiManager, final GuiConfig guiConfig) {
         super("language");
         setPermission("factions.cmd.language");
         setDescription("Show or set your language.");
         setOptionalArgs("[code|reset]");
         setRequiresPlayer(true);
         setAliases("lang", "locale");
+        this.guiManager = guiManager;
+        this.guiConfig = guiConfig;
     }
 
     @Override
     protected void perform(final CommandContext ctx) {
         final Player player = (Player) ctx.getSender();
         final MessagesConfig messages = MsgUtil.getMessagesConfig();
+        final FactionsConfig cfg = ctx.getConfig();
         if (messages == null) {
             MsgUtil.send(player, MsgUtil.message(player, "language.system-unavailable",
                 "<red>Language system is not available."));
@@ -43,7 +58,17 @@ public final class CmdLanguage extends FactionCommand {
         }
 
         if (ctx.getArgs().isEmpty()) {
-            sendStatus(player, messages, pm.getLocale());
+            if (cfg.isLanguageCommandOpensGui() && openLanguageMenu(player)) {
+                return;
+            }
+            sendStatus(player, messages, pm.getLocale(), cfg);
+            return;
+        }
+
+        if (!cfg.isLanguagePlayerOverrideEnabled()) {
+            MsgUtil.send(player, MsgUtil.message(player, "language.override-disabled",
+                "<red>Player language overrides are disabled by the server."));
+            sendStatus(player, messages, pm.getLocale(), cfg);
             return;
         }
 
@@ -53,17 +78,20 @@ public final class CmdLanguage extends FactionCommand {
             savePlayer(ctx, player, pm);
             MsgUtil.send(player, MsgUtil.message(player, "language.reset-success",
                 "<green>Your language has been reset to server default."));
-            sendStatus(player, messages, null);
+            if (cfg.isLanguageCommandOpensGuiAfterSet()) {
+                openLanguageMenu(player);
+            }
+            sendStatus(player, messages, null, cfg);
             return;
         }
 
         final String normalized = MessagesConfig.normalizeLocale(input);
-        if (!messages.isSupportedLocale(normalized)) {
+        if (!resolveVisibleLocales(messages, cfg).contains(normalized)) {
             MsgUtil.send(player, MsgUtil.replace(
                 MsgUtil.message(player, "language.invalid-code",
                     "<red>Unsupported language code: <white>{code}</white>."),
                 "code", input));
-            sendStatus(player, messages, pm.getLocale());
+            sendStatus(player, messages, pm.getLocale(), cfg);
             return;
         }
         pm.setLocale(normalized);
@@ -72,7 +100,22 @@ public final class CmdLanguage extends FactionCommand {
             MsgUtil.message(player, "language.set-success",
                 "<green>Language updated to <white>{code}</white>."),
             "code", normalized));
-        sendStatus(player, messages, normalized);
+        if (cfg.isLanguageCommandOpensGuiAfterSet()) {
+            openLanguageMenu(player);
+        }
+        sendStatus(player, messages, normalized, cfg);
+    }
+
+    private boolean openLanguageMenu(final Player player) {
+        if (guiManager == null || guiConfig == null) {
+            return false;
+        }
+        final String menu = guiConfig.getLanguageMenu();
+        if (!guiManager.openMenu(player, menu)) {
+            MsgUtil.sendKey(player, "custom.gui.menu-not-found", "<red>Unknown GUI menu: <yellow>{menu}", "menu", menu);
+            return false;
+        }
+        return true;
     }
 
     private void savePlayer(final CommandContext ctx, final Player player, final PlayerModel model) {
@@ -84,7 +127,8 @@ public final class CmdLanguage extends FactionCommand {
         }
     }
 
-    private void sendStatus(final Player player, final MessagesConfig messages, final String override) {
+    private void sendStatus(
+        final Player player, final MessagesConfig messages, final String override, final FactionsConfig cfg) {
         final String defaultLocale = messages.getDefaultLocale();
         final String current = override == null || override.isBlank() ? defaultLocale : override;
         MsgUtil.send(player, MsgUtil.replace(
@@ -95,7 +139,7 @@ public final class CmdLanguage extends FactionCommand {
             MsgUtil.message(player, "language.default",
                 "<gray>Server default: <white>{code}</white>"),
             "code", defaultLocale));
-        final List<String> locales = new ArrayList<>(messages.getAvailableLocales());
+        final List<String> locales = new ArrayList<>(resolveVisibleLocales(messages, cfg));
         locales.sort(Comparator.naturalOrder());
         MsgUtil.send(player, MsgUtil.replace(
             MsgUtil.message(player, "language.available",
@@ -114,9 +158,25 @@ public final class CmdLanguage extends FactionCommand {
         if (messages == null) {
             return List.of("reset");
         }
-        final Set<String> locales = messages.getAvailableLocales();
+        final Set<String> locales = resolveVisibleLocales(messages, ctx.getConfig());
         final List<String> out = new ArrayList<>(locales);
         out.add("reset");
         return out;
+    }
+
+    private Set<String> resolveVisibleLocales(final MessagesConfig messages, final FactionsConfig cfg) {
+        final Set<String> available = messages.getAvailableLocales();
+        final Collection<String> configured = cfg.getLanguageVisibleLocales();
+        if (configured == null || configured.isEmpty()) {
+            return available;
+        }
+        final Set<String> filtered = new LinkedHashSet<>();
+        for (String raw : configured) {
+            final String normalized = MessagesConfig.normalizeLocale(raw);
+            if (available.contains(normalized)) {
+                filtered.add(normalized);
+            }
+        }
+        return filtered.isEmpty() ? available : filtered;
     }
 }

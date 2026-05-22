@@ -25,7 +25,12 @@ public final class CmdAdminReload extends FactionCommand {
     protected void perform(final CommandContext ctx) {
         ctx.getPlugin().reloadConfig();
         String defaultLocale = "en";
-        if (ctx.getConfig() != null && ctx.getConfig().getDefaultLanguage() != null) {
+        if (ctx.getPlugin().getConfig() != null) {
+            final String configured = ctx.getPlugin().getConfig().getString("factions.language.default", "en");
+            if (configured != null && !configured.isBlank()) {
+                defaultLocale = configured;
+            }
+        } else if (ctx.getConfig() != null && ctx.getConfig().getDefaultLanguage() != null) {
             defaultLocale = ctx.getConfig().getDefaultLanguage();
         }
         final MessagesConfig messagesConfig = loadMessagesConfig(ctx, defaultLocale);
@@ -44,7 +49,7 @@ public final class CmdAdminReload extends FactionCommand {
         if (!messagesDir.exists()) {
             messagesDir.mkdirs();
         }
-        final Set<String> shippedLocales = Set.of("en", "es", "de", "fr", "pt-BR");
+        final Set<String> shippedLocales = Set.of("en", "es", "de", "fr", "pt-BR", "zh", "ru", "ja");
         for (final String locale : shippedLocales) {
             final String name = "messages/messages_" + locale + ".yml";
             final File dest = new File(dataFolder, name);

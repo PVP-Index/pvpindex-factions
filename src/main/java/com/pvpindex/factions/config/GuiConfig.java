@@ -24,4 +24,8 @@ public class GuiConfig {
     public String getDefaultMenu() {
         return cfg.getString("gui.default-menu", "main");
     }
+
+    public String getLanguageMenu() {
+        return cfg.getString("gui.language-menu", "language");
+    }
 }

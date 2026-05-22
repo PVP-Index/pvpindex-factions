@@ -110,7 +110,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
             context.infra().getVaultEconomy(), cfg, repos, context.services().getPowerService()));
         commandRegistry.register(new CmdPowerHistory());
         commandRegistry.register(new CmdList(factionSvc));
-        commandRegistry.register(new CmdLanguage());
+        commandRegistry.register(new CmdLanguage(context.engines().getFactionsGuiManager(), context.infra().getGuiConfig()));
         commandRegistry.register(new CmdMap());
         commandRegistry.register(new CmdNotify());
         commandRegistry.register(new CmdPredefined(factionSvc));

@@ -1,6 +1,7 @@
 package com.pvpindex.factions.config;
 
 import com.pvpindex.factions.FactionFlag;
+import java.util.List;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
@@ -43,6 +44,22 @@ public class FactionsConfig {
 
     public String getDefaultLanguage() {
         return cfg.getString("factions.language.default", "en");
+    }
+
+    public boolean isLanguagePlayerOverrideEnabled() {
+        return cfg.getBoolean("factions.language.allow-player-override", true);
+    }
+
+    public boolean isLanguageCommandOpensGui() {
+        return cfg.getBoolean("factions.language.command-opens-gui", true);
+    }
+
+    public boolean isLanguageCommandOpensGuiAfterSet() {
+        return cfg.getBoolean("factions.language.command-open-gui-after-set", true);
+    }
+
+    public List<String> getLanguageVisibleLocales() {
+        return cfg.getStringList("factions.language.visible-locales");
     }
 
     // -------------------------------------------------------------------------
@@ -350,7 +367,7 @@ public class FactionsConfig {
     // -------------------------------------------------------------------------
 
     public boolean isChatTagEnabled() {
-        return cfg.getBoolean("factions.chat.show-tag", true);
+        return cfg.getBoolean("factions.chat.show-tag", false);
     }
 
     /** Alias for {@link #isChatTagEnabled()} used by chat engines. */

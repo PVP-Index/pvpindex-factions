@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.lenient;
 
 import com.pvpindex.factions.command.CommandTestBase;
 import com.pvpindex.factions.command.StorageTest;
@@ -36,6 +37,10 @@ class CmdLanguageTest extends CommandTestBase {
         when(repos.players()).thenReturn(playerRepository);
         when(player.getUniqueId()).thenReturn(java.util.UUID.fromString(playerModel.getId()));
         when(playerRepository.findOrCreate(playerModel.getId())).thenReturn(playerModel);
+        lenient().when(config.isLanguagePlayerOverrideEnabled()).thenReturn(true);
+        lenient().when(config.isLanguageCommandOpensGui()).thenReturn(false);
+        lenient().when(config.isLanguageCommandOpensGuiAfterSet()).thenReturn(false);
+        lenient().when(config.getLanguageVisibleLocales()).thenReturn(java.util.List.of());
 
         final YamlConfiguration en = new YamlConfiguration();
         en.set("general.no-permission", "No permission");
