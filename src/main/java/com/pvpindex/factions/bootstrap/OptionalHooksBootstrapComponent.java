@@ -74,7 +74,9 @@ public final class OptionalHooksBootstrapComponent extends AbstractBootstrapComp
     }
 
     private void initDynmap(final BootstrapContext context) {
-        if (context.plugin().getServer().getPluginManager().getPlugin("dynmap") == null) {
+        final org.bukkit.plugin.Plugin dynmapPlugin =
+            context.plugin().getServer().getPluginManager().getPlugin("dynmap");
+        if (dynmapPlugin == null || !dynmapPlugin.isEnabled()) {
             context.setDynmapEnabled(false);
             return;
         }
