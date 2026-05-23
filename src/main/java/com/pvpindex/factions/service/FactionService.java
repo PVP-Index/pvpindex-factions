@@ -92,6 +92,15 @@ public interface FactionService {
     /** Update actor faction description text. */
     boolean setFactionDescription(UUID actorUUID, String description);
 
+    /** Update the MOTD for the actor's faction. Pass empty string to clear. */
+    boolean setFactionMotd(UUID actorUUID, String motd);
+
+    /**
+     * @return {@code true} if the faction's member count is at or above the configured
+     *         {@code factions.max-members} limit. Always {@code false} when the limit is 0.
+     */
+    boolean isFactionFull(String factionId);
+
     /** Clear actor faction home. */
     boolean unsetFactionHome(UUID actorUUID);
 

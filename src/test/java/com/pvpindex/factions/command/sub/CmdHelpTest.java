@@ -118,10 +118,10 @@ class CmdHelpTest extends CommandTestBase {
         final FactionCommand claimCmd =
             stubCmd("claim", "pvpindex.faction.claim", "/f claim", "Claim a chunk.");
         when(commandRegistry.get(eq("claim"))).thenReturn(Optional.of(claimCmd));
-        // default mock setup grants all permissions
+        // claim is in the Land & Navigation section on page 2
 
 
-        cmd.execute(ctx());
+        cmd.execute(ctx("2"));
 
 
         verify(player, atLeastOnce()).sendMessage(argThat(componentContains("Claim a chunk.")));
@@ -139,5 +139,54 @@ class CmdHelpTest extends CommandTestBase {
 
 
         verify(console).sendMessage(argThat(componentContains("Factions Help")));
+    }
+
+
+    @StorageTest
+    @DisplayName("page 1 shows start guide and Core section")
+    void testPage1ShowsStartGuide() {
+        cmd.execute(ctx("1"));
+
+        verify(player).sendMessage(argThat(componentContains("Factions Help")));
+        verify(player).sendMessage(argThat(componentContains("Start here")));
+    }
+
+
+    @StorageTest
+    @DisplayName("page 2 shows Members section header")
+    void testPage2ShowsMembersSection() {
+        cmd.execute(ctx("2"));
+
+        verify(player).sendMessage(argThat(componentContains("Factions Help")));
+        // Start guide should NOT appear on page 2
+        verify(player, never()).sendMessage(argThat(componentContains("Start here")));
+    }
+
+
+    @StorageTest
+    @DisplayName("page 3 shows tip-notify message")
+    void testPage3ShowsTipNotify() {
+        cmd.execute(ctx("3"));
+
+        verify(player).sendMessage(argThat(componentContains("Factions Help")));
+        verify(player).sendMessage(argThat(componentContains("notify status")));
+    }
+
+
+    @StorageTest
+    @DisplayName("invalid page string defaults to page 1")
+    void testInvalidPageDefaultsToPage1() {
+        cmd.execute(ctx("foo"));
+
+        verify(player).sendMessage(argThat(componentContains("Start here")));
+    }
+
+
+    @StorageTest
+    @DisplayName("footer shows page number and total")
+    void testFooterShowsPageInfo() {
+        cmd.execute(ctx("1"));
+
+        verify(player).sendMessage(argThat(componentContains("Page 1/3")));
     }
 }

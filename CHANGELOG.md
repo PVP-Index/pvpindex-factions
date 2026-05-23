@@ -6,7 +6,31 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
-## [1.1.3] - 2026-05-22
+## [1.1.2] - 2026-05-22
+
+### Added
+
+- **Faction MOTD (`/f motd`):** officers and above can set a message of the day for their
+  faction. The MOTD is displayed in chat when a member logs in. Use `/f motd clear` to
+  remove it.
+- **Configurable member-size cap:** a new `max-members` setting in `config.yml` limits how
+  many players can belong to a faction (0 = unlimited). The cap is enforced in
+  `/f join` and in the join service. Default is `0` (no limit).
+- **Warp passwords (`/f warp password <name> [password | clear]`):** officers and above
+  can protect a faction warp with a password. Players must supply the correct password as
+  a second argument (`/f warp <name> <password>`) to teleport. Passwords are stored as
+  plain text in the `warps` table — avoid using important credentials.
+- **Warp per-use cost (`/f warp cost <name> <amount>`):** officers and above can require
+  a Vault economy payment each time a warp is used. Setting the cost to `0` makes the
+  warp free. The charge is deducted via Vault before teleporting; if Vault is absent or
+  the player has insufficient funds the teleport is blocked.
+- **Database migration:** the `warps` table gains two new nullable columns (`password`,
+  `use_cost`) when the plugin starts on an existing installation. No data is lost during
+  upgrade from 1.1.1.
+- **Dynmap startup smoke test** (`.github/workflows/dynmap-smoke.yml`): downloads the
+  latest dynmap plugin from Modrinth, starts a Paper server with both plugins, and
+  asserts `dynmap hooked - faction territory layer enabled.` is logged. Runs on Paper
+  1.21.4 and 1.21.11 on every PR to `main`/`develop`.
 
 ### Changed
 
@@ -26,8 +50,6 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   - `jacoco-maven-plugin` 0.8.12 → 0.8.14
   - `maven-surefire-plugin` 3.5.2 → 3.5.5
 
-## [1.1.2] - 2026-05-22
-
 ### Fixed
 
 - **dynmap compatibility expanded to 3.x (3.4 – 3.8):** the vendored compile-time
@@ -37,13 +59,6 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
   CI never contacts `repo.mikeprimm.com`. The runtime hook code only uses stable
   `org.dynmap` marker APIs that are present in every 3.x release, so the plugin
   continues to work with any installed dynmap 3.x version.
-
-### Added
-
-- **Dynmap startup smoke test** (`.github/workflows/dynmap-smoke.yml`): downloads the
-  latest dynmap plugin from Modrinth, starts a Paper server with both plugins, and
-  asserts `dynmap hooked - faction territory layer enabled.` is logged. Runs on Paper
-  1.21.4 and 1.21.11 on every PR to `main`/`develop`.
 
 ## [1.1.1] - 2026-05-22
 

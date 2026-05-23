@@ -64,6 +64,13 @@ public final class CmdJoin extends FactionCommand {
             return;
         }
         final FactionModel faction = factionOpt.get();
+        // Guard: member cap
+        if (factionService.isFactionFull(faction.getId())) {
+            MsgUtil.sendKey(player, "member.faction-full",
+                "<red>Faction <yellow>{faction}</yellow> is full.",
+                "faction", faction.getName());
+            return;
+        }
         // Open faction: join directly without needing an invite
         if (flagService != null && flagService.getFlag(faction, FactionFlag.OPEN)) {
             if (factionService.joinFaction(faction.getId(), player.getUniqueId())) {

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * {@code /f help} — List all accessible faction commands.
+ * {@code /f help [page]} — List all accessible faction commands across 3 pages.
  *
  * <p>Only commands the sender has permission to use are shown. The command
  * also registers the alias {@code ?} so players can type {@code /f ?}.
@@ -21,21 +21,38 @@ import java.util.Optional;
  */
 public final class CmdHelp extends FactionCommand {
 
+    private static final int TOTAL_PAGES = 3;
+
     private final CommandRegistry commandRegistry;
 
     public CmdHelp(final CommandRegistry commandRegistry) {
         super("help");
         setDescription("List all available faction commands.");
         setAliases("?");
+        setOptionalArgs("[page]");
         this.commandRegistry = commandRegistry;
     }
 
     @Override
     protected void perform(final CommandContext ctx) {
+        final int page = parsePage(ctx.arg(0));
+
         MsgUtil.sendKey(
             ctx.getSender(),
             "help.title",
             "<gradient:#f6d365:#fda085><bold>PvPIndex Factions Help</bold></gradient>");
+
+        switch (page) {
+            case 1 -> sendPage1(ctx);
+            case 2 -> sendPage2(ctx);
+            case 3 -> sendPage3(ctx);
+            default -> sendPage1(ctx);
+        }
+
+        sendFooter(ctx, page);
+    }
+
+    private void sendPage1(final CommandContext ctx) {
         MsgUtil.sendKey(ctx.getSender(), "help.start-here", "<gray>Start here:");
         MsgUtil.sendKey(
             ctx.getSender(),
@@ -54,13 +71,19 @@ public final class CmdHelp extends FactionCommand {
             "help.start-step-4",
             "<gray>4) <white>/f sethome</white> <dark_gray>- set your base home");
         MsgUtil.sendKey(ctx.getSender(), "help.separator", "<dark_gray>----------------------------------------");
-
         sendSection(ctx, "Core", List.of("help", "info", "list", "map", "top", "gui", "language"));
         sendSection(ctx, "Faction Setup", List.of("create", "rename", "desc", "disband"));
-        sendSection(ctx, "Members & Invites", List.of("invite", "join", "leave", "kick", "promote", "demote", "leader"));
-        sendSection(ctx, "Land & Navigation", List.of("claim", "unclaim", "home", "sethome", "unsethome", "warp", "fly"));
-        sendSection(ctx, "Economy & Utility", List.of("bank", "notify", "relation"));
+    }
 
+    private void sendPage2(final CommandContext ctx) {
+        sendSection(ctx, "Members & Invites",
+            List.of("invite", "join", "leave", "kick", "promote", "demote", "leader"));
+        sendSection(ctx, "Land & Navigation",
+            List.of("claim", "unclaim", "home", "sethome", "unsethome", "warp", "fly"));
+        sendSection(ctx, "Economy & Utility", List.of("bank", "notify", "relation"));
+    }
+
+    private void sendPage3(final CommandContext ctx) {
         if (ctx.getSender().hasPermission("factions.cmd.kick")) {
             MsgUtil.sendKey(ctx.getSender(), "help.officer-title", "<gold>Officer/Moderator Tips</gold>");
             MsgUtil.sendKey(
@@ -97,10 +120,50 @@ public final class CmdHelp extends FactionCommand {
                         "Assign or remove war zone chunks."));
             }
         }
+
         MsgUtil.sendKey(
             ctx.getSender(),
             "help.tip-notify",
             "<dark_gray>Tip: <gray>Use <white>/f notify status</white> to manage your notifications.");
+    }
+
+    private void sendFooter(final CommandContext ctx, final int page) {
+        if (page < TOTAL_PAGES) {
+            MsgUtil.sendKey(
+                ctx.getSender(),
+                "help.footer",
+                "<dark_gray>Page {page}/{total} \u2014 <gray>/f help {next} <dark_gray>for more.",
+                "page", String.valueOf(page),
+                "total", String.valueOf(TOTAL_PAGES),
+                "next", String.valueOf(page + 1));
+        } else {
+            MsgUtil.sendKey(
+                ctx.getSender(),
+                "help.footer-last",
+                "<dark_gray>Page {page}/{total} \u2014 all commands listed.",
+                "page", String.valueOf(page),
+                "total", String.valueOf(TOTAL_PAGES));
+        }
+    }
+
+    @Override
+    protected List<String> complete(final CommandContext ctx, final int argIndex) {
+        if (argIndex == 0) {
+            return List.of("1", "2", "3");
+        }
+        return List.of();
+    }
+
+    private int parsePage(final String s) {
+        if (s == null || s.isBlank()) {
+            return 1;
+        }
+        try {
+            final int p = Integer.parseInt(s);
+            return Math.max(1, Math.min(TOTAL_PAGES, p));
+        } catch (NumberFormatException ignored) {
+            return 1;
+        }
     }
 
     private void sendSection(final CommandContext ctx, final String title, final List<String> keys) {

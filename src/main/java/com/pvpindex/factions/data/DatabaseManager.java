@@ -158,6 +158,12 @@ public final class DatabaseManager {
                 stmt,
                 logger,
                 "players",
+                "notify_motd",
+                "TINYINT NOT NULL DEFAULT 1");
+            ensureColumn(
+                stmt,
+                logger,
+                "players",
                 "locale",
                 "VARCHAR(16)");
             ensureColumn(
@@ -166,6 +172,19 @@ public final class DatabaseManager {
                 "players",
                 "power_frozen",
                 "TINYINT NOT NULL DEFAULT 0");
+            // 1.1.3 — warp passwords and per-use costs
+            ensureColumn(
+                stmt,
+                logger,
+                "warps",
+                "password",
+                "VARCHAR(64)");
+            ensureColumn(
+                stmt,
+                logger,
+                "warps",
+                "use_cost",
+                "DOUBLE NOT NULL DEFAULT 0.0");
             createIndexes(stmt, logger);
 
         } catch (SQLException e) {

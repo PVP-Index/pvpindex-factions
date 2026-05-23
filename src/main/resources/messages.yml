@@ -64,6 +64,7 @@ member:
   not-member: "<red>{player} is not a member of your faction."
   cannot-kick-self: "<red>You cannot kick yourself."
   cannot-kick-leader: "<red>You cannot kick the faction leader."
+  faction-full: "<red>Faction <yellow>{faction}</yellow> is full."
 
 invite:
   sent: "<green>Invite sent to <yellow>{player}</yellow>."
@@ -129,6 +130,14 @@ warp:
   limit-reached: "<red>Your faction has reached the maximum number of warps ({max})."
   set-in-own-territory: "<red>Warps must be set inside your own territory."
   jailed: "<red>You cannot use warps while jailed."
+  password-required: "<red>This warp requires a password: /f warp {name} <password>"
+  password-wrong: "<red>Incorrect warp password."
+  password-set: "<green>Password set for warp <yellow>{name}</yellow>."
+  password-cleared: "<yellow>Password cleared for warp <yellow>{name}</yellow>."
+  cost-set: "<green>Use cost for warp <yellow>{name}</yellow> set to <gold>{cost}</gold>."
+  cost-charged: "<green>Charged <gold>{cost}</gold> for warp <yellow>{name}</yellow>."
+  cost-insufficient: "<red>You need <gold>{cost}</gold> to use this warp (balance: <gold>{balance}</gold>)."
+  cost-no-economy: "<red>An economy plugin is required to use this warp."
 
 flag:
   list-header: "<gold><bold>Faction Flags — {faction}</bold></gold>"
@@ -203,6 +212,15 @@ raidable:
 fly:
   enabled: "<green>Faction fly enabled."
   disabled: "<yellow>Faction fly disabled."
+
+motd:
+  header: "<gold>== <yellow>Faction MOTD</yellow> =="
+  display: "<gray>{motd}"
+  set: "<green>Faction MOTD updated."
+  cleared: "<yellow>Faction MOTD cleared."
+  none: "<gray>Your faction has no MOTD set."
+  too-long: "<red>MOTD is too long (max 250 chars)."
+  set-failed: "<red>Could not update faction MOTD."
   left-territory: "<red>Faction fly disabled — you left your territory."
   enemy-nearby: "<red>Faction fly disabled — enemy nearby."
 
@@ -298,12 +316,12 @@ custom:
   power:
     usage-buy: "<gray>Usage: <yellow>/f power buy <amount>"
   notify:
-    usage: "<red>Usage: /f notify [status|invites|territory|tax|all] [on|off]"
-    unknown-type: "<red>Unknown notification type. Use: invites, territory, tax, all, status."
+    usage: "<red>Usage: /f notify [status|invites|territory|tax|motd|all] [on|off]"
+    unknown-type: "<red>Unknown notification type. Use: invites, territory, tax, motd, all, status."
     updated: "<green>Notification setting updated: <white>{type}<green> -> <white>{value}"
     update-failed: "<red>Failed to update notification settings."
     status-header: "<gold>Notification settings:"
-    status-line: "<gray>- {type}: <white>{value}"
+    status-line: "<gray>- <white>{type}</white>: <{value_color}>{value} <dark_gray>({desc})"
   member:
     owner-cannot-leave: "<red>You are the owner. Transfer ownership or disband with /f disband."
     leave-failed: "<red>Failed to leave faction."

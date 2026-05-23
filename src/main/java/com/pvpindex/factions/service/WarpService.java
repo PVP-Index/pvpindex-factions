@@ -30,4 +30,20 @@ public interface WarpService {
      * @return {@code true} if the warp was found and deleted.
      */
     boolean deleteWarp(String factionId, String name);
+
+    /**
+     * Set or clear the password for a named warp.
+     *
+     * @param password new password, or {@code null}/{@code ""} to clear
+     * @return {@code true} if the warp was found and updated
+     */
+    boolean setWarpPassword(String factionId, String name, String password);
+
+    /**
+     * Set the per-use economy cost for a named warp.
+     *
+     * @param cost amount ≥ 0; pass 0 to make the warp free
+     * @return {@code true} if the warp was found and updated
+     */
+    boolean setWarpCost(String factionId, String name, double cost);
 }

@@ -140,6 +140,10 @@ permissions:
     description: Set own faction description.
     default: true
 
+  factions.cmd.motd:
+    description: View or set the faction message of the day.
+    default: true
+
   # Information
   factions.cmd.list:
     description: List all factions.
@@ -282,6 +286,14 @@ permissions:
 
   factions.cmd.setwarp:
     description: Create, update, or delete faction warps.
+    default: true
+
+  factions.cmd.warp.password:
+    description: Set or clear the password for a faction warp (officer+).
+    default: true
+
+  factions.cmd.warp.cost:
+    description: Set the per-use economy cost for a faction warp (officer+).
     default: true
 
   # Economy

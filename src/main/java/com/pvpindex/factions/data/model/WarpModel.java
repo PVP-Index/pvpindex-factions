@@ -23,7 +23,9 @@ public class WarpModel extends Model {
         Map.entry("yaw", "FLOAT NOT NULL DEFAULT 0.0"),
         Map.entry("pitch", "FLOAT NOT NULL DEFAULT 0.0"),
         Map.entry("creator_id", "VARCHAR(36)"),
-        Map.entry("created_at", "BIGINT NOT NULL DEFAULT 0")
+        Map.entry("created_at", "BIGINT NOT NULL DEFAULT 0"),
+        Map.entry("password", "VARCHAR(64)"),
+        Map.entry("use_cost", "DOUBLE NOT NULL DEFAULT 0.0")
     );
 
     public WarpModel(final String id) {
@@ -35,6 +37,7 @@ public class WarpModel extends Model {
         setYaw(0.0f);
         setPitch(0.0f);
         setCreatedAt(0L);
+        setUseCost(0.0);
     }
 
     // -------------------------------------------------------------------------
@@ -120,6 +123,35 @@ public class WarpModel extends Model {
 
     public void setCreatedAt(final long createdAt) {
         set("created_at", createdAt);
+    }
+
+    /** Optional password a player must supply when using this warp. {@code null} = no password. */
+    public String getPassword() {
+        return getAs("password", String.class, null);
+    }
+
+    public void setPassword(final String password) {
+        set("password", password);
+    }
+
+    /** @return {@code true} if this warp requires a password to enter. */
+    public boolean hasPassword() {
+        final String pw = getPassword();
+        return pw != null && !pw.isEmpty();
+    }
+
+    /** Economy cost deducted from the player's balance when they use this warp. 0 = free. */
+    public double getUseCost() {
+        return getAs("use_cost", Double.class, 0.0);
+    }
+
+    public void setUseCost(final double useCost) {
+        set("use_cost", useCost);
+    }
+
+    /** @return {@code true} if using this warp has a money cost. */
+    public boolean hasCost() {
+        return getUseCost() > 0.0;
     }
 
     /**
