@@ -97,7 +97,7 @@
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
-            <version>7.4.3</version>
+            <version>7.4.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -121,6 +121,12 @@
         <dependency>
             <groupId>us.dynmap</groupId>
             <artifactId>dynmap-api</artifactId>
+            <version>3.8</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>us.dynmap</groupId>
+            <artifactId>DynmapCoreAPI</artifactId>
             <version>3.8</version>
             <scope>provided</scope>
         </dependency>
