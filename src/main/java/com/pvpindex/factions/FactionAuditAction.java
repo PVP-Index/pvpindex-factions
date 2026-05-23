@@ -15,7 +15,8 @@ public enum FactionAuditAction {
     BANK_WITHDRAW("bank-withdraw"),
     BANK_TRANSFER("bank-transfer"),
     MERGE_REQUEST("merge-request"),
-    MERGE_ACCEPT("merge-accept");
+    MERGE_ACCEPT("merge-accept"),
+    MOTD_SET("motd-set");
 
     private final String id;
 

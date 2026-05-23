@@ -126,4 +126,41 @@ public class WarpServiceImpl implements WarpService {
             return false;
         }
     }
+
+    @Override
+    public boolean setWarpPassword(
+            final String factionId, final String name, final String password) {
+        try {
+            final Optional<WarpModel> warp = repos.warps().findByFactionIdAndName(factionId, name);
+            if (warp.isEmpty()) {
+                return false;
+            }
+            warp.get().setPassword(
+                (password == null || password.isEmpty()) ? null : password);
+            repos.warps().save(warp.get());
+            return true;
+        } catch (StorageException e) {
+            logger.log(Level.SEVERE,
+                "Failed to set password for warp '" + name + "' in faction " + factionId, e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean setWarpCost(
+            final String factionId, final String name, final double cost) {
+        try {
+            final Optional<WarpModel> warp = repos.warps().findByFactionIdAndName(factionId, name);
+            if (warp.isEmpty()) {
+                return false;
+            }
+            warp.get().setUseCost(Math.max(0.0, cost));
+            repos.warps().save(warp.get());
+            return true;
+        } catch (StorageException e) {
+            logger.log(Level.SEVERE,
+                "Failed to set cost for warp '" + name + "' in faction " + factionId, e);
+            return false;
+        }
+    }
 }

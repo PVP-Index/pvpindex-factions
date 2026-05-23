@@ -6,6 +6,7 @@ import com.pvpindex.factions.command.CommandGuards;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.model.WarpModel;
 import com.pvpindex.factions.integration.essentials.EssentialsInterop;
+import com.pvpindex.factions.integration.vault.VaultEconomy;
 import com.pvpindex.factions.integration.worldguard.TerritoryGuard;
 import com.pvpindex.factions.service.FactionService;
 import com.pvpindex.factions.service.WarpService;
@@ -30,12 +31,14 @@ public final class CmdWarp extends FactionCommand {
     private final WarpService warpService;
     private final TerritoryGuard territoryGuard;
     private final EssentialsInterop essentialsInterop;
+    private final VaultEconomy vaultEconomy;
 
     public CmdWarp(
             final FactionService factionService,
             final WarpService warpService,
             final TerritoryGuard territoryGuard,
-            final EssentialsInterop essentialsInterop) {
+            final EssentialsInterop essentialsInterop,
+            final VaultEconomy vaultEconomy) {
         super("warp");
         setPermission("factions.cmd.warp");
         setDescription("Teleport to or manage faction warps.");
@@ -44,9 +47,12 @@ public final class CmdWarp extends FactionCommand {
         this.warpService = warpService;
         this.territoryGuard = territoryGuard;
         this.essentialsInterop = essentialsInterop;
+        this.vaultEconomy = vaultEconomy;
         addChild(new CmdWarpSet(factionService, warpService, territoryGuard));
         addChild(new CmdWarpDelete(factionService, warpService));
         addChild(new CmdWarpList(factionService, warpService));
+        addChild(new CmdWarpPassword(factionService, warpService));
+        addChild(new CmdWarpCost(factionService, warpService));
     }
 
     /** Handles both the "list warps" (no args) and "teleport" (<name>) cases. */
@@ -80,7 +86,44 @@ public final class CmdWarp extends FactionCommand {
             MsgUtil.sendKey(player, "warp.not-found", "<red>Warp <yellow>{name}</yellow> not found.", "name", warpName);
             return;
         }
-        final Location dest = warpOpt.get().toLocation();
+        final WarpModel warp = warpOpt.get();
+
+        // Password check
+        if (warp.hasPassword()) {
+            final String supplied = ctx.getArgs().size() > 1 ? ctx.arg(1) : null;
+            if (supplied == null || !warp.getPassword().equals(supplied)) {
+                MsgUtil.sendKey(player, "warp.password-required",
+                    "<red>This warp requires a password: /f warp {name} <password>",
+                    "name", warpName);
+                return;
+            }
+        }
+
+        // Cost check
+        if (warp.hasCost()) {
+            if (vaultEconomy == null || !vaultEconomy.isEnabled()) {
+                MsgUtil.sendKey(player, "warp.cost-no-economy",
+                    "<red>An economy plugin is required to use this warp.");
+                return;
+            }
+            final double cost = warp.getUseCost();
+            final double balance = vaultEconomy.getBalance(player);
+            if (balance < cost) {
+                MsgUtil.sendKey(player, "warp.cost-insufficient",
+                    "<red>You need <gold>{cost}</gold> to use this warp (balance: <gold>{balance}</gold>).",
+                    "cost", String.format("%.2f", cost),
+                    "balance", String.format("%.2f", balance));
+                return;
+            }
+            vaultEconomy.withdraw(player, cost);
+            MsgUtil.sendKey(player, "warp.cost-charged",
+                "<green>Charged <gold>{cost}</gold> for warp <yellow>{name}</yellow>.",
+                "cost", String.format("%.2f", cost),
+                "name", warpName,
+                "balance", String.format("%.2f", vaultEconomy.getBalance(player)));
+        }
+
+        final Location dest = warp.toLocation();
         if (dest == null || dest.getWorld() == null) {
             MsgUtil.sendKey(player, "custom.warp.world-not-loaded", "<red>Warp world not loaded.");
             return;

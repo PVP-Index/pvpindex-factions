@@ -6,6 +6,60 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-05-22
+
+### Added
+
+- **Faction MOTD (`/f motd`):** officers and above can set a message of the day for their
+  faction. The MOTD is displayed in chat when a member logs in. Use `/f motd clear` to
+  remove it.
+- **Configurable member-size cap:** a new `max-members` setting in `config.yml` limits how
+  many players can belong to a faction (0 = unlimited). The cap is enforced in
+  `/f join` and in the join service. Default is `0` (no limit).
+- **Warp passwords (`/f warp password <name> [password | clear]`):** officers and above
+  can protect a faction warp with a password. Players must supply the correct password as
+  a second argument (`/f warp <name> <password>`) to teleport. Passwords are stored as
+  plain text in the `warps` table — avoid using important credentials.
+- **Warp per-use cost (`/f warp cost <name> <amount>`):** officers and above can require
+  a Vault economy payment each time a warp is used. Setting the cost to `0` makes the
+  warp free. The charge is deducted via Vault before teleporting; if Vault is absent or
+  the player has insufficient funds the teleport is blocked.
+- **Database migration:** the `warps` table gains two new nullable columns (`password`,
+  `use_cost`) when the plugin starts on an existing installation. No data is lost during
+  upgrade from 1.1.1.
+- **Dynmap startup smoke test** (`.github/workflows/dynmap-smoke.yml`): downloads the
+  latest dynmap plugin from Modrinth, starts a Paper server with both plugins, and
+  asserts `dynmap hooked - faction territory layer enabled.` is logged. Runs on Paper
+  1.21.4 and 1.21.11 on every PR to `main`/`develop`.
+
+### Changed
+
+- **Dependency upgrades (maintenance):** all outdated compile and test dependencies
+  bumped to their latest compatible versions:
+  - `EssentialsX` 2.21.0 → 2.21.2
+  - `worldedit-bukkit` 7.3.9 → 7.4.3
+  - `worldguard-bukkit` 7.0.12 → 7.0.16
+  - `placeholderapi` 2.11.6 → 2.12.2 (repo URL updated to `repo.helpch.at`)
+  - `mysql-connector-j` 9.1.0 → 9.7.0
+  - `h2` 2.3.232 → 2.4.240
+  - `HikariCP` 6.2.1 → 7.0.2
+  - `junit-jupiter` 5.11.4 → 5.14.4
+  - `mockito-core` / `mockito-junit-jupiter` 5.14.2 → 5.23.0
+  - `maven-shade-plugin` 3.6.0 → 3.6.2
+  - `asm` / `asm-commons` override 9.8 → 9.10
+  - `jacoco-maven-plugin` 0.8.12 → 0.8.14
+  - `maven-surefire-plugin` 3.5.2 → 3.5.5
+
+### Fixed
+
+- **dynmap compatibility expanded to 3.x (3.4 – 3.8):** the vendored compile-time
+  `dynmap-api` dependency was upgraded from `3.4-beta-3` to `3.8` (latest stable,
+  released 2026-01-14). In dynmap 3.8 the marker API was split into a separate
+  `DynmapCoreAPI` JAR; both JARs are now vendored under `libs/` with minimal POMs so
+  CI never contacts `repo.mikeprimm.com`. The runtime hook code only uses stable
+  `org.dynmap` marker APIs that are present in every 3.x release, so the plugin
+  continues to work with any installed dynmap 3.x version.
+
 ## [1.1.1] - 2026-05-22
 
 ### Fixed

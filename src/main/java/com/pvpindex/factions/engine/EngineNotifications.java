@@ -85,6 +85,20 @@ public final class EngineNotifications implements Listener {
                             ? inboxEntries.subList(0, maxEntries) : inboxEntries;
                     taskScheduler.runSyncForPlayer(player, () -> deliverInbox(player, toDeliver));
                 }
+
+                // Show faction MOTD if one is set and the player has not disabled it
+                final com.pvpindex.factions.data.model.FactionModel motdFaction =
+                    factionService.getFactionByPlayer(player.getUniqueId()).orElse(null);
+                if (motdFaction != null && model.hasMotdNotifications()) {
+                    final String motd = motdFaction.getMotd();
+                    if (motd != null && !motd.isEmpty()) {
+                        taskScheduler.runSyncForPlayer(player, () -> {
+                            MsgUtil.sendKey(player, "motd.header",
+                                "<gold>== <yellow>Faction MOTD</yellow> ==");
+                            MsgUtil.sendKey(player, "motd.display", "<gray>{motd}", "motd", motd);
+                        });
+                    }
+                }
             } catch (Exception e) {
                 logger.warning("Failed to send join notifications: " + e.getMessage());
             }

@@ -51,7 +51,7 @@ class CmdWarpTest extends CommandTestBase {
 
     @BeforeEach
     void setUp() {
-        cmd = new CmdWarp(factionService, warpService, territoryGuard, essentialsInterop);
+        cmd = new CmdWarp(factionService, warpService, territoryGuard, essentialsInterop, null);
         when(player.getUniqueId()).thenReturn(uuid);
         when(faction.getId()).thenReturn(factionId);
     }

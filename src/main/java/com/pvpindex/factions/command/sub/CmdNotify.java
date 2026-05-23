@@ -8,7 +8,7 @@ import com.pvpindex.factions.util.MsgUtil;
 import java.util.List;
 import org.bukkit.entity.Player;
 
-/** {@code /f notify [status|invites|territory|tax|all] [on|off]}. */
+/** {@code /f notify [status|invites|territory|tax|motd|all] [on|off]}. */
 public final class CmdNotify extends FactionCommand {
 
     public CmdNotify() {
@@ -16,7 +16,7 @@ public final class CmdNotify extends FactionCommand {
         setAliases("notifications");
         setPermission("factions.cmd.notify");
         setDescription("Manage your faction notification preferences.");
-        setOptionalArgs("[status|invites|territory|tax|all] [on|off]");
+        setOptionalArgs("[status|invites|territory|tax|motd|all] [on|off]");
         setRequiresPlayer(true);
     }
 
@@ -33,7 +33,7 @@ public final class CmdNotify extends FactionCommand {
             final String value = ctx.arg(1).toLowerCase();
             if (!"on".equals(value) && !"off".equals(value)) {
                 MsgUtil.sendKey(player, "custom.notify.usage",
-                    "<red>Usage: /f notify [status|invites|territory|tax|all] [on|off]");
+                    "<red>Usage: /f notify [status|invites|territory|tax|motd|all] [on|off]");
                 return;
             }
             final boolean enabled = "on".equals(value);
@@ -41,14 +41,16 @@ public final class CmdNotify extends FactionCommand {
                 case "invites" -> model.setInviteNotifications(enabled);
                 case "territory" -> model.setTerritoryTitles(enabled);
                 case "tax" -> model.setBankTaxNotifications(enabled);
+                case "motd" -> model.setMotdNotifications(enabled);
                 case "all" -> {
                     model.setInviteNotifications(enabled);
                     model.setTerritoryTitles(enabled);
                     model.setBankTaxNotifications(enabled);
+                    model.setMotdNotifications(enabled);
                 }
                 default -> {
                     MsgUtil.sendKey(player, "custom.notify.unknown-type",
-                        "<red>Unknown notification type. Use: invites, territory, tax, all, status.");
+                        "<red>Unknown notification type. Use: invites, territory, tax, motd, all, status.");
                     return;
                 }
             }
@@ -66,7 +68,7 @@ public final class CmdNotify extends FactionCommand {
     @Override
     protected List<String> complete(final CommandContext ctx, final int argIndex) {
         if (argIndex == 0) {
-            return List.of("status", "invites", "territory", "tax", "all");
+            return List.of("status", "invites", "territory", "tax", "motd", "all");
         }
         if (argIndex == 1) {
             return List.of("on", "off");
@@ -76,14 +78,19 @@ public final class CmdNotify extends FactionCommand {
 
     private void sendStatus(final Player player, final PlayerModel model) {
         MsgUtil.sendKey(player, "custom.notify.status-header", "<gold>Notification settings:");
-        MsgUtil.sendKey(player, "custom.notify.status-line", "<gray>- {type}: <white>{value}",
-            "type", "invites",
-            "value", model.hasInviteNotifications() ? "on" : "off");
-        MsgUtil.sendKey(player, "custom.notify.status-line", "<gray>- {type}: <white>{value}",
-            "type", "territory",
-            "value", model.hasTerritoryTitles() ? "on" : "off");
-        MsgUtil.sendKey(player, "custom.notify.status-line", "<gray>- {type}: <white>{value}",
-            "type", "tax",
-            "value", model.hasBankTaxNotifications() ? "on" : "off");
+        sendStatusLine(player, model, "invites", model.hasInviteNotifications(), "faction invites on login");
+        sendStatusLine(player, model, "territory", model.hasTerritoryTitles(), "chunk border titles");
+        sendStatusLine(player, model, "tax", model.hasBankTaxNotifications(), "bank tax charges");
+        sendStatusLine(player, model, "motd", model.hasMotdNotifications(), "faction MOTD on login");
+    }
+
+    private void sendStatusLine(final Player player, final PlayerModel model,
+                                 final String type, final boolean enabled, final String desc) {
+        MsgUtil.sendKey(player, "custom.notify.status-line",
+            "<gray>- <white>{type}</white>: <{value_color}>{value} <dark_gray>({desc})",
+            "type", type,
+            "value_color", enabled ? "green" : "red",
+            "value", enabled ? "on" : "off",
+            "desc", desc);
     }
 }

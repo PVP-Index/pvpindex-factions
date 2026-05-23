@@ -3,10 +3,11 @@
   <groupId>us.dynmap</groupId>
   <artifactId>DynmapCoreAPI</artifactId>
   <versioning>
-    <release>3.4-beta-3</release>
+    <release>3.8</release>
     <versions>
       <version>3.4-beta-3</version>
+      <version>3.8</version>
     </versions>
-    <lastUpdated>20260522005321</lastUpdated>
+    <lastUpdated>20260522011102</lastUpdated>
   </versioning>
 </metadata>

@@ -464,6 +464,38 @@ public class FactionServiceImpl implements FactionService {
     }
 
     @Override
+    public boolean setFactionMotd(final UUID actorUUID, final String motd) {
+        try {
+            final Optional<FactionModel> factionOpt = getFactionByPlayer(actorUUID);
+            if (factionOpt.isEmpty()) {
+                return false;
+            }
+            final FactionModel faction = factionOpt.get();
+            faction.setMotd(motd == null ? "" : motd);
+            repos.factions().save(faction);
+            auditService.record(faction.getId(), actorUUID, FactionAuditAction.MOTD_SET, "");
+            return true;
+        } catch (StorageException e) {
+            logger.log(Level.SEVERE, "Failed to set faction MOTD for actor " + actorUUID, e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isFactionFull(final String factionId) {
+        final int maxMembers = config.getMaxMembers();
+        if (maxMembers <= 0) {
+            return false;
+        }
+        try {
+            return repos.players().findByFactionId(factionId).size() >= maxMembers;
+        } catch (StorageException e) {
+            logger.log(Level.SEVERE, "Failed to check member count for faction " + factionId, e);
+            return false;
+        }
+    }
+
+    @Override
     public boolean unsetFactionHome(final UUID actorUUID) {
         try {
             final Optional<FactionModel> factionOpt = getFactionByPlayer(actorUUID);
@@ -627,6 +659,12 @@ public class FactionServiceImpl implements FactionService {
             }
             final Optional<RankModel> defaultRank = repos.ranks().findDefaultRank(factionId);
             if (defaultRank.isEmpty()) {
+                return false;
+            }
+            // Enforce member cap (0 = unlimited)
+            final int maxMembers = config.getMaxMembers();
+            if (maxMembers > 0
+                    && repos.players().findByFactionId(factionId).size() >= maxMembers) {
                 return false;
             }
             final String playerId = playerUUID.toString();

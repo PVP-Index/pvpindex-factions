@@ -9,6 +9,7 @@ import com.pvpindex.factions.command.sub.CmdClaim;
 import com.pvpindex.factions.command.sub.CmdCreate;
 import com.pvpindex.factions.command.sub.CmdDemote;
 import com.pvpindex.factions.command.sub.CmdDesc;
+import com.pvpindex.factions.command.sub.CmdMotd;
 import com.pvpindex.factions.command.sub.CmdDisband;
 import com.pvpindex.factions.command.sub.CmdFlag;
 import com.pvpindex.factions.command.sub.CmdFly;
@@ -104,7 +105,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
             context.infra().getNotificationsConfig(), context.infra().getDiscordSrvNotifier(), cfg));
         commandRegistry.register(new CmdMerge(factionSvc, mergeSvc));
         commandRegistry.register(new CmdWarp(factionSvc, warpSvc, context.infra().getTerritoryGuard(),
-            context.infra().getEssentialsInterop()));
+            context.infra().getEssentialsInterop(), context.infra().getVaultEconomy()));
         commandRegistry.register(new CmdBank(factionSvc, economy));
         commandRegistry.register(new CmdPower(
             context.infra().getVaultEconomy(), cfg, repos, context.services().getPowerService()));
@@ -120,6 +121,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         commandRegistry.register(new CmdDemote(factionSvc));
         commandRegistry.register(new CmdRename(factionSvc));
         commandRegistry.register(new CmdDesc(factionSvc));
+        commandRegistry.register(new CmdMotd(factionSvc));
         commandRegistry.register(new CmdTop(factionSvc));
         commandRegistry.register(new CmdFlag(factionSvc, flagSvc));
         commandRegistry.register(new CmdAudit(factionSvc));

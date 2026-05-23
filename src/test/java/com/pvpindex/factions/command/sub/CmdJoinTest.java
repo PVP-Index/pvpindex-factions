@@ -109,6 +109,19 @@ class CmdJoinTest extends CommandTestBase {
 
 
     @StorageTest
+    @DisplayName("faction full — rejected")
+    void testFactionFull() {
+        when(factionService.isInFaction(uuid)).thenReturn(false);
+        when(factionService.getFactionByName("Alpha")).thenReturn(Optional.of(faction));
+        when(factionService.isFactionFull(factionId)).thenReturn(true);
+
+        cmd.execute(ctx("Alpha"));
+
+        verify(player).sendMessage(argThat(componentContains("full")));
+        verify(inviteService, never()).acceptInvite(any(), any());
+    }
+
+    @StorageTest
     @DisplayName("missing arg — pending invite list feedback shown")
     void testMissingArg() {
         when(factionService.isInFaction(uuid)).thenReturn(false);

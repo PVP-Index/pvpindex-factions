@@ -68,11 +68,11 @@ public final class DynmapLayer implements Listener {
      * @return {@code true} if the layer was registered successfully
      */
     public boolean start(final Plugin plugin) {
-        final DynmapAPI dynmapApi =
-            (DynmapAPI) plugin.getServer().getPluginManager().getPlugin("dynmap");
-        if (dynmapApi == null) {
+        final Plugin dynmapPlugin = plugin.getServer().getPluginManager().getPlugin("dynmap");
+        if (dynmapPlugin == null || !dynmapPlugin.isEnabled()) {
             return false;
         }
+        final DynmapAPI dynmapApi = (DynmapAPI) dynmapPlugin;
         final MarkerAPI markerApi = dynmapApi.getMarkerAPI();
         if (markerApi == null) {
             logger.warning("dynmap MarkerAPI not ready — faction territory layer skipped.");
