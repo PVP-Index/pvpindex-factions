@@ -72,8 +72,9 @@ class CmdMotdTest extends CommandTestBase {
         when(factionService.getFactionByPlayer(uuid)).thenReturn(Optional.of(faction));
         when(factionService.setFactionMotd(eq(uuid), any())).thenReturn(true);
 
-        cmd.execute(ctx("Hello", "world"));
+        cmd.execute(ctx("Hello", "world", "from", "Alpha"));
 
+        verify(factionService).setFactionMotd(uuid, "Hello world from Alpha");
         verify(player).sendMessage(argThat(componentContains("updated")));
     }
 
