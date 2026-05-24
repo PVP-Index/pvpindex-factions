@@ -1,0 +1,179 @@
+<svg class="factions-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="PvPIndex Factions">
+  <title>PvPIndex Factions</title>
+
+  <style>
+    .factions-icon {
+      overflow: visible;
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: iconFloat 3.8s ease-in-out infinite;
+    }
+
+    .diamond-rim {
+      animation: rimPulse 2.4s ease-in-out infinite;
+    }
+
+    .facet-ring,
+    .facet-light-left,
+    .facet-light-right {
+      animation: facetGlow 3s ease-in-out infinite;
+    }
+
+    .grid-lines {
+      animation: gridShimmer 3.5s ease-in-out infinite;
+    }
+
+    .territory-fill {
+      animation: fillBreath 2.8s ease-in-out infinite;
+    }
+
+    .territory-border {
+      animation: borderPulse 2.8s ease-in-out infinite;
+    }
+
+    .corner-marker {
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    /* Clockwise beacon ping: top-left → top-right → bottom-right → bottom-left */
+    .corner-a { animation: beaconPing 2.4s ease-in-out 0s    infinite; }
+    .corner-b { animation: beaconPing 2.4s ease-in-out 0.6s  infinite; }
+    .corner-c { animation: beaconPing 2.4s ease-in-out 1.2s  infinite; }
+    .corner-d { animation: beaconPing 2.4s ease-in-out 1.8s  infinite; }
+
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%       { transform: translateY(-2px) rotate(.8deg); }
+    }
+
+    @keyframes rimPulse {
+      0%, 100% { stroke-width: 2;   stroke-opacity: .92; }
+      50%       { stroke-width: 2.6; stroke-opacity: 1;   }
+    }
+
+    @keyframes facetGlow {
+      0%, 100% { opacity: .75; }
+      50%       { opacity: 1;   }
+    }
+
+    @keyframes gridShimmer {
+      0%, 100% { stroke-opacity: .14; }
+      50%       { stroke-opacity: .26; }
+    }
+
+    @keyframes fillBreath {
+      0%, 100% { opacity: .8;  }
+      50%       { opacity: 1;  }
+    }
+
+    @keyframes borderPulse {
+      0%, 100% { stroke-opacity: .65; stroke-width: 1;   }
+      50%       { stroke-opacity: 1;   stroke-width: 1.5; }
+    }
+
+    @keyframes beaconPing {
+      0%         { transform: scale(1);   opacity: 1;   }
+      35%        { transform: scale(1.7); opacity: .55; }
+      55%        { transform: scale(1);   opacity: 1;   }
+      100%       { transform: scale(1);   opacity: 1;   }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .factions-icon,
+      .diamond-rim,
+      .facet-ring,
+      .facet-light-left,
+      .facet-light-right,
+      .grid-lines,
+      .territory-fill,
+      .territory-border,
+      .corner-marker {
+        animation: none;
+      }
+    }
+  </style>
+
+  <defs>
+    <filter id="fac-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.15" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="fac-corner-glow" x="-120%" y="-120%" width="340%" height="340%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.6" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- PvPIndex diamond rim -->
+    <linearGradient id="fac-rim" x1="4" y1="4" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#86efac"/>
+      <stop offset="42%"  stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#14532d"/>
+    </linearGradient>
+
+    <!-- Dark emerald gem background -->
+    <radialGradient id="fac-bg" cx="32" cy="14" r="30" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#12351f"/>
+      <stop offset="58%"  stop-color="#07170c"/>
+      <stop offset="100%" stop-color="#020604"/>
+    </radialGradient>
+
+    <!-- Claimed territory fill -->
+    <linearGradient id="fac-territory" x1="18" y1="18" x2="46" y2="46" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#4ade80" stop-opacity="0.34"/>
+      <stop offset="55%"  stop-color="#22c55e" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#14532d" stop-opacity="0.3"/>
+    </linearGradient>
+
+    <clipPath id="fac-clip">
+      <path d="M32 4 L60 32 L32 60 L4 32 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- Diamond base -->
+  <path d="M32 4 L60 32 L32 60 L4 32 Z" fill="url(#fac-bg)"/>
+  <path d="M4 32 L32 60 L60 32 Z" fill="#000000" fill-opacity="0.16"/>
+  <path class="diamond-rim" d="M32 4 L60 32 L32 60 L4 32 Z"
+        stroke="url(#fac-rim)" stroke-width="2" filter="url(#fac-glow)"/>
+
+  <!-- Inner gem facets -->
+  <path class="facet-ring"        d="M32 13 L51 32 L32 51 L13 32 Z" stroke="#22c55e" stroke-width="0.7" stroke-opacity="0.22"/>
+  <path class="facet-light-left"  d="M32 4 L13 32 L32 13 Z"         fill="#4ade80"  fill-opacity="0.07"/>
+  <path class="facet-light-right" d="M32 4 L32 13 L51 32 Z"         fill="#86efac"  fill-opacity="0.045"/>
+
+  <g clip-path="url(#fac-clip)">
+    <!-- Territory grid -->
+    <path class="grid-lines"
+          d="M16 24 H48 M14 32 H50 M16 40 H48 M24 16 V48 M32 14 V50 M40 16 V48"
+          stroke="#4ade80" stroke-width="0.55" stroke-opacity="0.14"/>
+
+    <!-- Claimed territory fill (split so fill and border animate independently) -->
+    <path class="territory-fill"
+          d="M20 24 L31 19 L44 24 L47 35 L38 45 L25 44 L17 34 Z"
+          fill="url(#fac-territory)"/>
+    <path class="territory-border"
+          d="M20 24 L31 19 L44 24 L47 35 L38 45 L25 44 L17 34 Z"
+          fill="none" stroke="#22c55e" stroke-width="1" stroke-opacity="0.65"/>
+
+    <!-- Claim corner markers — clockwise: top-left, top-right, bottom-right, bottom-left -->
+    <circle class="corner-marker corner-a" cx="20" cy="24" r="1.8"
+            fill="#052e16" stroke="#86efac" stroke-width="1"
+            filter="url(#fac-corner-glow)"/>
+    <circle class="corner-marker corner-b" cx="44" cy="24" r="1.8"
+            fill="#052e16" stroke="#86efac" stroke-width="1"
+            filter="url(#fac-corner-glow)"/>
+    <circle class="corner-marker corner-c" cx="38" cy="45" r="1.8"
+            fill="#052e16" stroke="#86efac" stroke-width="1"
+            filter="url(#fac-corner-glow)"/>
+    <circle class="corner-marker corner-d" cx="25" cy="44" r="1.8"
+            fill="#052e16" stroke="#86efac" stroke-width="1"
+            filter="url(#fac-corner-glow)"/>
+  </g>
+</svg>

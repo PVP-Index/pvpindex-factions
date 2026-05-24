@@ -6,6 +6,43 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+
+## [1.1.3] - 2026-05-24
+
+### Added
+
+- **`/f info` detail pages (`/f info page <n> [faction]`):** the summary view now
+  shows a hint pointing players to `/f info page <n>`. The new `page` subcommand
+  displays additional faction stats across paginated pages:
+  - Online member count with a hover list of names
+  - Rank distribution (members per rank)
+  - Activity stats - inactive-over-7-days count and last-seen summary
+  - Relations summary (Ally / Truce / Neutral / Enemy counts)
+  - Claim capacity with RAIDABLE / STABLE risk indicator
+  - Full power breakdown (total, member contribution, power boost)
+  - Top 3 power contributors
+  - Newest member and most-recent activity timestamps
+- **Sender context tracking for `/f info page`:** the last faction viewed per
+  sender is remembered so `/f info page <n>` works without repeating the faction
+  name after an initial `/f info [faction]`.
+- **New messages in `messages.yml`:** `info.details-hint`, `info.page-title`,
+  `info.page-next`, `info.page-prev`, `info.invalid-page`, `info.page-no-context`.
+
+### Changed
+
+- Updated [TeamsAPI](https://modrinth.com/plugin/teams-api) dependency from `2.0.0` to `2.1.0`.
+- Bumped plugin version to `1.1.3`.
+- [TeamsAPI](https://modrinth.com/plugin/teams-api) relation adapter now honors `TeamRelation` nature metadata (`RelationNature`) when
+  persisting relation changes, so friendly/hostile custom relation natures map safely to internal
+  declared relations.
+
+### Fixed
+
+- **TeamsAPI relation adapter now honors `RelationNature` metadata (TeamsAPI 2.1.0+):**
+  custom relation natures (`FRIENDLY` / `HOSTILE`) on non-standard `TeamRelation`
+  values are mapped to the correct internal `ALLY` / `ENEMY` relation instead of
+  always falling back to `NEUTRAL`.
+
 ## [1.1.2] - 2026-05-22
 
 ### Added

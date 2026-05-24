@@ -196,6 +196,24 @@ class FactionsTeamsRelationServiceTest {
     }
 
     @Test
+    @DisplayName("setRelation maps friendly relation nature to an internal declared relation")
+    void setRelationFriendlyNaturePersistsDeclaredRelation() throws StorageException {
+        final FactionModel fromFaction = new FactionModel(fromId.toString());
+        fromFaction.setRelationsJson("{}");
+        final FactionModel toFaction = new FactionModel(toId.toString());
+        toFaction.setRelationsJson("{}");
+        when(factions.find(fromId.toString())).thenReturn(Optional.of(fromFaction));
+        when(factions.find(toId.toString())).thenReturn(Optional.of(toFaction));
+
+        final boolean result = service.setRelation(fromId, toId, TeamRelation.MEMBER, actorId);
+
+        assertTrue(result);
+        assertTrue(fromFaction.getRelationsJson().contains("\"ALLY\""),
+                "Friendly TeamRelation nature should serialize as an internal ALLY declaration");
+        verify(factions).save(fromFaction);
+    }
+
+    @Test
     @DisplayName("setRelation returns false when source faction not found")
     void setRelationReturnsFalseWhenFromMissing() throws StorageException {
         when(factions.find(fromId.toString())).thenReturn(Optional.empty());

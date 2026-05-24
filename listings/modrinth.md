@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/PVP-Index/pvpindex-factions/main/pvpindex-factions-icon-animated-250-short.gif" alt="PvPIndex Factions" />
+</p>
+
 PvPIndex Factions is a long-term modernization of the classic Factions experience for modern Paper servers.
 
 The goal is simple: revive Factions with a timeless architecture, reliable persistence, clean gameplay UX, and API-connectable systems that can integrate with modern server ecosystems for years to come.
@@ -207,6 +211,10 @@ Map:
 Faction info:
 
 ![PvPIndex Factions info](https://i.ibb.co/Y469RX8j/image.png)
+
+Faction info page 2:
+
+![PvPIndex Factions info page 2](https://i.ibb.co/qMX3smFq/image.png)
 
 Top tab-complete:
 

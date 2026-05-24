@@ -238,6 +238,12 @@ info:
   relation: "<gray>Your relation: <white>{relation}"
   allies: "<gray>Allies: <white>{allies}"
   description: "<gray>Description: <white>{description}"
+  details-hint: "<gray>Details available: <white>/f info page <n></white> <dark_gray>(1-{pages})"
+  page-title: "<gold>== <yellow>{name}</yellow> details <gray>(page {page}/{pages})</gray> =="
+  page-next: "<gray>Next: <white>/f info page {next}</white>"
+  page-prev: "<gray>Previous: <white>/f info page {prev}</white>"
+  invalid-page: "<red>Invalid page. Use a number from <white>1</white> to <white>{max}</white>."
+  page-no-context: "<red>Run <white>/f info <faction></white> first, then use <white>/f info page <n></white>."
 
 admin:
   bypass-enabled: "<gold>[Admin] Bypass enabled."
