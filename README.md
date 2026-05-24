@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/PVP-Index/pvpindex-factions/main/pvpindex-factions-icon-animated-250-short.gif" alt="PvPIndex Factions" />
+</p>
+
 # PvPIndex Factions
 
 A modern factions plugin for **Paper, Folia, and Spigot 1.21.x / 1.26.x**, backed by Jaloquent persistence and optional TeamsAPI integration.

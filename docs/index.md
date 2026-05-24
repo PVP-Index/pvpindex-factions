@@ -4,6 +4,10 @@ nav_order: 1
 description: High-level introduction for server owners
 ---
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/PVP-Index/pvpindex-factions/main/PVPINDEX_FACTIONS_ICON.svg" alt="PvPIndex Factions" width="200" />
+</p>
+
 # PvPIndex Factions Documentation
 
 This guide is designed for server owners and administrators who want to deploy

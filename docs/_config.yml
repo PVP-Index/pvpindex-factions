@@ -8,6 +8,7 @@ description: >-
 url: "https://pvp-index.github.io"
 baseurl: "/pvpindex-factions"
 
+logo: "https://raw.githubusercontent.com/PVP-Index/pvpindex-factions/main/PVPINDEX_FACTIONS_ICON.svg"
 color_scheme: pvpindex
 heading_anchors: true
 

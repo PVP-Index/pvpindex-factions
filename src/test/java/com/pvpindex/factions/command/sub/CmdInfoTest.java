@@ -1,6 +1,5 @@
 package com.pvpindex.factions.command.sub;
 
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -8,13 +7,14 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
 import com.github.ezframework.jaloquent.exception.StorageException;
 import com.pvpindex.factions.command.CommandTestBase;
+import com.pvpindex.factions.command.StorageTest;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.model.PlayerModel;
 import com.pvpindex.factions.data.repository.BoardRepository;
 import com.pvpindex.factions.data.repository.PlayerRepository;
+import com.pvpindex.factions.data.repository.RankRepository;
 import com.pvpindex.factions.service.FactionService;
 import java.util.List;
 import java.util.Optional;
@@ -22,30 +22,26 @@ import java.util.UUID;
 import org.bukkit.command.CommandSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import com.pvpindex.factions.command.StorageTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-@DisplayName("CmdInfo — /f info [name]")
+@DisplayName("CmdInfo - /f info [name]")
 class CmdInfoTest extends CommandTestBase {
-
 
     @Mock private FactionService factionService;
     @Mock private FactionModel faction;
     @Mock private PlayerRepository playerRepository;
     @Mock private BoardRepository boardRepository;
-
+    @Mock private RankRepository rankRepository;
 
     private CmdInfo cmd;
     private final UUID uuid = UUID.randomUUID();
     private final String factionId = UUID.randomUUID().toString();
-
 
     @BeforeEach
     void setUp() throws StorageException {
@@ -55,36 +51,40 @@ class CmdInfoTest extends CommandTestBase {
         when(faction.getName()).thenReturn("Alpha");
         when(faction.getOwnerId()).thenReturn("owner-uuid");
         when(faction.getBank()).thenReturn(1000.0);
+        when(faction.getPowerBoost()).thenReturn(0.0);
+        when(faction.isRaidable()).thenReturn(false);
         when(faction.hasHome()).thenReturn(false);
         when(faction.getDescription()).thenReturn("");
         when(config.getMaxMembers()).thenReturn(50);
         when(config.getMaxPower()).thenReturn(10.0);
+        when(config.getLandPerPower()).thenReturn(1.0);
+        when(config.getMaxLand()).thenReturn(999);
         when(config.isInfoShowAllies()).thenReturn(true);
         when(config.isInfoShowTruces()).thenReturn(false);
         when(config.isInfoShowNeutrals()).thenReturn(false);
         when(config.isInfoShowEnemies()).thenReturn(false);
         when(repos.players()).thenReturn(playerRepository);
         when(repos.board()).thenReturn(boardRepository);
+        when(repos.ranks()).thenReturn(rankRepository);
+        when(rankRepository.findByFactionId(factionId)).thenReturn(List.of());
         when(faction.getRelationsJson()).thenReturn("{}");
-        final PlayerModel p1 = new PlayerModel("p1");
+
+        final PlayerModel p1 = new PlayerModel(UUID.randomUUID().toString());
         p1.setPower(5.0);
-        final PlayerModel p2 = new PlayerModel("p2");
+        final PlayerModel p2 = new PlayerModel(UUID.randomUUID().toString());
         p2.setPower(7.5);
-        final PlayerModel p3 = new PlayerModel("p3");
+        final PlayerModel p3 = new PlayerModel(UUID.randomUUID().toString());
         p3.setPower(2.5);
         when(playerRepository.findByFactionId(factionId)).thenReturn(List.of(p1, p2, p3));
         when(boardRepository.countByFactionId(factionId)).thenReturn(5);
     }
 
-
     @StorageTest
-    @DisplayName("player — own faction info shown")
+    @DisplayName("player - own faction info shown")
     void testPlayerOwnFaction() throws StorageException {
         when(factionService.getFactionByPlayer(uuid)).thenReturn(Optional.of(faction));
 
-
         cmd.execute(ctx());
-
 
         verify(player).sendMessage(argThat(componentContains("Alpha")));
         verify(player).sendMessage(argThat(componentContains("Members")));
@@ -94,8 +94,8 @@ class CmdInfoTest extends CommandTestBase {
         verify(player).sendMessage(argThat(componentContains("Bank")));
         verify(player).sendMessage(argThat(componentContains("Home")));
         verify(player).sendMessage(argThat(componentContains("Allies")));
+        verify(player).sendMessage(argThat(componentContains("/f info page <n>")));
     }
-
 
     @StorageTest
     @DisplayName("optional relation types shown when enabled")
@@ -123,9 +123,7 @@ class CmdInfoTest extends CommandTestBase {
         when(factionService.getFactionById(neutralId)).thenReturn(Optional.of(neutral));
         when(factionService.getFactionById(enemyId)).thenReturn(Optional.of(enemy));
 
-
         cmd.execute(ctx());
-
 
         verify(player).sendMessage(argThat(componentContains("Allies:")));
         verify(player).sendMessage(argThat(componentContains("Truces:")));
@@ -133,71 +131,83 @@ class CmdInfoTest extends CommandTestBase {
         verify(player).sendMessage(argThat(componentContains("Enemies:")));
     }
 
-
     @StorageTest
-    @DisplayName("player — named faction info shown")
+    @DisplayName("player - named faction info shown")
     void testPlayerNamedFaction() throws StorageException {
         when(factionService.getFactionByName("Alpha")).thenReturn(Optional.of(faction));
 
-
         cmd.execute(ctx("Alpha"));
-
 
         verify(player).sendMessage(argThat(componentContains("Alpha")));
     }
 
-
     @StorageTest
-    @DisplayName("faction not found — error message")
+    @DisplayName("faction not found - error message")
     void testFactionNotFound() {
         when(factionService.getFactionByName("Unknown")).thenReturn(Optional.empty());
 
-
         cmd.execute(ctx("Unknown"));
-
 
         verify(player).sendMessage(argThat(componentContains("not found")));
     }
 
-
     @StorageTest
-    @DisplayName("console with name arg — faction info shown")
+    @DisplayName("console with name arg - faction info shown")
     void testConsoleWithName() throws StorageException {
         final CommandSender console = org.mockito.Mockito.mock(CommandSender.class);
         when(factionService.getFactionByName("Alpha")).thenReturn(Optional.of(faction));
 
-
         cmd.execute(ctx(console, "Alpha"));
-
 
         verify(console).sendMessage(argThat(componentContains("Alpha")));
     }
 
-
     @StorageTest
-    @DisplayName("console without arg — usage shown")
+    @DisplayName("console without arg - usage shown")
     void testConsoleNoArg() {
         final CommandSender console = org.mockito.Mockito.mock(CommandSender.class);
 
-
         cmd.execute(ctx(console));
-
 
         verify(console).sendMessage(argThat(componentContains("Usage")));
         verify(factionService, never()).getFactionByName(any());
     }
 
+    @StorageTest
+    @DisplayName("page command works after base info context is set")
+    void testPageCommandWithContext() throws StorageException {
+        when(factionService.getFactionByPlayer(uuid)).thenReturn(Optional.of(faction));
+        when(factionService.getFactionById(factionId)).thenReturn(Optional.of(faction));
+
+        cmd.execute(ctx());
+        cmd.execute(ctx("page", "1"));
+
+        verify(player).sendMessage(argThat(componentContains("details (page 1/")));
+        verify(player).sendMessage(argThat(componentContains("Online Members:")));
+        verify(player).sendMessage(argThat(componentContains("Claim Capacity:")));
+    }
 
     @StorageTest
-    @DisplayName("storage error — graceful error message")
+    @DisplayName("page command invalid page errors")
+    void testPageInvalid() {
+        cmd.execute(ctx("page", "0"));
+        verify(player).sendMessage(argThat(componentContains("Invalid page")));
+    }
+
+    @StorageTest
+    @DisplayName("page command without context shows guidance")
+    void testPageWithoutContext() {
+        cmd.execute(ctx("page", "1"));
+        verify(player).sendMessage(argThat(componentContains("Run /f info")));
+    }
+
+    @StorageTest
+    @DisplayName("storage error - graceful error message")
     void testStorageException() throws StorageException {
         when(factionService.getFactionByName("Alpha")).thenReturn(Optional.of(faction));
-        when(playerRepository.findByFactionId(anyString()))
-            .thenThrow(new StorageException("disk error"));
-
+        when(playerRepository.findByFactionId(anyString())).thenThrow(new StorageException("disk error"));
 
         cmd.execute(ctx("Alpha"));
-
 
         verify(player).sendMessage(argThat(componentContains("error")));
         verify(logger).severe(anyString());

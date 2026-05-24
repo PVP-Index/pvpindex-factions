@@ -6,6 +6,7 @@ import com.pvpindex.factions.config.FactionsConfig;
 import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.service.FactionServiceImpl;
+import com.skyblockexp.teamsapi.model.RelationNature;
 import com.skyblockexp.teamsapi.api.TeamsRelationService;
 import com.skyblockexp.teamsapi.event.TeamRelationChangeEvent;
 import com.skyblockexp.teamsapi.model.TeamRelation;
@@ -219,12 +220,25 @@ public class FactionsTeamsRelationService implements TeamsRelationService {
     }
 
     private static Relation toInternalRelation(final TeamRelation r) {
-        return switch (r) {
+        final Relation exact = switch (r) {
             case ALLY -> Relation.ALLY;
             case TRUCE -> Relation.TRUCE;
             case ENEMY -> Relation.ENEMY;
-            default -> Relation.NEUTRAL;
+            case MEMBER, NEUTRAL -> Relation.NEUTRAL;
         };
+        if (exact != Relation.NEUTRAL) {
+            return exact;
+        }
+
+        // TeamsAPI 2.1.0+: honor custom relation natures for non-standard/overridden values.
+        final RelationNature nature = r.getNature();
+        if (nature == RelationNature.FRIENDLY) {
+            return Relation.ALLY;
+        }
+        if (nature == RelationNature.HOSTILE) {
+            return Relation.ENEMY;
+        }
+        return Relation.NEUTRAL;
     }
 
     private Map<String, Relation> parseRelations(final String json) {
