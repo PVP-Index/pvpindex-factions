@@ -291,13 +291,15 @@ public final class CmdInfo extends FactionCommand {
         final double totalPower = memberPower + powerBoost;
         final double maxPower = memberCount * ctx.getConfig().getMaxPower();
 
-        final List<String> detailLines = buildDetailLines(ctx, faction, members, relations, memberPower, powerBoost, totalPower, land);
+        final List<String> detailLines = buildDetailLines(
+            ctx, faction, members, relations, memberPower, powerBoost, totalPower, land);
         return new FactionInfoSnapshot(members, relations, maxMembers, land, bank, totalPower, maxPower, detailLines);
     }
 
-    private List<String> buildDetailLines(final CommandContext ctx, final FactionModel faction, final List<PlayerModel> members,
-                                          final Map<String, Relation> relations, final double memberPower,
-                                          final double powerBoost, final double totalPower, final int land) throws StorageException {
+    private List<String> buildDetailLines(final CommandContext ctx, final FactionModel faction,
+                                          final List<PlayerModel> members, final Map<String, Relation> relations,
+                                          final double memberPower, final double powerBoost,
+                                          final double totalPower, final int land) throws StorageException {
         final List<String> lines = new ArrayList<>();
 
         final List<String> onlineNames = new ArrayList<>();
@@ -316,7 +318,8 @@ public final class CmdInfo extends FactionCommand {
 
         final long now = System.currentTimeMillis();
         final long inactiveThreshold = now - (7L * DAY_MILLIS);
-        final long inactiveCount = members.stream().filter(m -> m.getLastActivity() > 0 && m.getLastActivity() < inactiveThreshold).count();
+        final long inactiveCount = members.stream()
+            .filter(m -> m.getLastActivity() > 0 && m.getLastActivity() < inactiveThreshold).count();
         lines.add("<gold> Activity: <white>" + inactiveCount + " inactive >7d"
             + " <gray>| Last seen: <white>" + formatMostRecentActivity(members, now));
 
