@@ -78,7 +78,7 @@ public final class CmdInfo extends FactionCommand {
             }
             final int totalPages = totalPages(snapshot.detailLines());
             MsgUtil.sendKey(sender, "info.details-hint",
-                "<gray>Details available: <white>/f info page <n></white> <dark_gray>(1-{pages})",
+                "<gray>Details available: <white>/f info page [1-{pages}]</white>",
                 "pages", String.valueOf(totalPages));
             MsgUtil.send(sender, "<dark_gray>------------------------------");
         } catch (StorageException e) {
@@ -123,7 +123,7 @@ public final class CmdInfo extends FactionCommand {
                 final Optional<FactionModel> factionOpt = resolvePageFaction(ctx);
                 if (factionOpt.isEmpty()) {
                     MsgUtil.sendKey(ctx.getSender(), "info.page-no-context",
-                        "<red>Run <white>/f info <faction></white> first, then use <white>/f info page <n></white>.");
+                        "<red>Run <white>/f info [faction]</white> first, then use <white>/f info page [N]</white>.");
                     return;
                 }
 
@@ -357,7 +357,7 @@ public final class CmdInfo extends FactionCommand {
             .orElse("Unknown");
         lines.add("<gold> Most Recent Activity: <white>" + mostRecent);
 
-        lines.add("<gold> Navigation: <white>/f info page <n> <gray>to browse all details");
+        lines.add("<gold> Navigation: <white>/f info page [N] <gray>to browse all details");
         return lines;
     }
 

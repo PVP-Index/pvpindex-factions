@@ -94,7 +94,7 @@ class CmdInfoTest extends CommandTestBase {
         verify(player).sendMessage(argThat(componentContains("Bank")));
         verify(player).sendMessage(argThat(componentContains("Home")));
         verify(player).sendMessage(argThat(componentContains("Allies")));
-        verify(player).sendMessage(argThat(componentContains("/f info page <n>")));
+        verify(player).sendMessage(argThat(componentContains("/f info page")));
     }
 
     @StorageTest

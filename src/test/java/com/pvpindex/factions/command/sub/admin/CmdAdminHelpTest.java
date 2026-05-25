@@ -9,6 +9,7 @@ import com.pvpindex.factions.command.FactionCommand;
 import com.pvpindex.factions.command.StorageTest;
 import com.pvpindex.factions.registry.CommandRegistry;
 import java.util.List;
+import net.kyori.adventure.text.Component;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,6 +54,6 @@ class CmdAdminHelpTest extends CommandTestBase {
 
         cmd.execute(ctx());
 
-        verify(player).sendMessage(argThat((String s) -> s.contains("disband")));
+        verify(player).sendMessage(argThat((Component c) -> componentContains("disband").matches(c)));
     }
 }

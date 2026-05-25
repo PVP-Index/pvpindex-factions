@@ -145,6 +145,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         }
 
         final CommandRegistry adminRegistry = new CommandRegistry();
+        adminRegistry.register(new CmdInfo(factionSvc));
         adminRegistry.register(new CmdAdminBypass());
         adminRegistry.register(new CmdAdminClaim());
         adminRegistry.register(new CmdAdminUnclaim());
