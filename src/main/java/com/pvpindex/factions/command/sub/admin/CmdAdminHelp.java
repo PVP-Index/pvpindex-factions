@@ -24,7 +24,7 @@ public final class CmdAdminHelp extends FactionCommand {
             if (cmd.getPermission() != null && !ctx.getSender().hasPermission(cmd.getPermission())) {
                 continue;
             }
-            ctx.getSender().sendMessage(MsgUtil.helpEntry(ctx.getSender(), "/fa " + cmd.getName(), cmd.getDescription()));
+            MsgUtil.send(ctx.getSender(), MsgUtil.helpEntry(ctx.getSender(), "/fa " + cmd.getName(), cmd.getDescription()));
         }
     }
 }

@@ -6,6 +6,17 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [1.1.5] - 2026-05-25
+
+This version is a small bugfix for the `/fa help` command. To have effect reset of the translation file is required.
+
+### Fixed
+
+- Fixed MiniMessage MiniMessage translation for `/fa help`
+- Fixed configurable default messages for `/fa help`
+
+![/fa info result screenshot](https://i.ibb.co/d0SkcsVX/image.png)
+
 
 ## [1.1.4] - 2026-05-25
 
