@@ -7,6 +7,25 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 ## [Unreleased]
 
 
+## [1.1.4] - 2026-05-25
+
+### Fixed
+
+- **All `/f` subcommands broken when TeamsAPI is absent:** `FactionCommandExecutor`
+  and `FactionTabCompleter` held direct `import` statements for TeamsAPI classes.
+  On Paper's isolated plugin classloader this caused `NoClassDefFoundError` at
+  class-load time when TeamsAPI was not installed, preventing the executor from
+  being registered and making every `/f <subcommand>` (including `/f info`,
+  `/f map`, etc.) fail with "Invalid command!".
+
+  Introduced `TeamsCommandBridge` (no TeamsAPI imports, loaded unconditionally)
+  and `TeamsCommandBridgeImpl` (imports TeamsAPI, instantiated only via
+  reflection when TeamsAPI is confirmed present). Mirrors the existing
+  `TeamsApiRegistrar` isolation pattern. With TeamsAPI absent the bridge is
+  `null` and all subcommands route through the local `CommandRegistry` as
+  intended.
+
+
 ## [1.1.3] - 2026-05-24
 
 ### Added
