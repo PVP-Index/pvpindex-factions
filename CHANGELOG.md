@@ -15,6 +15,8 @@ This version is a small bugfix for the `/fa help` command. To have effect reset 
 - Fixed MiniMessage MiniMessage translation for `/fa help`
 - Fixed configurable default messages for `/fa help`
 
+![/fa info result screenshot](https://i.ibb.co/d0SkcsVX/image.png)
+
 
 ## [1.1.4] - 2026-05-25
 
