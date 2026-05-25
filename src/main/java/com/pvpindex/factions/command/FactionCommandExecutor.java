@@ -5,8 +5,6 @@ import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.gui.FactionsGuiManager;
 import com.pvpindex.factions.registry.CommandRegistry;
 import com.pvpindex.factions.util.MsgUtil;
-import com.skyblockexp.teamsapi.api.TeamsAPI;
-import com.skyblockexp.teamsapi.api.TeamsSubcommand;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
@@ -32,7 +30,8 @@ public final class FactionCommandExecutor implements CommandExecutor {
     private final FactionsConfig config;
     private final FactionsGuiManager guiManager;
     private final Logger logger;
-    private final boolean teamsApiEnabled;
+    /** Null when TeamsAPI is absent; never call directly — always null-check first. */
+    private final TeamsCommandBridge teamsBridge;
 
     public FactionCommandExecutor(
             final Plugin plugin,
@@ -41,14 +40,14 @@ public final class FactionCommandExecutor implements CommandExecutor {
             final FactionsConfig config,
             final FactionsGuiManager guiManager,
             final Logger logger,
-            final boolean teamsApiEnabled) {
+            final TeamsCommandBridge teamsBridge) {
         this.plugin = plugin;
         this.commandRegistry = commandRegistry;
         this.repos = repos;
         this.config = config;
         this.guiManager = guiManager;
         this.logger = logger;
-        this.teamsApiEnabled = teamsApiEnabled;
+        this.teamsBridge = teamsBridge;
     }
 
     @Override
@@ -66,7 +65,7 @@ public final class FactionCommandExecutor implements CommandExecutor {
         }
         final FactionCommand cmd = commandRegistry.get(args[0].toLowerCase()).orElse(null);
         if (cmd == null) {
-            if (teamsApiEnabled && dispatchTeamsSubcommand(sender, args)) {
+            if (teamsBridge != null && teamsBridge.dispatch(sender, args)) {
                 return true;
             }
             MsgUtil.send(sender, MsgUtil.unknownCommand(sender, args[0]));
@@ -84,31 +83,5 @@ public final class FactionCommandExecutor implements CommandExecutor {
             .ifPresent(help -> help.execute(
                 new CommandContext(plugin, sender, List.of(), repos, config, logger)));
     }
-
-    /**
-     * Attempts to dispatch {@code args} to a registered {@link TeamsSubcommand}.
-     *
-     * @param sender the command sender
-     * @param args   the full argument array (args[0] is the subcommand name)
-     * @return {@code true} if a matching subcommand was found and handled
-     */
-    private boolean dispatchTeamsSubcommand(final CommandSender sender, final String[] args) {
-        for (final TeamsSubcommand sub : TeamsAPI.getSubcommands()) {
-            if (sub.getName().equalsIgnoreCase(args[0])) {
-                final String perm = sub.getPermission();
-                if (perm != null && !sender.hasPermission(perm)) {
-                    MsgUtil.send(sender, MsgUtil.message(
-                        sender,
-                        "general.no-permission",
-                        "<red>You do not have permission to use this command."));
-                    return true;
-                }
-                if (!sub.execute(sender, args)) {
-                    MsgUtil.sendKey(sender, "general.invalid-args", "<red>Usage: {usage}", "usage", sub.getUsage());
-                }
-                return true;
-            }
-        }
-        return false;
-    }
 }
+

@@ -4,6 +4,7 @@ import com.pvpindex.factions.command.AdminCommandExecutor;
 import com.pvpindex.factions.command.AdminTabCompleter;
 import com.pvpindex.factions.command.FactionCommandExecutor;
 import com.pvpindex.factions.command.FactionTabCompleter;
+import com.pvpindex.factions.command.TeamsCommandBridge;
 import com.pvpindex.factions.command.sub.CmdAudit;
 import com.pvpindex.factions.command.sub.CmdClaim;
 import com.pvpindex.factions.command.sub.CmdCreate;
@@ -127,12 +128,13 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         commandRegistry.register(new CmdAudit(factionSvc));
         commandRegistry.register(new CmdHelp(commandRegistry));
 
+        final TeamsCommandBridge teamsBridge = loadTeamsCommandBridge(context);
         final FactionCommandExecutor executor = new FactionCommandExecutor(
             context.plugin(), commandRegistry, repos, cfg, context.engines().getFactionsGuiManager(), logger(context),
-            context.isTeamsApiEnabled());
+            teamsBridge);
         final FactionTabCompleter tabCompleter = new FactionTabCompleter(
             context.plugin(), commandRegistry, repos, cfg, logger(context),
-            context.isTeamsApiEnabled());
+            teamsBridge);
 
         for (final String alias : new String[]{"f", "faction", "factions"}) {
             final PluginCommand cmd = context.javaPlugin().getCommand(alias);
@@ -169,5 +171,26 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
             }
         }
         return true;
+    }
+
+    /**
+     * Loads {@code TeamsCommandBridgeImpl} via reflection when TeamsAPI is enabled,
+     * following the same isolation pattern as {@code TeamsApiRegistrarImpl}.
+     *
+     * @return the bridge instance, or {@code null} if TeamsAPI is absent
+     */
+    private TeamsCommandBridge loadTeamsCommandBridge(final BootstrapContext context) {
+        if (!context.isTeamsApiEnabled()) {
+            return null;
+        }
+        try {
+            return (TeamsCommandBridge) Class
+                .forName("com.pvpindex.factions.command.TeamsCommandBridgeImpl")
+                .getDeclaredConstructor()
+                .newInstance();
+        } catch (ReflectiveOperationException e) {
+            logger(context).warning("Failed to load TeamsCommandBridgeImpl: " + e.getMessage());
+            return null;
+        }
     }
 }
