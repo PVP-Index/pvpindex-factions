@@ -6,6 +6,17 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [1.1.6] - 2026-05-28
+
+### Changed
+
+- Bumped plugin version to `1.1.6`.
+- Synced release metadata and public listing copy for this release.
+
+### Documentation
+
+- Updated TeamsAPI requirement references in public docs/listings to `2.3.0+` to match the current integration baseline.
+
 ## [1.1.5] - 2026-05-25
 
 This version is a small bugfix for the `/fa help` command. To have effect reset of the translation file is required.

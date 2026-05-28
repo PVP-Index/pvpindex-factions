@@ -8,7 +8,7 @@ The goal is simple: revive Factions with a timeless architecture, reliable persi
 
 If you love classic Factions gameplay but need something maintainable, scalable, and integration-ready, PvPIndex Factions is built for exactly that.
 
-> **TeamsAPI integration available** - PvPIndex Factions connects natively with TeamsAPI to expose faction data to other compatible plugins and services. Requires TeamsAPI 2.0.0+. [Download TeamsAPI on Modrinth →](https://modrinth.com/plugin/teams-api)
+> **TeamsAPI integration available** - PvPIndex Factions connects natively with TeamsAPI to expose faction data to other compatible plugins and services. Requires TeamsAPI 2.3.0+. [Download TeamsAPI on Modrinth →](https://modrinth.com/plugin/teams-api)
 
 ## Supported platforms
 
