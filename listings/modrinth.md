@@ -84,6 +84,14 @@ You keep the Factions gameplay loop, but gain a modern operational foundation.
 - Warp listing/set/delete flows
 - Compatibility-oriented command structure for player familiarity
 
+### Faction chests
+
+- Shared faction storage with `/f chest` for fast default chest access
+- Named chest management: `/f chest list`, `/f chest open <name>`, `/f chest create <name>`, `/f chest delete <name>`
+- Officers can create/delete chests; all faction members can open/list based on permission nodes
+- Default chest name is configurable via `factions.team-chest.default-name`
+- Per-faction chest count is configurable via `factions.max-team-chests` (default `1`)
+
 ### Faction flags
 
 - Per-faction boolean toggles: `pvp`, `friendly-fire`, `explosions`, `fire-spread`, `open`
@@ -244,7 +252,7 @@ Admin power history:
 
 - Player root: `/f` (`/faction`, `/factions`)
 - Admin root: `/fa` (`/factionadmin`)
-- Highlights: `/f create`, `/f invite`, `/f join`, `/f claim`, `/f unclaim`, `/f map`, `/f info`, `/f top`, `/f bank`, `/f warp`, `/f audit`
+- Highlights: `/f create`, `/f invite`, `/f join`, `/f claim`, `/f unclaim`, `/f map`, `/f info`, `/f top`, `/f bank`, `/f warp`, `/f chest`, `/f audit`
 
 ## Designed for migration-minded communities
 
