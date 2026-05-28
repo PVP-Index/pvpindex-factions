@@ -80,7 +80,7 @@ public final class ServicesBootstrapComponent extends AbstractBootstrapComponent
                 logger(context).warning("TeamsAPI provider registration failed — running standalone.");
                 context.setTeamsApiEnabled(false);
             }
-        } catch (Exception e) {
+        } catch (ReflectiveOperationException | LinkageError e) {
             logger(context).warning("Failed to initialise TeamsAPI integration: " + e.getMessage());
             context.setTeamsApiEnabled(false);
         }

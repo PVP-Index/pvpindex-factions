@@ -8,6 +8,17 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [1.1.6] - 2026-05-28
 
+### Added
+
+![Faction Chests](https://i.ibb.co/cKhbcnnw/image.png)
+
+- **Faction Chests**:
+  - New `/f chest` command group for shared faction storage.
+  - Added subcommands: `/f chest list`, `/f chest open <name>`, `/f chest create <name>`, `/f chest delete <name>`.
+  - `/f chest` opens the configured default chest (`factions.team-chest.default-name`) and auto-creates it on first use.
+  - Per-faction chest count is capped by `factions.max-team-chests` (default: `1`).
+  - New permission nodes: `factions.cmd.chest`, `factions.cmd.chest.create`, and `factions.cmd.chest.delete`.
+
 ### Changed
 
 - Bumped plugin version to `1.1.6`.
@@ -16,6 +27,12 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 ### Documentation
 
 - Updated TeamsAPI requirement references in public docs/listings to `2.3.0+` to match the current integration baseline.
+
+### Fixed
+
+- Fixed startup crash on servers using older TeamsAPI builds that do not provide `TeamsChestService`.
+  TeamsAPI chest provider registration is now optional and loaded reflectively, so the plugin
+  enables normally and keeps other available TeamsAPI adapters active.
 
 ## [1.1.5] - 2026-05-25
 
