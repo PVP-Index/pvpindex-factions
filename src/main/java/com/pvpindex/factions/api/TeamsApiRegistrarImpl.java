@@ -2,6 +2,7 @@ package com.pvpindex.factions.api;
 
 import com.pvpindex.factions.service.FactionServiceImpl;
 import com.pvpindex.factions.service.InviteServiceImpl;
+import com.pvpindex.factions.service.TeamChestServiceImpl;
 import com.pvpindex.factions.service.WarpServiceImpl;
 import com.skyblockexp.teamsapi.api.TeamsAPI;
 import com.skyblockexp.teamsapi.api.TeamsClaimService;
@@ -26,6 +27,8 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
     private TeamsService teamsAdapter;
     private TeamsInviteService inviteAdapter;
     private TeamsWarpService warpAdapter;
+    /** Stored as Object to avoid a bytecode-level reference to TeamsChestService (TeamsAPI 2.3+). */
+    private Object chestAdapter;
     private TeamsClaimService claimAdapter;
     private TeamsPowerService powerAdapter;
     /** Stored as Object to avoid a bytecode-level reference to TeamsRelationService (TeamsAPI 1.6+). */
@@ -37,7 +40,8 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
 
     @Override
     public boolean register(final Plugin plugin, final FactionServiceImpl factionImpl,
-            final InviteServiceImpl inviteImpl, final WarpServiceImpl warpImpl) {
+            final InviteServiceImpl inviteImpl, final WarpServiceImpl warpImpl,
+            final TeamChestServiceImpl teamChestImpl) {
         teamsAdapter = new FactionsTeamsService(factionImpl);
         inviteAdapter = new FactionsTeamsInviteService(inviteImpl);
         warpAdapter = new FactionsTeamsWarpService(warpImpl, factionImpl);
@@ -53,6 +57,27 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
         } catch (Exception e) {
             unregister();
             return false;
+        }
+
+        // TeamsChestService was introduced in TeamsAPI 2.3. Load it via reflection so
+        // the bytecode verifier never resolves it when TeamsAPI < 2.3 is installed.
+        try {
+            final Class<?> chestSvcClass =
+                Class.forName("com.skyblockexp.teamsapi.api.TeamsChestService");
+            final Object chestAdapterInstance =
+                Class.forName("com.pvpindex.factions.api.FactionsTeamsChestService")
+                    .getDeclaredConstructor(
+                        TeamChestServiceImpl.class,
+                        FactionServiceImpl.class)
+                    .newInstance(teamChestImpl, factionImpl);
+            TeamsAPI.class.getMethod("registerChestProvider", Plugin.class, chestSvcClass)
+                .invoke(null, plugin, chestAdapterInstance);
+            chestAdapter = chestAdapterInstance;
+        } catch (ClassNotFoundException ignored) {
+            // TeamsAPI < 2.3 installed — chest provider not available
+        } catch (ReflectiveOperationException e) {
+            Logger.getLogger("PvPIndexFactions")
+                .warning("Could not register TeamsAPI chest provider: " + e.getMessage());
         }
 
         // TeamsRelationService was introduced in TeamsAPI 1.6. Load it via reflection so
@@ -137,6 +162,15 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
                 TeamsAPI.unregisterWarpProvider(warpAdapter);
             } catch (Exception ignored) { }
             warpAdapter = null;
+        }
+        if (chestAdapter != null) {
+            try {
+                final Class<?> chestSvcClass =
+                        Class.forName("com.skyblockexp.teamsapi.api.TeamsChestService");
+                TeamsAPI.class.getMethod("unregisterChestProvider", chestSvcClass)
+                        .invoke(null, chestAdapter);
+            } catch (ReflectiveOperationException ignored) { }
+            chestAdapter = null;
         }
         if (claimAdapter != null) {
             try {

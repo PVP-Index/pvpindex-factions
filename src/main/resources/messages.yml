@@ -139,6 +139,19 @@ warp:
   cost-insufficient: "<red>You need <gold>{cost}</gold> to use this warp (balance: <gold>{balance}</gold>)."
   cost-no-economy: "<red>An economy plugin is required to use this warp."
 
+chest:
+  opened: "<green>Opened chest <yellow>{name}</yellow>."
+  created: "<green>Created chest <yellow>{name}</yellow>."
+  deleted: "<green>Deleted chest <yellow>{name}</yellow>."
+  already-exists: "<red>Chest <yellow>{name}</yellow> already exists."
+  not-found: "<red>Chest <yellow>{name}</yellow> was not found."
+  limit-reached: "<red>Your faction has reached the maximum number of team chests ({max})."
+  invalid-name: "<red>Invalid chest name."
+  none: "<yellow>Your faction has no team chests."
+  list-header: "<gold>== Team Chests =="
+  list-entry: "<gray>- <yellow>{name}</yellow>"
+  create-failed: "<red>Could not create chest <yellow>{name}</yellow>."
+
 flag:
   list-header: "<gold><bold>Faction Flags — {faction}</bold></gold>"
   entry-on: "<gray>  {flag}: <green>ON</green>{edit_note}"

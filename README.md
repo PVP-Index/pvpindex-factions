@@ -38,7 +38,7 @@ The plugin starts without any of these. Each integration is enabled only when th
 | Vault | Economy costs for faction creation and land claiming |
 | WorldGuard / WorldEdit | Territory protection hooks |
 | PlaceholderAPI | Faction placeholders for scoreboards and chat |
-| TeamsAPI | Team synchronization adapter; exposes faction, power, and power-history data through a standard API surface (2.0.0+ recommended) |
+| TeamsAPI | Team synchronization adapter; exposes faction, power, and power-history data through a standard API surface (2.3.0+ recommended) |
 | EssentialsX | Route `/f home` through the Essentials teleport system |
 | dynmap | Render faction territory on the dynmap web map |
 | EzEconomy | Alternative economy provider |

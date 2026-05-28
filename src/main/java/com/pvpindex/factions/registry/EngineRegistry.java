@@ -2,6 +2,7 @@ package com.pvpindex.factions.registry;
 
 import com.pvpindex.factions.engine.EngineChunkChange;
 import com.pvpindex.factions.engine.EngineEconomy;
+import com.pvpindex.factions.engine.EngineTeamChests;
 import com.pvpindex.factions.engine.AutoTerritoryModeCache;
 import com.pvpindex.factions.gui.FactionsGuiManager;
 
@@ -19,14 +20,17 @@ public class EngineRegistry {
     private EngineEconomy economy;
     private AutoTerritoryModeCache autoTerritoryModeCache;
     private FactionsGuiManager factionsGuiManager;
+    private EngineTeamChests teamChests;
 
     public void setChunkChange(final EngineChunkChange engine) { this.chunkChange = engine; }
     public void setEconomy(final EngineEconomy engine) { this.economy = engine; }
     public void setAutoTerritoryModeCache(final AutoTerritoryModeCache cache) { this.autoTerritoryModeCache = cache; }
     public void setFactionsGuiManager(final FactionsGuiManager manager) { this.factionsGuiManager = manager; }
+    public void setTeamChests(final EngineTeamChests engine) { this.teamChests = engine; }
 
     public EngineChunkChange getChunkChange() { return chunkChange; }
     public EngineEconomy getEconomy() { return economy; }
     public AutoTerritoryModeCache getAutoTerritoryModeCache() { return autoTerritoryModeCache; }
     public FactionsGuiManager getFactionsGuiManager() { return factionsGuiManager; }
+    public EngineTeamChests getTeamChests() { return teamChests; }
 }

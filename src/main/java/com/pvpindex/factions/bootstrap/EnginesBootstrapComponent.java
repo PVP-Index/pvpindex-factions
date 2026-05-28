@@ -16,6 +16,7 @@ import com.pvpindex.factions.engine.EngineNotifications;
 import com.pvpindex.factions.engine.EnginePlayerMove;
 import com.pvpindex.factions.engine.EnginePower;
 import com.pvpindex.factions.engine.EngineProtection;
+import com.pvpindex.factions.engine.EngineTeamChests;
 import com.pvpindex.factions.engine.EngineUpdateNotifier;
 import com.pvpindex.factions.gui.FactionsGuiManager;
 import com.pvpindex.factions.integration.vault.VaultEconomy;
@@ -89,6 +90,11 @@ public final class EnginesBootstrapComponent extends AbstractBootstrapComponent 
         final EngineAutoTerritory autoTerritory =
             new EngineAutoTerritory(chunkChange, context.infra().getTerritoryGuard(), autoTerritoryModeCache);
         autoTerritory.register(context.plugin());
+
+        final EngineTeamChests teamChests =
+            new EngineTeamChests(context.services().getTeamChestService(), logger(context));
+        teamChests.register(context.plugin());
+        context.engines().setTeamChests(teamChests);
 
         if (cfg.isUpdateCheckEnabled()) {
             final String version = context.plugin().getDescription().getVersion();

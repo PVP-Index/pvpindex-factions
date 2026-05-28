@@ -2,6 +2,7 @@ package com.pvpindex.factions.api;
 
 import com.pvpindex.factions.service.FactionServiceImpl;
 import com.pvpindex.factions.service.InviteServiceImpl;
+import com.pvpindex.factions.service.TeamChestServiceImpl;
 import com.pvpindex.factions.service.WarpServiceImpl;
 import org.bukkit.plugin.Plugin;
 
@@ -22,7 +23,7 @@ public interface TeamsApiRegistrar {
      * @return {@code true} if every adapter was registered successfully
      */
     boolean register(Plugin plugin, FactionServiceImpl factionImpl,
-            InviteServiceImpl inviteImpl, WarpServiceImpl warpImpl);
+            InviteServiceImpl inviteImpl, WarpServiceImpl warpImpl, TeamChestServiceImpl teamChestImpl);
 
     /**
      * Unregister all previously registered TeamsAPI adapters.

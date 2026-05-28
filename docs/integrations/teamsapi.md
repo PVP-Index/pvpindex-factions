@@ -13,10 +13,11 @@ TeamsAPI providers when TeamsAPI is detected at startup.
 **Requires TeamsAPI 1.6.0+** for relation service support.
 **Requires TeamsAPI 1.7.0+** for SafeZone/WarZone territory types and notification service support.
 **Requires TeamsAPI 1.8.0+** for power history service support.
+**Requires TeamsAPI 2.3.0+** for chest service support.
 
 ## Setup
 
-1. Install [TeamsAPI](https://modrinth.com/plugin/teams-api) 1.8.0 or newer.
+1. Install [TeamsAPI](https://modrinth.com/plugin/teams-api) 2.3.0 or newer.
 2. Restart the server.
 3. Check startup logs for TeamsAPI provider registration.
 
@@ -27,10 +28,12 @@ TeamsAPI providers when TeamsAPI is detected at startup.
 | Teams service | 1.0.0 |
 | Invite service | 1.1.0 |
 | Warp service | 1.2.0 |
+| Chest service | 2.3.0 |
 | Claim service (with SafeZone/WarZone) | 1.7.0 |
 | Power service | 1.4.0 |
 | Relation service | 1.6.0 |
-| Notification service | 1.7.0 || Power history service | 1.8.0 |
+| Notification service | 1.7.0 |
+| Power history service | 1.8.0 |
 ## Claim Territory Types (TeamsAPI 1.7+)
 
 PvPIndex Factions exposes territory classification to TeamsAPI consumers via

@@ -8,7 +8,7 @@ The goal is simple: revive Factions with a timeless architecture, reliable persi
 
 If you love classic Factions gameplay but need something maintainable, scalable, and integration-ready, PvPIndex Factions is built for exactly that.
 
-> **TeamsAPI integration available** - PvPIndex Factions connects natively with TeamsAPI to expose faction data to other compatible plugins and services. Requires TeamsAPI 2.0.0+. [Download TeamsAPI on Modrinth →](https://modrinth.com/plugin/teams-api)
+> **TeamsAPI integration available** - PvPIndex Factions connects natively with TeamsAPI to expose faction data to other compatible plugins and services. Requires TeamsAPI 2.3.0+. [Download TeamsAPI on Modrinth →](https://modrinth.com/plugin/teams-api)
 
 ## Supported platforms
 
@@ -83,6 +83,14 @@ You keep the Factions gameplay loop, but gain a modern operational foundation.
 - Faction home and warp management
 - Warp listing/set/delete flows
 - Compatibility-oriented command structure for player familiarity
+
+### Faction chests
+
+- Shared faction storage with `/f chest` for fast default chest access
+- Named chest management: `/f chest list`, `/f chest open <name>`, `/f chest create <name>`, `/f chest delete <name>`
+- Officers can create/delete chests; all faction members can open/list based on permission nodes
+- Default chest name is configurable via `factions.team-chest.default-name`
+- Per-faction chest count is configurable via `factions.max-team-chests` (default `1`)
 
 ### Faction flags
 
@@ -244,7 +252,7 @@ Admin power history:
 
 - Player root: `/f` (`/faction`, `/factions`)
 - Admin root: `/fa` (`/factionadmin`)
-- Highlights: `/f create`, `/f invite`, `/f join`, `/f claim`, `/f unclaim`, `/f map`, `/f info`, `/f top`, `/f bank`, `/f warp`, `/f audit`
+- Highlights: `/f create`, `/f invite`, `/f join`, `/f claim`, `/f unclaim`, `/f map`, `/f info`, `/f top`, `/f bank`, `/f warp`, `/f chest`, `/f audit`
 
 ## Designed for migration-minded communities
 
