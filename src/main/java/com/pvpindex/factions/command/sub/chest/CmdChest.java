@@ -57,7 +57,12 @@ public final class CmdChest extends FactionCommand {
         }
         final String title = "Faction Chest: " + ensured.get();
         if (!teamChestsEngine.openChest(player, factionOpt.get().getId(), ensured.get(), title)) {
-            MsgUtil.sendKey(player, "chest.not-found", "<red>Chest <yellow>{name}</yellow> was not found.", "name", ensured.get());
+            MsgUtil.sendKey(
+                player,
+                "chest.not-found",
+                "<red>Chest <yellow>{name}</yellow> was not found.",
+                "name",
+                ensured.get());
             return;
         }
         MsgUtil.sendKey(player, "chest.opened", "<green>Opened chest <yellow>{name}</yellow>.", "name", ensured.get());
