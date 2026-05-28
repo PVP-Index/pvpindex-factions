@@ -121,6 +121,16 @@ Requires Vault economy.
 | `/f warp delete <name>` | `factions.cmd.setwarp` | Delete a faction warp. |
 | `/f warp list [page]` | `factions.cmd.warp` | List faction warps. |
 
+### `/f chest`
+
+| Command | Permission | Description |
+|---|---|---|
+| `/f chest` | `factions.cmd.chest` | Open the default faction chest (`default`). |
+| `/f chest open <name>` | `factions.cmd.chest` | Open a named faction chest. |
+| `/f chest list` | `factions.cmd.chest` | List faction chest names. |
+| `/f chest create <name>` | `factions.cmd.chest.create` | Create a named faction chest (officer+). |
+| `/f chest delete <name>` | `factions.cmd.chest.delete` | Delete a named faction chest (officer+). |
+
 ### `/f power`
 
 | Command | Permission | Description |

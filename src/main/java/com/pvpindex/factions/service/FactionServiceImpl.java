@@ -218,6 +218,7 @@ public class FactionServiceImpl implements FactionService {
             repos.factions().transaction(() -> {
                 repos.board().deleteByFactionId(factionId);
                 repos.warps().deleteByFactionId(factionId);
+                repos.teamChests().deleteByFactionId(factionId);
                 repos.invitations().deleteByFactionId(factionId);
                 repos.ranks().deleteByFactionId(factionId);
                 repos.players().clearFactionMembers(factionId);

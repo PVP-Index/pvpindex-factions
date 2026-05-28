@@ -6,6 +6,7 @@ import com.pvpindex.factions.service.FlagService;
 import com.pvpindex.factions.service.InviteService;
 import com.pvpindex.factions.service.MergeService;
 import com.pvpindex.factions.service.PowerService;
+import com.pvpindex.factions.service.TeamChestService;
 import com.pvpindex.factions.service.WarpService;
 
 /**
@@ -23,6 +24,7 @@ public class ServiceRegistry {
     private AuditService auditService;
     private PowerService powerService;
     private MergeService mergeService;
+    private TeamChestService teamChestService;
 
     public void setFactionService(final FactionService service) {
         this.factionService = service;
@@ -52,6 +54,10 @@ public class ServiceRegistry {
         this.mergeService = service;
     }
 
+    public void setTeamChestService(final TeamChestService service) {
+        this.teamChestService = service;
+    }
+
     public FactionService getFactionService() { return factionService; }
     public InviteService getInviteService() { return inviteService; }
     public WarpService getWarpService() { return warpService; }
@@ -59,4 +65,5 @@ public class ServiceRegistry {
     public AuditService getAuditService() { return auditService; }
     public PowerService getPowerService() { return powerService; }
     public MergeService getMergeService() { return mergeService; }
+    public TeamChestService getTeamChestService() { return teamChestService; }
 }

@@ -5,8 +5,11 @@
 factions:
   max-members: 50
   max-warps: 10
+  max-team-chests: 1
   max-allies: 5
   max-truces: 5
+  team-chest:
+    default-name: default
   invites:
     # Pending invite lifetime. Expired invites are auto-pruned on login/list/join.
     ttl-hours: 72

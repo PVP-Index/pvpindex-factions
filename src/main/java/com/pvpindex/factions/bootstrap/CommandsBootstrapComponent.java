@@ -7,6 +7,7 @@ import com.pvpindex.factions.command.FactionTabCompleter;
 import com.pvpindex.factions.command.TeamsCommandBridge;
 import com.pvpindex.factions.command.sub.CmdAudit;
 import com.pvpindex.factions.command.sub.CmdClaim;
+import com.pvpindex.factions.command.sub.chest.CmdChest;
 import com.pvpindex.factions.command.sub.CmdCreate;
 import com.pvpindex.factions.command.sub.CmdDemote;
 import com.pvpindex.factions.command.sub.CmdDesc;
@@ -107,6 +108,8 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         commandRegistry.register(new CmdMerge(factionSvc, mergeSvc));
         commandRegistry.register(new CmdWarp(factionSvc, warpSvc, context.infra().getTerritoryGuard(),
             context.infra().getEssentialsInterop(), context.infra().getVaultEconomy()));
+        commandRegistry.register(new CmdChest(
+            factionSvc, context.services().getTeamChestService(), context.engines().getTeamChests(), cfg));
         commandRegistry.register(new CmdBank(factionSvc, economy));
         commandRegistry.register(new CmdPower(
             context.infra().getVaultEconomy(), cfg, repos, context.services().getPowerService()));

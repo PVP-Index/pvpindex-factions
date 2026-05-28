@@ -102,6 +102,7 @@ class ServicesBootstrapComponentTest {
         verify(serviceRegistry).setFactionService(notNull());
         verify(serviceRegistry).setInviteService(notNull());
         verify(serviceRegistry).setWarpService(notNull());
+        verify(serviceRegistry).setTeamChestService(notNull());
     }
 
     // -------------------------------------------------------------------------

@@ -15,6 +15,7 @@ import com.pvpindex.factions.data.model.InvitationModel;
 import com.pvpindex.factions.data.model.PlayerModel;
 import com.pvpindex.factions.data.model.PowerHistoryModel;
 import com.pvpindex.factions.data.model.RankModel;
+import com.pvpindex.factions.data.model.TeamChestModel;
 import com.pvpindex.factions.data.model.WarpModel;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -136,6 +137,7 @@ public final class DatabaseManager {
             stmt.executeUpdate(createTableSql("power_history", PowerHistoryModel.COLUMNS, "id"));
             stmt.executeUpdate(createTableSql("faction_inbox", FactionInboxEntry.COLUMNS, "id"));
             stmt.executeUpdate(createTableSql("audit_logs", AuditLogModel.COLUMNS, "id"));
+            stmt.executeUpdate(createTableSql("team_chests", TeamChestModel.COLUMNS, "id"));
             ensureColumn(
                 stmt,
                 logger,
@@ -203,6 +205,7 @@ public final class DatabaseManager {
         createIndex(stmt, logger, "idx_board_faction_id", "board", "faction_id");
         // Warp/invite scans by owning faction and invitee checks.
         createIndex(stmt, logger, "idx_warps_faction_id", "warps", "faction_id");
+        createIndex(stmt, logger, "idx_team_chests_faction_id", "team_chests", "faction_id");
         createIndex(stmt, logger, "idx_invitations_faction_id", "invitations", "faction_id");
         createIndex(stmt, logger, "idx_invitations_invitee_id", "invitations", "invitee_id");
         createIndex(

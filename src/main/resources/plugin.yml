@@ -70,6 +70,9 @@ permissions:
       factions.cmd.admin.power.reset: true
       factions.cmd.admin.power.freeze: true
       factions.cmd.admin.power.history: true
+      factions.cmd.chest: true
+      factions.cmd.chest.create: true
+      factions.cmd.chest.delete: true
 
   factions.bypass:
     description: Bypass faction territory protection (build, interact, PvP).
@@ -294,6 +297,18 @@ permissions:
 
   factions.cmd.warp.cost:
     description: Set the per-use economy cost for a faction warp (officer+).
+    default: true
+
+  factions.cmd.chest:
+    description: Open and view faction team chests.
+    default: true
+
+  factions.cmd.chest.create:
+    description: Create faction team chests (officer+).
+    default: true
+
+  factions.cmd.chest.delete:
+    description: Delete faction team chests (officer+).
     default: true
 
   # Economy

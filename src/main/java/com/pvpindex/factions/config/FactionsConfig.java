@@ -30,6 +30,14 @@ public class FactionsConfig {
         return cfg.getInt("factions.max-warps", 10);
     }
 
+    public int getMaxTeamChests() {
+        return cfg.getInt("factions.max-team-chests", 1);
+    }
+
+    public String getDefaultTeamChestName() {
+        return cfg.getString("factions.team-chest.default-name", "default");
+    }
+
     public int getMaxAllies() {
         return cfg.getInt("factions.max-allies", 5);
     }

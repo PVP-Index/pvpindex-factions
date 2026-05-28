@@ -10,6 +10,7 @@ import com.pvpindex.factions.service.FlagServiceImpl;
 import com.pvpindex.factions.service.InviteServiceImpl;
 import com.pvpindex.factions.service.MergeServiceImpl;
 import com.pvpindex.factions.service.PowerServiceImpl;
+import com.pvpindex.factions.service.TeamChestServiceImpl;
 import com.pvpindex.factions.service.WarpServiceImpl;
 
 /**
@@ -41,10 +42,13 @@ public final class ServicesBootstrapComponent extends AbstractBootstrapComponent
             new InviteServiceImpl(factionImpl, repos, cfg, logger(context));
         final WarpServiceImpl warpImpl =
             new WarpServiceImpl(repos, cfg, logger(context));
+        final TeamChestServiceImpl teamChestImpl =
+            new TeamChestServiceImpl(repos, cfg, logger(context));
 
         context.services().setFactionService(factionImpl);
         context.services().setInviteService(inviteImpl);
         context.services().setWarpService(warpImpl);
+        context.services().setTeamChestService(teamChestImpl);
         context.services().setPowerService(new PowerServiceImpl(repos, cfg));
 
         final FlagServiceImpl flagImpl =
@@ -68,7 +72,7 @@ public final class ServicesBootstrapComponent extends AbstractBootstrapComponent
                 (TeamsApiRegistrar) Class.forName(REGISTRAR_CLASS)
                     .getDeclaredConstructor()
                     .newInstance();
-            if (registrar.register(context.plugin(), factionImpl, inviteImpl, warpImpl)) {
+            if (registrar.register(context.plugin(), factionImpl, inviteImpl, warpImpl, teamChestImpl)) {
                 context.setTeamsRegistrar(registrar);
                 context.setTeamsApiEnabled(true);
                 logger(context).info("TeamsAPI integration enabled.");
