@@ -2,6 +2,7 @@ package com.pvpindex.factions.command.sub.admin;
 
 import com.pvpindex.factions.command.CommandContext;
 import com.pvpindex.factions.command.FactionCommand;
+import com.pvpindex.factions.config.FactionsConfig;
 import com.pvpindex.factions.config.MessagesConfig;
 import com.pvpindex.factions.predefined.PredefinedConfigManager;
 import com.pvpindex.factions.util.MsgUtil;
@@ -24,6 +25,17 @@ public final class CmdAdminReload extends FactionCommand {
     @Override
     protected void perform(final CommandContext ctx) {
         ctx.getPlugin().reloadConfig();
+        final File rolesFile = new File(ctx.getPlugin().getDataFolder(), "roles.yml");
+        if (!rolesFile.exists()) {
+            ctx.getPlugin().saveResource("roles.yml", false);
+        }
+        final FactionsConfig reloadedConfig = new FactionsConfig(
+            ctx.getPlugin().getConfig(),
+            YamlConfiguration.loadConfiguration(rolesFile));
+        if (ctx.getPlugin() instanceof com.pvpindex.factions.PvPIndexFactions pf
+            && pf.getBootstrap() != null) {
+            pf.getBootstrap().getInfraRegistry().setConfig(reloadedConfig);
+        }
         String defaultLocale = "en";
         if (ctx.getPlugin().getConfig() != null) {
             final String configured = ctx.getPlugin().getConfig().getString("factions.language.default", "en");

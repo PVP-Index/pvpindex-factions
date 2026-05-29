@@ -33,6 +33,7 @@ import com.pvpindex.factions.command.sub.CmdPredefined;
 import com.pvpindex.factions.command.sub.CmdPromote;
 import com.pvpindex.factions.command.sub.CmdRelation;
 import com.pvpindex.factions.command.sub.CmdRename;
+import com.pvpindex.factions.command.sub.CmdRole;
 import com.pvpindex.factions.command.sub.CmdSetHome;
 import com.pvpindex.factions.command.sub.CmdTop;
 import com.pvpindex.factions.command.sub.CmdUnclaim;
@@ -123,6 +124,7 @@ public final class CommandsBootstrapComponent extends AbstractBootstrapComponent
         commandRegistry.register(new CmdLeader(factionSvc));
         commandRegistry.register(new CmdPromote(factionSvc));
         commandRegistry.register(new CmdDemote(factionSvc));
+        commandRegistry.register(new CmdRole(factionSvc));
         commandRegistry.register(new CmdRename(factionSvc));
         commandRegistry.register(new CmdDesc(factionSvc));
         commandRegistry.register(new CmdMotd(factionSvc));

@@ -14,6 +14,8 @@ PvPIndex Factions registers placeholders with identifier `pvpindex`:
 - `%pvpindex_faction_land%`
 - `%pvpindex_faction_bank%`
 - `%pvpindex_player_power%`
+- `%pvpindex_player_role%`
+- `%pvpindex_player_role_prefix%`
 
 ## Return Values
 
@@ -23,6 +25,8 @@ PvPIndex Factions registers placeholders with identifier `pvpindex`:
 - `faction_land`: claimed chunk count.
 - `faction_bank`: faction bank balance as a numeric string.
 - `player_power`: current player power.
+- `player_role`: current faction role name, or `None` when unavailable.
+- `player_role_prefix`: current faction role prefix, or empty string when unavailable.
 
 ## Notes
 

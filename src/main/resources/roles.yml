@@ -1,0 +1,33 @@
+# PvPIndex Factions - Role Configuration
+#
+# Global role defaults and limits.
+# Per-faction override behavior is controlled by roles.overrides.enabled.
+
+roles:
+  overrides:
+    # When false, per-faction custom role overrides are disabled.
+    # Factions will use the global defaults only.
+    enabled: false
+
+  custom:
+    # Master toggle for custom role management features.
+    enabled: true
+    # Priority bounds for custom roles. Owner/Officer/Member built-ins are fixed and protected.
+    min-priority: 11
+    max-priority: 99
+    # Max custom roles per faction. 0 = unlimited.
+    max-per-faction: 8
+
+  prefix:
+    # Allow editing rank prefixes.
+    enabled: true
+    # Hard cap for prefix length in characters. 0 = unlimited.
+    max-length: 32
+
+  defaults:
+    owner:
+      prefix: "<gold>[Owner]</gold>"
+    officer:
+      prefix: "<yellow>[Officer]</yellow>"
+    member:
+      prefix: ""

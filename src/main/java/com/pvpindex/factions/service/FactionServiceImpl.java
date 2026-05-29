@@ -167,18 +167,21 @@ public class FactionServiceImpl implements FactionService {
                 memberRank.setFactionId(factionId);
                 memberRank.setName(RankModel.RANK_MEMBER);
                 memberRank.setPriority(RankModel.PRIORITY_MEMBER);
+                memberRank.setPrefix(normalizeDefaultPrefix(config.getDefaultMemberRolePrefix()));
                 repos.ranks().save(memberRank);
 
                 final RankModel officerRank = new RankModel(officerRankId);
                 officerRank.setFactionId(factionId);
                 officerRank.setName(RankModel.RANK_OFFICER);
                 officerRank.setPriority(RankModel.PRIORITY_OFFICER);
+                officerRank.setPrefix(normalizeDefaultPrefix(config.getDefaultOfficerRolePrefix()));
                 repos.ranks().save(officerRank);
 
                 final RankModel ownerRank = new RankModel(ownerRankId);
                 ownerRank.setFactionId(factionId);
                 ownerRank.setName(RankModel.RANK_OWNER);
                 ownerRank.setPriority(RankModel.PRIORITY_OWNER);
+                ownerRank.setPrefix(normalizeDefaultPrefix(config.getDefaultOwnerRolePrefix()));
                 repos.ranks().save(ownerRank);
 
                 final PlayerModel owner = repos.players().findOrCreate(ownerId);
@@ -311,7 +314,7 @@ public class FactionServiceImpl implements FactionService {
             if (actorRank.isEmpty() || targetRank.isEmpty()) {
                 return false;
             }
-            if (!actorRank.get().canManage(targetRank.get())) {
+            if (!RankAuthority.canManage(actorRank.get(), targetRank.get())) {
                 return false;
             }
             targetPm.get().setFactionId(null);
@@ -535,9 +538,8 @@ public class FactionServiceImpl implements FactionService {
                 return false;
             }
             final Optional<RankModel> newOwnerRank = repos.ranks().findOwnerRank(factionId);
-            final Optional<RankModel> officerRank = repos.ranks().findByFactionId(factionId).stream()
-                .filter(r -> RankModel.RANK_OFFICER.equals(r.getName()))
-                .findFirst();
+            final Optional<RankModel> officerRank = RankAuthority.findByName(
+                repos.ranks().findByFactionId(factionId), RankModel.RANK_OFFICER);
             if (newOwnerRank.isEmpty() || officerRank.isEmpty()) {
                 return false;
             }
@@ -568,6 +570,271 @@ public class FactionServiceImpl implements FactionService {
     public boolean demoteMember(final UUID actorUUID, final UUID targetUUID) {
         return changeMemberRank(actorUUID, targetUUID, false);
     }
+
+    @Override
+    public List<RankModel> listRoles(final UUID actorUUID) {
+        try {
+            final Optional<PlayerModel> actorPm = repos.players().find(actorUUID.toString());
+            if (actorPm.isEmpty() || actorPm.get().getFactionId() == null) {
+                return List.of();
+            }
+            return repos.ranks().findByFactionId(actorPm.get().getFactionId());
+        } catch (StorageException e) {
+            logger.log(Level.SEVERE, "Failed to list roles for " + actorUUID, e);
+            return List.of();
+        }
+    }
+
+    @Override
+    public boolean createRole(final UUID actorUUID, final String name, final int priority, final String prefix) {
+        try {
+            if (!config.isCustomRolesEnabled()) {
+                return false;
+            }
+            if (!config.isRoleFactionOverridesEnabled()) {
+                return false;
+            }
+            final Optional<PlayerModel> actorPm = repos.players().find(actorUUID.toString());
+            final Optional<RankModel> actorRank = getRankByPlayer(actorUUID);
+            if (actorPm.isEmpty() || actorPm.get().getFactionId() == null || actorRank.isEmpty()) {
+                return false;
+            }
+            final String factionId = actorPm.get().getFactionId();
+            final String safeName = name == null ? "" : name.trim();
+            if (safeName.isBlank()) {
+                return false;
+            }
+            final List<RankModel> ranks = repos.ranks().findByFactionId(factionId);
+            if (RankAuthority.findByName(ranks, safeName).isPresent()) {
+                return false;
+            }
+            if (!isValidCustomRolePriority(priority)) {
+                return false;
+            }
+            if (!withinCustomRoleCountLimit(ranks)) {
+                return false;
+            }
+            if (actorRank.get().getPriority() <= priority) {
+                return false;
+            }
+            final RankModel model = new RankModel(UUID.randomUUID().toString());
+            model.setFactionId(factionId);
+            model.setName(safeName);
+            model.setPriority(priority);
+            model.setPrefix(normalizeRolePrefix(prefix));
+            repos.ranks().save(model);
+            auditService.record(factionId, actorUUID, FactionAuditAction.ROLE_CREATE, model.getName());
+            return true;
+        } catch (StorageException e) {
+            logger.log(Level.SEVERE, "Failed to create role " + name, e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean renameRole(final UUID actorUUID, final String roleName, final String newName) {
+        try {
+            if (!config.isCustomRolesEnabled()) {
+                return false;
+            }
+            if (!config.isRoleFactionOverridesEnabled()) {
+                return false;
+            }
+            final Optional<PlayerModel> actorPm = repos.players().find(actorUUID.toString());
+            final Optional<RankModel> actorRank = getRankByPlayer(actorUUID);
+            if (actorPm.isEmpty() || actorPm.get().getFactionId() == null || actorRank.isEmpty()) {
+                return false;
+            }
+            final String safeNewName = newName == null ? "" : newName.trim();
+            if (safeNewName.isBlank()) {
+                return false;
+            }
+            final String factionId = actorPm.get().getFactionId();
+            final List<RankModel> ranks = repos.ranks().findByFactionId(factionId);
+            final Optional<RankModel> targetOpt = RankAuthority.findByName(ranks, roleName);
+            if (targetOpt.isEmpty()) {
+                return false;
+            }
+            if (RankAuthority.isProtectedBuiltin(targetOpt.get().getName())) {
+                return false;
+            }
+            if (!RankAuthority.canManage(actorRank.get(), targetOpt.get())) {
+                return false;
+            }
+            final Optional<RankModel> existing = RankAuthority.findByName(ranks, safeNewName);
+            if (existing.isPresent() && !existing.get().getId().equals(targetOpt.get().getId())) {
+                return false;
+            }
+            targetOpt.get().setName(safeNewName);
+            repos.ranks().save(targetOpt.get());
+            auditService.record(factionId, actorUUID, FactionAuditAction.ROLE_RENAME,
+                roleName + " -> " + targetOpt.get().getName());
+            return true;
+        } catch (StorageException e) {
+            logger.log(Level.SEVERE, "Failed to rename role " + roleName, e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean setRolePriority(final UUID actorUUID, final String roleName, final int priority) {
+        try {
+            if (!config.isCustomRolesEnabled()) {
+                return false;
+            }
+            if (!config.isRoleFactionOverridesEnabled()) {
+                return false;
+            }
+            final Optional<PlayerModel> actorPm = repos.players().find(actorUUID.toString());
+            final Optional<RankModel> actorRank = getRankByPlayer(actorUUID);
+            if (actorPm.isEmpty() || actorPm.get().getFactionId() == null || actorRank.isEmpty()) {
+                return false;
+            }
+            if (!isValidCustomRolePriority(priority)) {
+                return false;
+            }
+            final String factionId = actorPm.get().getFactionId();
+            final List<RankModel> ranks = repos.ranks().findByFactionId(factionId);
+            final Optional<RankModel> targetOpt = RankAuthority.findByName(ranks, roleName);
+            if (targetOpt.isEmpty()) {
+                return false;
+            }
+            if (RankAuthority.isProtectedBuiltin(targetOpt.get().getName())) {
+                return false;
+            }
+            if (!RankAuthority.canManage(actorRank.get(), targetOpt.get())) {
+                return false;
+            }
+            if (actorRank.get().getPriority() <= priority) {
+                return false;
+            }
+            targetOpt.get().setPriority(priority);
+            repos.ranks().save(targetOpt.get());
+            auditService.record(factionId, actorUUID, FactionAuditAction.ROLE_PRIORITY_SET,
+                targetOpt.get().getName() + " -> " + priority);
+            return true;
+        } catch (StorageException e) {
+            logger.log(Level.SEVERE, "Failed to set role priority for " + roleName, e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean setRolePrefix(final UUID actorUUID, final String roleName, final String prefix) {
+        try {
+            if (!config.isRolePrefixesEnabled()) {
+                return false;
+            }
+            if (!config.isRoleFactionOverridesEnabled()) {
+                return false;
+            }
+            final Optional<PlayerModel> actorPm = repos.players().find(actorUUID.toString());
+            final Optional<RankModel> actorRank = getRankByPlayer(actorUUID);
+            if (actorPm.isEmpty() || actorPm.get().getFactionId() == null || actorRank.isEmpty()) {
+                return false;
+            }
+            final String factionId = actorPm.get().getFactionId();
+            final List<RankModel> ranks = repos.ranks().findByFactionId(factionId);
+            final Optional<RankModel> targetOpt = RankAuthority.findByName(ranks, roleName);
+            if (targetOpt.isEmpty()) {
+                return false;
+            }
+            if (!RankAuthority.canManage(actorRank.get(), targetOpt.get())) {
+                return false;
+            }
+            final String normalizedPrefix = normalizeRolePrefix(prefix);
+            if (prefix != null && !prefix.isBlank() && normalizedPrefix == null) {
+                return false;
+            }
+            targetOpt.get().setPrefix(normalizedPrefix);
+            repos.ranks().save(targetOpt.get());
+            auditService.record(factionId, actorUUID, FactionAuditAction.ROLE_PREFIX_SET, targetOpt.get().getName());
+            return true;
+        } catch (StorageException e) {
+            logger.log(Level.SEVERE, "Failed to set role prefix for " + roleName, e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteRole(final UUID actorUUID, final String roleName) {
+        try {
+            if (!config.isCustomRolesEnabled()) {
+                return false;
+            }
+            if (!config.isRoleFactionOverridesEnabled()) {
+                return false;
+            }
+            final Optional<PlayerModel> actorPm = repos.players().find(actorUUID.toString());
+            final Optional<RankModel> actorRank = getRankByPlayer(actorUUID);
+            if (actorPm.isEmpty() || actorPm.get().getFactionId() == null || actorRank.isEmpty()) {
+                return false;
+            }
+            final String factionId = actorPm.get().getFactionId();
+            final List<RankModel> ranks = repos.ranks().findByFactionId(factionId);
+            final Optional<RankModel> targetOpt = RankAuthority.findByName(ranks, roleName);
+            if (targetOpt.isEmpty()) {
+                return false;
+            }
+            if (RankAuthority.isProtectedBuiltin(targetOpt.get().getName())) {
+                return false;
+            }
+            if (!RankAuthority.canManage(actorRank.get(), targetOpt.get())) {
+                return false;
+            }
+            final boolean inUse = repos.players().findByFactionId(factionId).stream()
+                .anyMatch(p -> targetOpt.get().getId().equals(p.getRankId()));
+            if (inUse) {
+                return false;
+            }
+            repos.ranks().delete(targetOpt.get().getId());
+            auditService.record(factionId, actorUUID, FactionAuditAction.ROLE_DELETE, targetOpt.get().getName());
+            return true;
+        } catch (StorageException e) {
+            logger.log(Level.SEVERE, "Failed to delete role " + roleName, e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean assignRole(final UUID actorUUID, final UUID targetUUID, final String roleName) {
+        try {
+            if (!config.isRoleFactionOverridesEnabled()) {
+                return false;
+            }
+            final Optional<PlayerModel> actorPm = repos.players().find(actorUUID.toString());
+            final Optional<PlayerModel> targetPm = repos.players().find(targetUUID.toString());
+            final Optional<RankModel> actorRank = getRankByPlayer(actorUUID);
+            if (actorPm.isEmpty() || targetPm.isEmpty() || actorRank.isEmpty()) {
+                return false;
+            }
+            final String factionId = actorPm.get().getFactionId();
+            if (factionId == null || !factionId.equals(targetPm.get().getFactionId())) {
+                return false;
+            }
+            final List<RankModel> ranks = repos.ranks().findByFactionId(factionId);
+            final Optional<RankModel> roleOpt = RankAuthority.findByName(ranks, roleName);
+            if (roleOpt.isEmpty()) {
+                return false;
+            }
+            final Optional<RankModel> targetCurrent = getRankByPlayer(targetUUID);
+            if (targetCurrent.isPresent() && !RankAuthority.canManage(actorRank.get(), targetCurrent.get())) {
+                return false;
+            }
+            if (!RankAuthority.canManage(actorRank.get(), roleOpt.get())) {
+                return false;
+            }
+            targetPm.get().setRankId(roleOpt.get().getId());
+            repos.players().save(targetPm.get());
+            auditService.record(factionId, actorUUID, FactionAuditAction.ROLE_ASSIGN,
+                resolveName(targetUUID) + " -> " + roleOpt.get().getName());
+            return true;
+        } catch (StorageException e) {
+            logger.log(Level.SEVERE, "Failed to assign role " + roleName + " to " + targetUUID, e);
+            return false;
+        }
+    }
+
 
     @Override
     public boolean mergeFaction(final String senderFactionId, final String targetFactionId, final UUID actorUUID) {
@@ -863,7 +1130,7 @@ public class FactionServiceImpl implements FactionService {
             }
             final RankModel actorRank = actorRankOpt.get();
             final RankModel targetRank = targetRankOpt.get();
-            if (!actorRank.canManage(targetRank)) {
+            if (!RankAuthority.canManage(actorRank, targetRank)) {
                 return false;
             }
             final List<RankModel> ranks = repos.ranks().findByFactionId(factionId);
@@ -879,7 +1146,7 @@ public class FactionServiceImpl implements FactionService {
             if (promote && newRank.isOwner()) {
                 return false;
             }
-            if (!actorRank.canManage(newRank)) {
+            if (!RankAuthority.canManage(actorRank, newRank)) {
                 return false;
             }
             targetPm.get().setRankId(newRank.getId());
@@ -898,4 +1165,42 @@ public class FactionServiceImpl implements FactionService {
         final OfflinePlayer op = Bukkit.getOfflinePlayer(uuid);
         return op.getName() != null ? op.getName() : uuid.toString();
     }
+
+
+    private boolean isValidCustomRolePriority(final int priority) {
+        final int min = config.getMinCustomRolePriority();
+        final int max = config.getMaxCustomRolePriority();
+        if (min > max) {
+            return priority >= RankAuthority.MIN_CUSTOM_PRIORITY && priority <= RankAuthority.MAX_CUSTOM_PRIORITY;
+        }
+        return priority >= min && priority <= max;
+    }
+
+    private boolean withinCustomRoleCountLimit(final List<RankModel> ranks) {
+        final int maxCustom = config.getMaxCustomRolesPerFaction();
+        if (maxCustom <= 0) {
+            return true;
+        }
+        final long currentCustom = ranks.stream()
+            .filter(rank -> !RankAuthority.isProtectedBuiltin(rank.getName()))
+            .count();
+        return currentCustom < maxCustom;
+    }
+
+    private String normalizeRolePrefix(final String prefix) {
+        if (prefix == null || prefix.isBlank()) {
+            return null;
+        }
+        final String trimmed = prefix.trim();
+        final int maxLength = config.getMaxRolePrefixLength();
+        if (maxLength > 0 && trimmed.length() > maxLength) {
+            return null;
+        }
+        return trimmed;
+    }
+
+    private String normalizeDefaultPrefix(final String prefix) {
+        return prefix == null || prefix.isBlank() ? null : prefix.trim();
+    }
+
 }

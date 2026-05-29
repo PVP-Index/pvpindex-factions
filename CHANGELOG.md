@@ -6,6 +6,101 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [1.1.7] - 2026-05-29
+
+### Server Owner Highlights
+
+This release improves faction role management for production servers and makes role behavior easier to control globally.
+
+- New dedicated `roles.yml` file for all role-related settings.
+- Safer defaults for rank structure and prefixes.
+- New PlaceholderAPI values for role name/prefix in chat, scoreboards, and tablist formats.
+- TeamsAPI baseline updated to `2.4.0` for role-definition compatibility.
+
+### What You Can Use It For
+
+- Lock role changes server-wide while keeping role display prefixes:
+  - Set `roles.overrides.enabled: false`.
+- Allow faction-specific role customization:
+  - Set `roles.overrides.enabled: true`.
+- Standardize rank visuals across all newly created factions:
+  - Configure `roles.defaults.owner.prefix`, `roles.defaults.officer.prefix`, and `roles.defaults.member.prefix`.
+- Show rank info in PlaceholderAPI-driven scoreboards/chats:
+  - `%pvpindex_player_role%`
+  - `%pvpindex_player_role_prefix%`
+
+### Configuration Examples
+
+#### 1) Keep role structure globally controlled (default-safe mode)
+
+```yaml
+# roles.yml
+roles:
+  overrides:
+    enabled: false
+  custom:
+    enabled: true
+```
+
+Use this when you want admins to control rank structure centrally and avoid faction-by-faction role drift.
+
+#### 2) Allow faction-level custom roles
+
+```yaml
+# roles.yml
+roles:
+  overrides:
+    enabled: true
+  custom:
+    enabled: true
+    min-priority: 11
+    max-priority: 99
+    max-per-faction: 8
+```
+
+Use this for community-driven servers where faction leadership should design its own rank ladder.
+
+#### 3) Set consistent role prefixes for new factions
+
+```yaml
+# roles.yml
+roles:
+  defaults:
+    owner:
+      prefix: "<gold>[Owner]</gold>"
+    officer:
+      prefix: "<yellow>[Officer]</yellow>"
+    member:
+      prefix: ""
+```
+
+Use this for clearer chat hierarchy and onboarding visibility.
+
+### Commands Added / Updated
+
+Role management command suite:
+
+- `/f role list`
+- `/f role create <name> <priority> [prefix]`
+- `/f role rename <old> <new>`
+- `/f role setpriority <role> <priority>`
+- `/f role setprefix <role> <prefix|none>`
+- `/f role delete <role>`
+- `/f role assign <player> <role>`
+
+### Integrations
+
+- TeamsAPI baseline: `2.4.0+`
+  - Modrinth: https://modrinth.com/plugin/teams-api
+- PlaceholderAPI role placeholders available:
+  - Modrinth: https://modrinth.com/plugin/placeholderapi
+
+### Notes
+
+- Core roles (`Owner`, `Officer`, `Member`) remain protected from destructive edits.
+- Role authority checks apply consistently across legacy rank commands and role assignment.
+- Plugin version bumped to `1.1.7`.
+
 ## [1.1.6] - 2026-05-28
 
 ### Added

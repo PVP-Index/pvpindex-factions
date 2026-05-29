@@ -8,7 +8,7 @@ The goal is simple: revive Factions with a timeless architecture, reliable persi
 
 If you love classic Factions gameplay but need something maintainable, scalable, and integration-ready, PvPIndex Factions is built for exactly that.
 
-> **TeamsAPI integration available** - PvPIndex Factions connects natively with TeamsAPI to expose faction data to other compatible plugins and services. Requires TeamsAPI 2.3.0+. [Download TeamsAPI on Modrinth →](https://modrinth.com/plugin/teams-api)
+> **TeamsAPI integration available** - PvPIndex Factions connects natively with TeamsAPI to expose faction data to other compatible plugins and services. Requires TeamsAPI 2.4.0+. [Download TeamsAPI on Modrinth →](https://modrinth.com/plugin/teams-api)
 
 ## Supported platforms
 
@@ -63,6 +63,7 @@ You keep the Factions gameplay loop, but gain a modern operational foundation.
 - Create, rename, describe, and disband factions
 - Member administration with invite/revoke/accept/decline flows
 - Leadership transfer and rank movement (promote/demote)
+- Fully manageable custom roles (`/f role ...`) with configurable priorities and prefixes
 - Clear onboarding through `/f help`
 
 ### Land and map
@@ -137,6 +138,7 @@ You keep the Factions gameplay loop, but gain a modern operational foundation.
 - Invite visibility for online and returning players
 - Territory and event notifications
 - Player-level notification controls
+- PlaceholderAPI role placeholders: `%pvpindex_player_role%` and `%pvpindex_player_role_prefix%`
 
 ## API and integration direction
 
@@ -189,6 +191,7 @@ PvPIndex Factions runs standalone, and integrates when available:
 Generated config files:
 
 - `config.yml`
+- `roles.yml`
 - `database.yml`
 - `messages.yml`
 - `gui.yml`

@@ -73,6 +73,12 @@ permissions:
       factions.cmd.chest: true
       factions.cmd.chest.create: true
       factions.cmd.chest.delete: true
+      factions.cmd.role: true
+      factions.cmd.role.list: true
+      factions.cmd.role.create: true
+      factions.cmd.role.edit: true
+      factions.cmd.role.delete: true
+      factions.cmd.role.assign: true
 
   factions.bypass:
     description: Bypass faction territory protection (build, interact, PvP).
@@ -220,6 +226,30 @@ permissions:
   factions.cmd.leader:
     description: Transfer faction leadership to another member.
     default: true
+
+  factions.cmd.role:
+    description: Root role-management command.
+    default: op
+
+  factions.cmd.role.list:
+    description: List all faction roles.
+    default: op
+
+  factions.cmd.role.create:
+    description: Create custom faction roles.
+    default: op
+
+  factions.cmd.role.edit:
+    description: Edit role names, priorities, and prefixes.
+    default: op
+
+  factions.cmd.role.delete:
+    description: Delete custom faction roles.
+    default: op
+
+  factions.cmd.role.assign:
+    description: Assign a role to a faction member.
+    default: op
 
   # Relations
   factions.cmd.relation:

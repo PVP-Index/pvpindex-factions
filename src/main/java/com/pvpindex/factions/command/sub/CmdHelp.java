@@ -77,7 +77,7 @@ public final class CmdHelp extends FactionCommand {
 
     private void sendPage2(final CommandContext ctx) {
         sendSection(ctx, "Members & Invites",
-            List.of("invite", "join", "leave", "kick", "promote", "demote", "leader"));
+            List.of("invite", "join", "leave", "kick", "promote", "demote", "leader", "role"));
         sendSection(ctx, "Land & Navigation",
             List.of("claim", "unclaim", "home", "sethome", "unsethome", "warp", "fly"));
         sendSection(ctx, "Economy & Utility", List.of("bank", "notify", "relation"));
@@ -94,6 +94,11 @@ public final class CmdHelp extends FactionCommand {
                 ctx.getSender(),
                 "help.officer-line-2",
                 "<gray>- Manage roles: <white>/f promote</white>, <white>/f demote</white>, <white>/f leader</white>");
+            MsgUtil.sendKey(
+                ctx.getSender(),
+                "help.officer-line-2b",
+                "<gray>- Advanced roles: <white>/f role list</white>, "
+                    + "<white>/f role assign</white>, <white>/f role create</white>");
             MsgUtil.sendKey(
                 ctx.getSender(),
                 "help.officer-line-3",

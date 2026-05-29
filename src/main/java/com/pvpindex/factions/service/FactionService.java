@@ -3,6 +3,7 @@ package com.pvpindex.factions.service;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.model.RankModel;
 import com.pvpindex.factions.Relation;
+import java.util.List;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
@@ -112,6 +113,27 @@ public interface FactionService {
 
     /** Demote a member one rank step downward (owner cannot be demoted). */
     boolean demoteMember(UUID actorUUID, UUID targetUUID);
+
+    /** List all roles in actor's faction (sorted by priority descending). */
+    List<RankModel> listRoles(UUID actorUUID);
+
+    /** Create a custom role in actor's faction. */
+    boolean createRole(UUID actorUUID, String name, int priority, String prefix);
+
+    /** Rename a role in actor's faction by current name. */
+    boolean renameRole(UUID actorUUID, String roleName, String newName);
+
+    /** Set role priority for a role in actor's faction. */
+    boolean setRolePriority(UUID actorUUID, String roleName, int priority);
+
+    /** Set or clear role prefix for a role in actor's faction. */
+    boolean setRolePrefix(UUID actorUUID, String roleName, String prefix);
+
+    /** Delete a custom role in actor's faction. */
+    boolean deleteRole(UUID actorUUID, String roleName);
+
+    /** Assign a named role in actor's faction to a target member. */
+    boolean assignRole(UUID actorUUID, UUID targetUUID, String roleName);
 
     /**
      * Directly add {@code playerUUID} to {@code factionId} without requiring a

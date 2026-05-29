@@ -63,7 +63,13 @@ public final class InfrastructureBootstrapComponent extends AbstractBootstrapCom
 
     private boolean initConfig(final BootstrapContext context) {
         context.javaPlugin().saveDefaultConfig();
-        context.infra().setConfig(new FactionsConfig(context.plugin().getConfig()));
+        final File rolesFile = new File(context.plugin().getDataFolder(), "roles.yml");
+        if (!rolesFile.exists()) {
+            context.javaPlugin().saveResource("roles.yml", false);
+        }
+        context.infra().setConfig(new FactionsConfig(
+            context.plugin().getConfig(),
+            YamlConfiguration.loadConfiguration(rolesFile)));
         final File guiFile = new File(context.plugin().getDataFolder(), "gui.yml");
         if (!guiFile.exists()) {
             context.javaPlugin().saveResource("gui.yml", false);

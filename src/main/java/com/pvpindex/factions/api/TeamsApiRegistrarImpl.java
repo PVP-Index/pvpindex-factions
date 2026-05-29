@@ -37,11 +37,15 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
     private Object notificationAdapter;
     /** Stored as Object to avoid a bytecode-level reference to TeamsPowerHistoryService (TeamsAPI 1.8+). */
     private Object powerHistoryAdapter;
+    private com.pvpindex.factions.data.Repositories repos;
+    private Logger logger;
 
     @Override
     public boolean register(final Plugin plugin, final FactionServiceImpl factionImpl,
             final InviteServiceImpl inviteImpl, final WarpServiceImpl warpImpl,
             final TeamChestServiceImpl teamChestImpl) {
+        repos = factionImpl.getRepos();
+        logger = factionImpl.getLogger();
         teamsAdapter = new FactionsTeamsService(factionImpl);
         inviteAdapter = new FactionsTeamsInviteService(inviteImpl);
         warpAdapter = new FactionsTeamsWarpService(warpImpl, factionImpl);
@@ -54,6 +58,7 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
             TeamsAPI.registerWarpProvider(plugin, warpAdapter);
             TeamsAPI.registerClaimProvider(plugin, claimAdapter);
             TeamsAPI.registerPowerProvider(plugin, powerAdapter);
+            TeamsCustomRoleRegistry.registerAll(plugin, repos, logger);
         } catch (Exception e) {
             unregister();
             return false;
@@ -211,5 +216,14 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
             } catch (ReflectiveOperationException ignored) { }
             powerHistoryAdapter = null;
         }
+        // Always clear custom roles last; this is independent from optional service providers.
+        // The keys are reconstructed from repository data and no-op when absent.
+        if (repos != null && logger != null) {
+            try {
+                TeamsCustomRoleRegistry.unregisterAllForPluginData(repos, logger);
+            } catch (Exception ignored) { }
+        }
+        repos = null;
+        logger = null;
     }
 }
