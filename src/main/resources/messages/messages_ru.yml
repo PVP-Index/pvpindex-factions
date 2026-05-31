@@ -339,81 +339,26 @@ custom:
     help-send: "<yellow>/f merge send <faction> <gray>- Отправить запрос на слияние"
     help-accept: "<yellow>/f merge accept <faction> <gray>- Принять запрос на слияние"
 
+  role:
+    list-header: "<gold>== Faction Roles =="
+    list-entry: "<gray>- <white>{name}<gray> | priority <white>{priority}<gray> | prefix <white>{prefix}"
+    invalid-priority: "<red>Priority must be a number."
+    create-success: "<green>Created role <white>{name}<green> with priority <white>{priority}<green>."
+    create-failed: "<red>Could not create that role. Try again or contact a server operator if the problem persists."
+    create-disabled: "<red>Role creation is disabled on this server. Server operator: set roles.custom.enabled: true and roles.overrides.enabled: true in roles.yml, then restart or run /fa reload."
+    priority-out-of-range: "<red>Priority must be between <yellow>{min}</yellow> and <yellow>{max}</yellow>."
+    actor-rank-insufficient: "<red>You cannot create a role with a priority equal to or above your own rank."
+    name-taken: "<red>A role named <yellow>{name}</yellow> already exists in your faction."
+    limit-reached: "<red>Your faction has reached the maximum number of custom roles."
+    rename-success: "<green>Renamed role <white>{old}<green> to <white>{new}<green>."
+    rename-failed: "<red>Could not rename that role."
+    priority-success: "<green>Set role <white>{name}<green> priority to <white>{priority}<green>."
+    priority-failed: "<red>Could not update that role priority."
+    prefix-success: "<green>Updated role <white>{name}<green> prefix."
+    prefix-failed: "<red>Could not update that role prefix. Try again or contact a server operator if the problem persists."
+    prefix-disabled: "<red>Role prefixes are disabled on this server. Server operator: set roles.prefix.enabled: true and roles.overrides.enabled: true in roles.yml, then restart or run /fa reload."
+    delete-success: "<yellow>Deleted role <white>{name}<yellow>."
+    delete-failed: "<red>Could not delete that role."
+    assign-success: "<green>Assigned role <white>{role}<green> to <white>{player}<green>."
+    assign-failed: "<red>Could not assign that role."
 map:
-  separator: "<dark_gray>----------------------------------------"
-  header: "<gold> Карта территорий <gray>({world} @ {x}, {z})"
-  hint: "<gray>Используйте <white>/f map on</white> чтобы постоянно отображать названия территорий."
-  legend: "<gray>Легенда: <white>■ <gray>Вы, <green>■ <gray>Ваша фракция, <yellow>■ <gray>Другие фракции, <aqua>■ <gray>Безопасная зона, <red>■ <gray>Зона войны, <dark_gray>■ <gray>Пустошь"
-  enabled: "<green>Названия территорий включены."
-  disabled: "<yellow>Названия территорий отключены."
-  error:
-    usage: "<red>Использование: /f map [on|off|once] [--size=<size>]"
-    size-nan: "<red>Размер карты должен быть числом."
-    size-small: "<red>Размер карты должен быть не менее 1."
-    save-failed: "<red>Не удалось обновить настройки карты."
-
-gui:
-  items:
-    info:
-      name: "<gold><bold>Ваша фракция</bold></gold>"
-      lore:
-        - "<gray>Фракция: <white>{faction}</white>"
-        - "<gray>Участники: <white>{faction_members}</white>"
-        - "<gray>Земли: <white>{faction_land}</white>"
-        - "<gray>Банк: <white>${faction_bank}</white>"
-        - "<dark_gray>Нажмите для подробной информации"
-    map:
-      name: "<aqua><bold>Карта территорий</bold></aqua>"
-      lore:
-        - "<gray>Посмотреть карту территорий в реальном времени."
-        - "<dark_gray>Нажмите для выполнения /f map"
-    claim:
-      name: "<green><bold>Захватить текущий чанк</bold></green>"
-      lore:
-        - "<gray>Захватить чанк на вашей текущей позиции."
-        - "<dark_gray>Быстрый захват"
-    unclaim:
-      name: "<red><bold>Освободить текущий чанк</bold></red>"
-      lore:
-        - "<gray>Освободить чанк на вашей текущей позиции."
-        - "<dark_gray>Быстрое освобождение"
-    invites:
-      name: "<yellow><bold>Приглашения</bold></yellow>"
-      lore:
-        - "<gray>Просмотреть и принять ожидающие приглашения."
-        - "<dark_gray>Открыть список приглашений"
-    home:
-      name: "<gold><bold>База фракции</bold></gold>"
-      lore:
-        - "<gray>Телепортироваться на базу фракции."
-        - "<dark_gray>Нажмите для выполнения /f home"
-    warps:
-      name: "<light_purple><bold>Варпы</bold></light_purple>"
-      lore:
-        - "<gray>Просмотреть и использовать варпы фракции."
-        - "<dark_gray>Нажмите для выполнения /f warp list"
-    top:
-      name: "<#3ddad7><bold>Топ фракций</bold></#3ddad7>"
-      lore:
-        - "<gray>Просмотреть рейтинг фракций."
-        - "<dark_gray>Нажмите для выполнения /f top"
-    your-power:
-      name: "<white><bold>{player}</bold></white>"
-      lore:
-        - "<gray>Сила: <white>{power}</white><gray>/<white>{max_power}</white>"
-        - "<dark_gray>Личный статус фракции"
-    language-status:
-      name: "<aqua><bold>Язык</bold></aqua>"
-      lore:
-        - "<gray>Текущий: <white>{language_current}</white>"
-        - "<gray>По умолчанию: <white>{language_default}</white>"
-        - "<dark_gray>После изменения нажмите обновить"
-    language-reset:
-      name: "<yellow><bold>Сбросить язык</bold></yellow>"
-      lore:
-        - "<gray>Использовать язык сервера по умолчанию"
-        - "<dark_gray>Аналогично /f language reset"
-    close:
-      name: "<red><bold>Закрыть</bold></red>"
-      lore:
-        - "<gray>Закрыть это меню."

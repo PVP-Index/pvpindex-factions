@@ -340,81 +340,26 @@ custom:
     help-send: "<yellow>/f merge send <faction> <gray>- 合併リクエストを送信"
     help-accept: "<yellow>/f merge accept <faction> <gray>- 合併リクエストを承認"
 
+  role:
+    list-header: "<gold>== Faction Roles =="
+    list-entry: "<gray>- <white>{name}<gray> | priority <white>{priority}<gray> | prefix <white>{prefix}"
+    invalid-priority: "<red>Priority must be a number."
+    create-success: "<green>Created role <white>{name}<green> with priority <white>{priority}<green>."
+    create-failed: "<red>Could not create that role. Try again or contact a server operator if the problem persists."
+    create-disabled: "<red>Role creation is disabled on this server. Server operator: set roles.custom.enabled: true and roles.overrides.enabled: true in roles.yml, then restart or run /fa reload."
+    priority-out-of-range: "<red>Priority must be between <yellow>{min}</yellow> and <yellow>{max}</yellow>."
+    actor-rank-insufficient: "<red>You cannot create a role with a priority equal to or above your own rank."
+    name-taken: "<red>A role named <yellow>{name}</yellow> already exists in your faction."
+    limit-reached: "<red>Your faction has reached the maximum number of custom roles."
+    rename-success: "<green>Renamed role <white>{old}<green> to <white>{new}<green>."
+    rename-failed: "<red>Could not rename that role."
+    priority-success: "<green>Set role <white>{name}<green> priority to <white>{priority}<green>."
+    priority-failed: "<red>Could not update that role priority."
+    prefix-success: "<green>Updated role <white>{name}<green> prefix."
+    prefix-failed: "<red>Could not update that role prefix. Try again or contact a server operator if the problem persists."
+    prefix-disabled: "<red>Role prefixes are disabled on this server. Server operator: set roles.prefix.enabled: true and roles.overrides.enabled: true in roles.yml, then restart or run /fa reload."
+    delete-success: "<yellow>Deleted role <white>{name}<yellow>."
+    delete-failed: "<red>Could not delete that role."
+    assign-success: "<green>Assigned role <white>{role}<green> to <white>{player}<green>."
+    assign-failed: "<red>Could not assign that role."
 map:
-  separator: "<dark_gray>----------------------------------------"
-  header: "<gold> テリトリーマップ <gray>({world} @ {x}, {z})"
-  hint: "<gray><white>/f map on</white> でテリトリータイトルを常時表示できます。"
-  legend: "<gray>凡例: <white>■ <gray>あなた, <green>■ <gray>自分のファクション, <yellow>■ <gray>他のファクション, <aqua>■ <gray>セーフゾーン, <red>■ <gray>ウォーゾーン, <dark_gray>■ <gray>荒野"
-  enabled: "<green>テリトリータイトルが有効になりました。"
-  disabled: "<yellow>テリトリータイトルが無効になりました。"
-  error:
-    usage: "<red>使用法: /f map [on|off|once] [--size=<size>]"
-    size-nan: "<red>マップサイズは数値で入力してください。"
-    size-small: "<red>マップサイズは1以上にしてください。"
-    save-failed: "<red>マップ設定の更新に失敗しました。"
-
-gui:
-  items:
-    info:
-      name: "<gold><bold>あなたのファクション</bold></gold>"
-      lore:
-        - "<gray>ファクション: <white>{faction}</white>"
-        - "<gray>メンバー: <white>{faction_members}</white>"
-        - "<gray>土地: <white>{faction_land}</white>"
-        - "<gray>銀行: <white>${faction_bank}</white>"
-        - "<dark_gray>詳細情報を開く"
-    map:
-      name: "<aqua><bold>テリトリーマップ</bold></aqua>"
-      lore:
-        - "<gray>リアルタイムのテリトリーマップを表示。"
-        - "<dark_gray>クリックして /f map を実行"
-    claim:
-      name: "<green><bold>現在のチャンクを占領</bold></green>"
-      lore:
-        - "<gray>今いる場所を占領します。"
-        - "<dark_gray>クイック占領アクション"
-    unclaim:
-      name: "<red><bold>現在のチャンクの占領解除</bold></red>"
-      lore:
-        - "<gray>今いる場所の占領を解除します。"
-        - "<dark_gray>クイック占領解除アクション"
-    invites:
-      name: "<yellow><bold>招待</bold></yellow>"
-      lore:
-        - "<gray>保留中の招待を確認・承認します。"
-        - "<dark_gray>招待リストを開く"
-    home:
-      name: "<gold><bold>ファクションホーム</bold></gold>"
-      lore:
-        - "<gray>ファクションホームにテレポートします。"
-        - "<dark_gray>クリックして /f home を実行"
-    warps:
-      name: "<light_purple><bold>ワープ</bold></light_purple>"
-      lore:
-        - "<gray>ファクションワープを表示・使用します。"
-        - "<dark_gray>クリックして /f warp list を実行"
-    top:
-      name: "<#3ddad7><bold>トップファクション</bold></#3ddad7>"
-      lore:
-        - "<gray>ファクションランキングを開きます。"
-        - "<dark_gray>クリックして /f top を実行"
-    your-power:
-      name: "<white><bold>{player}</bold></white>"
-      lore:
-        - "<gray>パワー: <white>{power}</white><gray>/<white>{max_power}</white>"
-        - "<dark_gray>個人ファクションステータス"
-    language-status:
-      name: "<aqua><bold>言語</bold></aqua>"
-      lore:
-        - "<gray>現在: <white>{language_current}</white>"
-        - "<gray>デフォルト: <white>{language_default}</white>"
-        - "<dark_gray>変更後にリフレッシュをクリック"
-    language-reset:
-      name: "<yellow><bold>言語をリセット</bold></yellow>"
-      lore:
-        - "<gray>サーバーのデフォルト言語を使用"
-        - "<dark_gray>/f language reset と同等"
-    close:
-      name: "<red><bold>閉じる</bold></red>"
-      lore:
-        - "<gray>このメニューを閉じます。"

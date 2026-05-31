@@ -3,6 +3,7 @@ package com.pvpindex.factions.command.sub.role;
 import com.pvpindex.factions.command.CommandContext;
 import com.pvpindex.factions.command.CommandGuards;
 import com.pvpindex.factions.command.FactionCommand;
+import com.pvpindex.factions.service.CreateRoleResult;
 import com.pvpindex.factions.service.FactionService;
 import com.pvpindex.factions.util.MsgUtil;
 import org.bukkit.entity.Player;
@@ -28,6 +29,11 @@ public final class CmdRoleCreate extends FactionCommand {
         if (!CommandGuards.requireOfficerOrAbove(actor, factionService)) {
             return;
         }
+        if (!factionService.isCustomRolesEnabled() || !factionService.isRoleFactionOverridesEnabled()) {
+            MsgUtil.sendKey(actor, "custom.role.create-disabled",
+                "<red>Role creation is disabled. Enable roles.custom.enabled and roles.overrides.enabled.");
+            return;
+        }
         final int priority;
         try {
             priority = Integer.parseInt(ctx.arg(1));
@@ -36,13 +42,29 @@ public final class CmdRoleCreate extends FactionCommand {
             return;
         }
         final String prefix = ctx.getArgs().size() >= 3 ? ctx.arg(2) : null;
-        if (factionService.createRole(actor.getUniqueId(), ctx.arg(0), priority, prefix)) {
-            MsgUtil.sendKey(actor, "custom.role.create-success",
+        final CreateRoleResult result = factionService.createRole(actor.getUniqueId(), ctx.arg(0), priority, prefix);
+        switch (result) {
+            case SUCCESS -> MsgUtil.sendKey(actor, "custom.role.create-success",
                 "<green>Created role <white>{name}<green> with priority <white>{priority}<green>.",
                 "name", ctx.arg(0),
                 "priority", String.valueOf(priority));
-            return;
+            case PRIORITY_OUT_OF_RANGE -> {
+                final int min = ctx.getConfig().getMinCustomRolePriority();
+                final int max = ctx.getConfig().getMaxCustomRolePriority();
+                MsgUtil.sendKey(actor, "custom.role.priority-out-of-range",
+                    "<red>Priority must be between {min} and {max}.",
+                    "min", String.valueOf(min),
+                    "max", String.valueOf(max));
+            }
+            case ACTOR_RANK_INSUFFICIENT -> MsgUtil.sendKey(actor, "custom.role.actor-rank-insufficient",
+                "<red>You cannot create a role with a priority equal to or above your own rank.");
+            case NAME_TAKEN -> MsgUtil.sendKey(actor, "custom.role.name-taken",
+                "<red>A role named <yellow>{name}<red> already exists.",
+                "name", ctx.arg(0));
+            case ROLE_LIMIT_REACHED -> MsgUtil.sendKey(actor, "custom.role.limit-reached",
+                "<red>Your faction has reached the maximum number of custom roles.");
+            default -> MsgUtil.sendKey(actor, "custom.role.create-failed",
+                "<red>Could not create that role. Try again or contact a server operator if the problem persists.");
         }
-        MsgUtil.sendKey(actor, "custom.role.create-failed", "<red>Could not create that role.");
     }
 }

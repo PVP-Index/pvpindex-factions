@@ -35,6 +35,11 @@ public final class CmdAdminReload extends FactionCommand {
         if (ctx.getPlugin() instanceof com.pvpindex.factions.PvPIndexFactions pf
             && pf.getBootstrap() != null) {
             pf.getBootstrap().getInfraRegistry().setConfig(reloadedConfig);
+            final boolean servicesOk = pf.getBootstrap().reloadServices();
+            if (!servicesOk) {
+                ctx.getPlugin().getLogger().warning(
+                    "Failed to restart services during /fa reload; a plugin restart may be required.");
+            }
         }
         String defaultLocale = "en";
         if (ctx.getPlugin().getConfig() != null) {
@@ -69,10 +74,6 @@ public final class CmdAdminReload extends FactionCommand {
                 ctx.getPlugin().saveResource(name, false);
             }
         }
-        final File legacyMessages = new File(dataFolder, "messages.yml");
-        if (!legacyMessages.exists()) {
-            ctx.getPlugin().saveResource("messages.yml", false);
-        }
         final Map<String, FileConfiguration> bundles = new LinkedHashMap<>();
         final File[] bundleFiles = messagesDir.listFiles((dir, name) -> name.startsWith("messages_") && name.endsWith(".yml"));
         if (bundleFiles != null) {
@@ -80,9 +81,6 @@ public final class CmdAdminReload extends FactionCommand {
                 final String raw = file.getName().substring("messages_".length(), file.getName().length() - 4);
                 bundles.put(MessagesConfig.normalizeLocale(raw), YamlConfiguration.loadConfiguration(file));
             }
-        }
-        if (!bundles.containsKey("en")) {
-            bundles.put("en", YamlConfiguration.loadConfiguration(legacyMessages));
         }
         return new MessagesConfig(bundles, defaultLocale);
     }

@@ -92,7 +92,7 @@ class FactionServiceImplRoleManagementTest {
     @Test
     @DisplayName("create+assign+delete role happy path with in-use guard")
     void createAssignDeleteRoleLifecycle() throws Exception {
-        assertTrue(service.createRole(ownerId, "Scout", 30, "<gray>[S]</gray>"));
+        assertEquals(CreateRoleResult.SUCCESS, service.createRole(ownerId, "Scout", 30, "<gray>[S]</gray>"));
         assertTrue(service.assignRole(ownerId, memberId, "Scout"));
 
         final PlayerModel member = repos.players().find(memberId.toString()).orElseThrow();
@@ -117,9 +117,9 @@ class FactionServiceImplRoleManagementTest {
     @Test
     @DisplayName("priority bounds enforced for custom roles")
     void priorityBoundsEnforced() {
-        assertFalse(service.createRole(ownerId, "TooLow", 10, null));
-        assertFalse(service.createRole(ownerId, "TooHigh", 100, null));
-        assertTrue(service.createRole(ownerId, "Valid", 60, null));
+        assertEquals(CreateRoleResult.PRIORITY_OUT_OF_RANGE, service.createRole(ownerId, "TooLow", 10, null));
+        assertEquals(CreateRoleResult.PRIORITY_OUT_OF_RANGE, service.createRole(ownerId, "TooHigh", 100, null));
+        assertEquals(CreateRoleResult.SUCCESS, service.createRole(ownerId, "Valid", 60, null));
         assertEquals(4, service.listRoles(ownerId).size());
     }
 

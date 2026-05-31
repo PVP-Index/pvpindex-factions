@@ -108,6 +108,73 @@ public class Bootstrap {
         startedComponents.clear();
     }
 
+    /**
+     * Reload the 'services' bootstrap component and any components that depend on it.
+     *
+     * This stops started components that were started after 'services', stops 'services'
+     * itself, restarts the 'services' component, then restarts the dependent components
+     * in the original order. Returns true on success.
+     */
+    public boolean reloadServices() {
+        final String targetName = "services";
+        BootstrapComponent targetComp = null;
+        for (final BootstrapComponent c : components) {
+            if (targetName.equals(c.name())) {
+                targetComp = c;
+                break;
+            }
+        }
+        if (targetComp == null) {
+            plugin.getLogger().warning("No '" + targetName + "' bootstrap component found to reload.");
+            return false;
+        }
+
+        // Stop components that were started after 'services', collecting them to restart later.
+        final List<BootstrapComponent> toRestart = new ArrayList<>();
+        boolean servicesStopped = false;
+        for (int i = startedComponents.size() - 1; i >= 0; i--) {
+            final BootstrapComponent c = startedComponents.get(i);
+            if (c.name().equals(targetName)) {
+                try {
+                    c.stop(context);
+                } catch (Exception e) {
+                    plugin.getLogger().warning("Error stopping '" + targetName + "' component: " + e.getMessage());
+                }
+                startedComponents.remove(i);
+                servicesStopped = true;
+                break;
+            } else {
+                try {
+                    c.stop(context);
+                } catch (Exception e) {
+                    plugin.getLogger().warning("Error stopping component '" + c.name() + "': " + e.getMessage());
+                }
+                toRestart.add(0, c);
+                startedComponents.remove(i);
+            }
+        }
+
+        // Start (or restart) the services component.
+        if (!targetComp.start(context)) {
+            plugin.getLogger().severe("Failed to restart bootstrap component: " + targetName);
+            return false;
+        }
+        startedComponents.add(targetComp);
+        plugin.getLogger().info("Restarted bootstrap component: " + targetName);
+
+        // Restart previously-stopped components in the original order.
+        for (final BootstrapComponent comp : toRestart) {
+            if (!comp.start(context)) {
+                plugin.getLogger().severe("Failed to restart bootstrap component: " + comp.name());
+                return false;
+            }
+            startedComponents.add(comp);
+            plugin.getLogger().info("Restarted bootstrap component: " + comp.name());
+        }
+
+        return true;
+    }
+
     // -------------------------------------------------------------------------
     // Registry accessors
     // -------------------------------------------------------------------------

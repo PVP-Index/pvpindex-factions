@@ -27,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
+import com.pvpindex.factions.api.RoleChangeNotifierHolder;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -586,36 +587,48 @@ public class FactionServiceImpl implements FactionService {
     }
 
     @Override
-    public boolean createRole(final UUID actorUUID, final String name, final int priority, final String prefix) {
+    public boolean isCustomRolesEnabled() {
+        return config.isCustomRolesEnabled();
+    }
+
+    @Override
+    public boolean isRoleFactionOverridesEnabled() {
+        return config.isRoleFactionOverridesEnabled();
+    }
+
+    @Override
+    public boolean isRolePrefixesEnabled() {
+        return config.isRolePrefixesEnabled();
+    }
+
+    @Override
+    public CreateRoleResult createRole(final UUID actorUUID, final String name, final int priority, final String prefix) {
         try {
-            if (!config.isCustomRolesEnabled()) {
-                return false;
-            }
-            if (!config.isRoleFactionOverridesEnabled()) {
-                return false;
+            if (!config.isCustomRolesEnabled() || !config.isRoleFactionOverridesEnabled()) {
+                return CreateRoleResult.FEATURE_DISABLED;
             }
             final Optional<PlayerModel> actorPm = repos.players().find(actorUUID.toString());
             final Optional<RankModel> actorRank = getRankByPlayer(actorUUID);
             if (actorPm.isEmpty() || actorPm.get().getFactionId() == null || actorRank.isEmpty()) {
-                return false;
+                return CreateRoleResult.NOT_IN_FACTION;
             }
             final String factionId = actorPm.get().getFactionId();
             final String safeName = name == null ? "" : name.trim();
             if (safeName.isBlank()) {
-                return false;
+                return CreateRoleResult.INVALID_NAME;
             }
             final List<RankModel> ranks = repos.ranks().findByFactionId(factionId);
             if (RankAuthority.findByName(ranks, safeName).isPresent()) {
-                return false;
+                return CreateRoleResult.NAME_TAKEN;
             }
             if (!isValidCustomRolePriority(priority)) {
-                return false;
+                return CreateRoleResult.PRIORITY_OUT_OF_RANGE;
             }
             if (!withinCustomRoleCountLimit(ranks)) {
-                return false;
+                return CreateRoleResult.ROLE_LIMIT_REACHED;
             }
             if (actorRank.get().getPriority() <= priority) {
-                return false;
+                return CreateRoleResult.ACTOR_RANK_INSUFFICIENT;
             }
             final RankModel model = new RankModel(UUID.randomUUID().toString());
             model.setFactionId(factionId);
@@ -624,10 +637,11 @@ public class FactionServiceImpl implements FactionService {
             model.setPrefix(normalizeRolePrefix(prefix));
             repos.ranks().save(model);
             auditService.record(factionId, actorUUID, FactionAuditAction.ROLE_CREATE, model.getName());
-            return true;
+            RoleChangeNotifierHolder.getNotifier().roleCreated(model);
+            return CreateRoleResult.SUCCESS;
         } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to create role " + name, e);
-            return false;
+            return CreateRoleResult.STORAGE_ERROR;
         }
     }
 
@@ -665,10 +679,12 @@ public class FactionServiceImpl implements FactionService {
             if (existing.isPresent() && !existing.get().getId().equals(targetOpt.get().getId())) {
                 return false;
             }
+            final String oldName = targetOpt.get().getName();
             targetOpt.get().setName(safeNewName);
             repos.ranks().save(targetOpt.get());
             auditService.record(factionId, actorUUID, FactionAuditAction.ROLE_RENAME,
                 roleName + " -> " + targetOpt.get().getName());
+            RoleChangeNotifierHolder.getNotifier().roleRenamed(targetOpt.get(), oldName);
             return true;
         } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to rename role " + roleName, e);
@@ -712,6 +728,7 @@ public class FactionServiceImpl implements FactionService {
             repos.ranks().save(targetOpt.get());
             auditService.record(factionId, actorUUID, FactionAuditAction.ROLE_PRIORITY_SET,
                 targetOpt.get().getName() + " -> " + priority);
+            RoleChangeNotifierHolder.getNotifier().roleUpdated(targetOpt.get());
             return true;
         } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to set role priority for " + roleName, e);
@@ -749,6 +766,7 @@ public class FactionServiceImpl implements FactionService {
             targetOpt.get().setPrefix(normalizedPrefix);
             repos.ranks().save(targetOpt.get());
             auditService.record(factionId, actorUUID, FactionAuditAction.ROLE_PREFIX_SET, targetOpt.get().getName());
+            RoleChangeNotifierHolder.getNotifier().roleUpdated(targetOpt.get());
             return true;
         } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to set role prefix for " + roleName, e);
@@ -787,8 +805,10 @@ public class FactionServiceImpl implements FactionService {
             if (inUse) {
                 return false;
             }
-            repos.ranks().delete(targetOpt.get().getId());
-            auditService.record(factionId, actorUUID, FactionAuditAction.ROLE_DELETE, targetOpt.get().getName());
+            final RankModel toDelete = targetOpt.get();
+            repos.ranks().delete(toDelete.getId());
+            auditService.record(factionId, actorUUID, FactionAuditAction.ROLE_DELETE, toDelete.getName());
+            RoleChangeNotifierHolder.getNotifier().roleDeleted(toDelete);
             return true;
         } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to delete role " + roleName, e);

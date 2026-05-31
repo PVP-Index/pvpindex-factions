@@ -29,6 +29,11 @@ public final class CmdRoleSetPrefix extends FactionCommand {
         if (!CommandGuards.requireOfficerOrAbove(actor, factionService)) {
             return;
         }
+        if (!factionService.isRolePrefixesEnabled() || !factionService.isRoleFactionOverridesEnabled()) {
+            MsgUtil.sendKey(actor, "custom.role.prefix-disabled",
+                "<red>Role prefixes are disabled. Enable roles.prefix.enabled and roles.overrides.enabled.");
+            return;
+        }
         final String prefixArg = ctx.arg(1);
         final String prefix = "none".equalsIgnoreCase(prefixArg) ? null : prefixArg;
         if (factionService.setRolePrefix(actor.getUniqueId(), ctx.arg(0), prefix)) {

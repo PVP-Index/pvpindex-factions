@@ -340,81 +340,26 @@ custom:
     help-send: "<yellow>/f envoi de fusion <faction> <gray>- Envoyer une demande de fusion"
     help-accept: "<yellow>/f fusion accepter <faction> <gray>- Accepter une demande de fusion"
 
+  role:
+    list-header: "<gold>== Faction Roles =="
+    list-entry: "<gray>- <white>{name}<gray> | priority <white>{priority}<gray> | prefix <white>{prefix}"
+    invalid-priority: "<red>Priority must be a number."
+    create-success: "<green>Created role <white>{name}<green> with priority <white>{priority}<green>."
+    create-failed: "<red>Could not create that role. Try again or contact a server operator if the problem persists."
+    create-disabled: "<red>Role creation is disabled on this server. Server operator: set roles.custom.enabled: true and roles.overrides.enabled: true in roles.yml, then restart or run /fa reload."
+    priority-out-of-range: "<red>Priority must be between <yellow>{min}</yellow> and <yellow>{max}</yellow>."
+    actor-rank-insufficient: "<red>You cannot create a role with a priority equal to or above your own rank."
+    name-taken: "<red>A role named <yellow>{name}</yellow> already exists in your faction."
+    limit-reached: "<red>Your faction has reached the maximum number of custom roles."
+    rename-success: "<green>Renamed role <white>{old}<green> to <white>{new}<green>."
+    rename-failed: "<red>Could not rename that role."
+    priority-success: "<green>Set role <white>{name}<green> priority to <white>{priority}<green>."
+    priority-failed: "<red>Could not update that role priority."
+    prefix-success: "<green>Updated role <white>{name}<green> prefix."
+    prefix-failed: "<red>Could not update that role prefix. Try again or contact a server operator if the problem persists."
+    prefix-disabled: "<red>Role prefixes are disabled on this server. Server operator: set roles.prefix.enabled: true and roles.overrides.enabled: true in roles.yml, then restart or run /fa reload."
+    delete-success: "<yellow>Deleted role <white>{name}<yellow>."
+    delete-failed: "<red>Could not delete that role."
+    assign-success: "<green>Assigned role <white>{role}<green> to <white>{player}<green>."
+    assign-failed: "<red>Could not assign that role."
 map:
-  separator: "<dark_gray>----------------------------------------"
-  header: "<gold> Carte des Territoires <gray>({world} @ {x}, {z})"
-  hint: "<gray>Utilisez <white>/f map on</white> pour garder les titres de territoire activés."
-  legend: "<gray>Légende: <white>■ <gray>vous, <green>■ <gray>votre faction, <yellow>■ <gray>autre faction, <aqua>■ <gray>zone sûre, <red>■ <gray>zone de guerre, <dark_gray>■ <gray>nature sauvage"
-  enabled: "<green>Titres de territoire activés."
-  disabled: "<yellow>Titres de territoire désactivés."
-  error:
-    usage: "<red>Utilisation: /f map [on|off|once] [--size=<size>]"
-    size-nan: "<red>La taille de la carte doit être un nombre."
-    size-small: "<red>La taille de la carte doit être d'au moins 1."
-    save-failed: "<red>Impossible de mettre à jour la préférence de carte."
-
-gui:
-  items:
-    info:
-      name: "<gold><bold>Votre Faction</bold></gold>"
-      lore:
-        - "<gray>Faction: <white>{faction}</white>"
-        - "<gray>Membres: <white>{faction_members}</white>"
-        - "<gray>Territoire: <white>{faction_land}</white>"
-        - "<gray>Banque: <white>${faction_bank}</white>"
-        - "<dark_gray>Ouvrir les infos détaillées"
-    map:
-      name: "<aqua><bold>Carte des Territoires</bold></aqua>"
-      lore:
-        - "<gray>Ouvre une carte territoriale en direct."
-        - "<dark_gray>Cliquer pour /f map"
-    claim:
-      name: "<green><bold>Revendiquer ce Chunk</bold></green>"
-      lore:
-        - "<gray>Revendiquer là où vous vous trouvez."
-        - "<dark_gray>Action rapide de revendication"
-    unclaim:
-      name: "<red><bold>Abandonner ce Chunk</bold></red>"
-      lore:
-        - "<gray>Abandonner là où vous vous trouvez."
-        - "<dark_gray>Action rapide d'abandon"
-    invites:
-      name: "<yellow><bold>Invitations</bold></yellow>"
-      lore:
-        - "<gray>Consulter et accepter les invitations."
-        - "<dark_gray>Ouvre la liste d'invitations"
-    home:
-      name: "<gold><bold>Base de Faction</bold></gold>"
-      lore:
-        - "<gray>Se téléporter à la base de faction."
-        - "<dark_gray>Cliquer pour /f home"
-    warps:
-      name: "<light_purple><bold>Warps</bold></light_purple>"
-      lore:
-        - "<gray>Voir et utiliser les warps de faction."
-        - "<dark_gray>Cliquer pour /f warp list"
-    top:
-      name: "<#3ddad7><bold>Top Factions</bold></#3ddad7>"
-      lore:
-        - "<gray>Ouvrir le classement des factions."
-        - "<dark_gray>Cliquer pour /f top"
-    your-power:
-      name: "<white><bold>{player}</bold></white>"
-      lore:
-        - "<gray>Puissance: <white>{power}</white><gray>/<white>{max_power}</white>"
-        - "<dark_gray>Statut personnel de faction"
-    language-status:
-      name: "<aqua><bold>Langue</bold></aqua>"
-      lore:
-        - "<gray>Actuelle: <white>{language_current}</white>"
-        - "<gray>Par défaut: <white>{language_default}</white>"
-        - "<dark_gray>Actualisez après avoir changé"
-    language-reset:
-      name: "<yellow><bold>Réinitialiser la Langue</bold></yellow>"
-      lore:
-        - "<gray>Utiliser la langue par défaut du serveur"
-        - "<dark_gray>Équivalent à /f language reset"
-    close:
-      name: "<red><bold>Fermer</bold></red>"
-      lore:
-        - "<gray>Fermer ce menu."

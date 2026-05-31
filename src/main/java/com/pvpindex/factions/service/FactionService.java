@@ -117,8 +117,17 @@ public interface FactionService {
     /** List all roles in actor's faction (sorted by priority descending). */
     List<RankModel> listRoles(UUID actorUUID);
 
+    /** @return {@code true} if custom roles are enabled in server config. */
+    boolean isCustomRolesEnabled();
+
+    /** @return {@code true} if per-faction role overrides are enabled in server config. */
+    boolean isRoleFactionOverridesEnabled();
+
+    /** @return {@code true} if editing role prefixes is enabled in server config. */
+    boolean isRolePrefixesEnabled();
+
     /** Create a custom role in actor's faction. */
-    boolean createRole(UUID actorUUID, String name, int priority, String prefix);
+    CreateRoleResult createRole(UUID actorUUID, String name, int priority, String prefix);
 
     /** Rename a role in actor's faction by current name. */
     boolean renameRole(UUID actorUUID, String roleName, String newName);

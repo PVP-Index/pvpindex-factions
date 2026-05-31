@@ -127,18 +127,11 @@ public final class InfrastructureBootstrapComponent extends AbstractBootstrapCom
                 context.javaPlugin().saveResource(name, false);
             }
         }
-        final File legacyMessages = new File(dataFolder, "messages.yml");
-        if (!legacyMessages.exists()) {
-            context.javaPlugin().saveResource("messages.yml", false);
-        }
 
         final Map<String, FileConfiguration> bundles = new LinkedHashMap<>();
         for (final File file : messagesDir.listFiles((dir, name) -> name.startsWith("messages_") && name.endsWith(".yml"))) {
             final String raw = file.getName().substring("messages_".length(), file.getName().length() - 4);
             bundles.put(MessagesConfig.normalizeLocale(raw), YamlConfiguration.loadConfiguration(file));
-        }
-        if (!bundles.containsKey("en")) {
-            bundles.put("en", YamlConfiguration.loadConfiguration(legacyMessages));
         }
         final String defaultLocale = context.infra().getConfig().getDefaultLanguage();
         return new MessagesConfig(bundles, defaultLocale);
