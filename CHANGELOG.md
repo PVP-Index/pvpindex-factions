@@ -8,7 +8,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [1.1.7] - 2026-05-29
 
-### Server Owner Highlights
+### Server owner highlights
 
 This release improves faction role management for production servers and makes role behavior easier to control globally.
 
@@ -16,8 +16,9 @@ This release improves faction role management for production servers and makes r
 - Safer defaults for rank structure and prefixes.
 - New PlaceholderAPI values for role name/prefix in chat, scoreboards, and tablist formats.
 - TeamsAPI baseline updated to `2.4.0` for role-definition compatibility.
+- Role-management messages (`custom.role.*`) are now translated into all eight supported locales: English, German, Spanish, French, Japanese, Portuguese (Brazilian), Russian, and Chinese.
 
-### What You Can Use It For
+### What you can use it for
 
 - Lock role changes server-wide while keeping role display prefixes:
   - Set `roles.overrides.enabled: false`.
@@ -29,7 +30,7 @@ This release improves faction role management for production servers and makes r
   - `%pvpindex_player_role%`
   - `%pvpindex_player_role_prefix%`
 
-### Configuration Examples
+### Configuration examples
 
 #### 1) Keep role structure globally controlled (default-safe mode)
 
@@ -76,7 +77,7 @@ roles:
 
 Use this for clearer chat hierarchy and onboarding visibility.
 
-### Commands Added / Updated
+### Commands added / updated
 
 Role management command suite:
 
@@ -94,6 +95,10 @@ Role management command suite:
   - Modrinth: https://modrinth.com/plugin/teams-api
 - PlaceholderAPI role placeholders available:
   - Modrinth: https://modrinth.com/plugin/placeholderapi
+
+### Fixed
+
+- `/f role create` now shows a specific error for each failure path (priority out of range, actor rank too high, name already taken, role limit reached, feature disabled) instead of a generic "Could not create that role" message. The service method return type was changed from `boolean` to a typed `CreateRoleResult` enum with nine distinct values.
 
 ### Notes
 
