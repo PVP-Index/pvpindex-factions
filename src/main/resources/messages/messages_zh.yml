@@ -189,8 +189,10 @@ power:
   change-staff: "<gray>[能量] <white>{player}</white> {delta} ({before} -> {after}) <dark_gray>{source} {reason} {world} {zone}"
   admin-view: "<gray>[能量] <white>{player}</white> power=<yellow>{power}</yellow>, frozen=<yellow>{frozen}</yellow>"
   admin-set-success: "<green>已设置 <white>{player}</white> 的能量: <yellow>{before}</yellow> -> <yellow>{after}</yellow>。"
-  admin-add-success: "<green>已为 <white>{player}</white> 增加 <yellow>{delta}</yellow> 点能量（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。"
-  admin-remove-success: "<green>已从 <white>{player}</white> 移除 <yellow>{delta}</yellow> 点能量（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。"
+  admin-add-success: >-
+    <green>已为 <white>{player}</white> 增加 <yellow>{delta}</yellow> 点能量（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。
+  admin-remove-success: >-
+    <green>已从 <white>{player}</white> 移除 <yellow>{delta}</yellow> 点能量（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。
   admin-reset-success: "<green>已重置 <white>{player}</white> 的能量: <yellow>{before}</yellow> -> <yellow>{after}</yellow>。"
   admin-freeze-success: "<green><white>{player}</white> 的能量冻结状态: <yellow>{state}</yellow>。"
 

@@ -189,8 +189,10 @@ power:
   change-staff: "<gray>[パワー] <white>{player}</white> {delta} ({before} -> {after}) <dark_gray>{source} {reason} {world} {zone}"
   admin-view: "<gray>[パワー] <white>{player}</white> power=<yellow>{power}</yellow>, frozen=<yellow>{frozen}</yellow>"
   admin-set-success: "<green><white>{player}</white> のパワーを設定しました: <yellow>{before}</yellow> -> <yellow>{after}</yellow>。"
-  admin-add-success: "<green><white>{player}</white> に <yellow>{delta}</yellow> パワーを追加しました（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。"
-  admin-remove-success: "<green><white>{player}</white> から <yellow>{delta}</yellow> パワーを削除しました（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。"
+  admin-add-success: >-
+    <green><white>{player}</white> に <yellow>{delta}</yellow> パワーを追加しました（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。
+  admin-remove-success: >-
+    <green><white>{player}</white> から <yellow>{delta}</yellow> パワーを削除しました（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。
   admin-reset-success: "<green><white>{player}</white> のパワーをリセットしました: <yellow>{before}</yellow> -> <yellow>{after}</yellow>。"
   admin-freeze-success: "<green><white>{player}</white> のパワーフリーズ状態: <yellow>{state}</yellow>。"
 

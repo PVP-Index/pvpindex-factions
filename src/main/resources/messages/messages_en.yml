@@ -92,7 +92,8 @@ claim:
   cost-per-chunk: "<yellow>Claiming this chunk costs <gold>{cost}</gold>. You have <gold>{balance}</gold>."
   not-enough-money-claim: "<red>Your faction cannot afford to claim this chunk (costs {cost})."
   overclaimed: "<green>You overclaimed a chunk from <yellow>{faction}<green>!"
-  overclaimed-victim: "<red><yellow>{attacker}<red> overclaimed a chunk from your territory! <yellow>{remaining}<red> chunk(s) remain."
+  overclaimed-victim: >-
+    <red><yellow>{attacker}<red> overclaimed a chunk from your territory! <yellow>{remaining}<red> chunk(s) remain.
   enemy-not-raidable: "<red>{faction} still has enough power — you cannot overclaim their land yet."
   enemy-offline-protected: "<red>{faction} is offline — you cannot overclaim their land while all members are offline."
   shield-active: "<red>{faction} has an active war shield — their territory is protected right now."
@@ -189,8 +190,12 @@ power:
   change-staff: "<gray>[Power] <white>{player}</white> {delta} ({before} -> {after}) <dark_gray>{source} {reason} {world} {zone}"
   admin-view: "<gray>[Power] <white>{player}</white> power=<yellow>{power}</yellow>, frozen=<yellow>{frozen}</yellow>"
   admin-set-success: "<green>Set power for <white>{player}</white>: <yellow>{before}</yellow> -> <yellow>{after}</yellow>."
-  admin-add-success: "<green>Added <yellow>{delta}</yellow> power to <white>{player}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>)."
-  admin-remove-success: "<green>Removed <yellow>{delta}</yellow> power from <white>{player}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>)."
+  admin-add-success: >-
+    <green>Added <yellow>{delta}</yellow> power to <white>{player}</white> (<yellow>{before}</yellow> ->
+    <yellow>{after}</yellow>).
+  admin-remove-success: >-
+    <green>Removed <yellow>{delta}</yellow> power from <white>{player}</white> (<yellow>{before}</yellow> ->
+    <yellow>{after}</yellow>).
   admin-reset-success: "<green>Reset power for <white>{player}</white>: <yellow>{before}</yellow> -> <yellow>{after}</yellow>."
   admin-freeze-success: "<green>Power freeze for <white>{player}</white> is now <yellow>{state}</yellow>."
 
@@ -248,7 +253,8 @@ ezcountdown:
 merge:
   disabled: "<red>Faction merging is not enabled on this server."
   request-sent: "<green>Merge request sent to <yellow>{faction}<green>."
-  request-received: "<yellow>{faction}<green> has sent a merge request to your faction. Use <white>/f merge accept {faction}<green> to absorb them."
+  request-received: >-
+    <yellow>{faction}<green> has sent a merge request to your faction. Use <white>/f merge accept {faction}<green> to absorb them.
   accepted: "<yellow>{faction}<green> has merged into your faction!"
   merged-into: "<green>Successfully merged <yellow>{faction}<green> into your faction."
   already-requested: "<red>A merge request to <yellow>{faction}<red> is already pending."
@@ -346,7 +352,9 @@ custom:
     invalid-priority: "<red>Priority must be a number."
     create-success: "<green>Created role <white>{name}<green> with priority <white>{priority}<green>."
     create-failed: "<red>Could not create that role. Try again or contact a server operator if the problem persists."
-    create-disabled: "<red>Role creation is disabled on this server. Server operator: set roles.custom.enabled: true and roles.overrides.enabled: true in roles.yml, then restart or run /fa reload."
+    create-disabled: >-
+      <red>Role creation is disabled on this server. Server operator: set roles.custom.enabled: true and roles.overrides.enabled:
+      true in roles.yml, then restart or run /fa reload.
     priority-out-of-range: "<red>Priority must be between <yellow>{min}</yellow> and <yellow>{max}</yellow>."
     actor-rank-insufficient: "<red>You cannot create a role with a priority equal to or above your own rank."
     name-taken: "<red>A role named <yellow>{name}</yellow> already exists in your faction."
@@ -357,7 +365,9 @@ custom:
     priority-failed: "<red>Could not update that role priority."
     prefix-success: "<green>Updated role <white>{name}<green> prefix."
     prefix-failed: "<red>Could not update that role prefix. Try again or contact a server operator if the problem persists."
-    prefix-disabled: "<red>Role prefixes are disabled on this server. Server operator: set roles.prefix.enabled: true and roles.overrides.enabled: true in roles.yml, then restart or run /fa reload."
+    prefix-disabled: >-
+      <red>Role prefixes are disabled on this server. Server operator: set roles.prefix.enabled: true and roles.overrides.enabled:
+      true in roles.yml, then restart or run /fa reload.
     delete-success: "<yellow>Deleted role <white>{name}<yellow>."
     delete-failed: "<red>Could not delete that role."
     assign-success: "<green>Assigned role <white>{role}<green> to <white>{player}<green>."

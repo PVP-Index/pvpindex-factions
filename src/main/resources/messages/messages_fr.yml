@@ -35,8 +35,10 @@ help:
     economy-and-utility: "<gold>Économie et utilité</gold>"
   officer-title: "<gold>Conseils aux officiers/modérateurs</gold>"
   officer-line-1: "<gray>- Gérer les invitations : <white>/f liste d'invitations|révoquer|refusertout</white>"
-  officer-line-2: "<gray>- Gérer les rôles : <white>/f promouvoir</white>, <white>/f rétrograder</white>, <white>/f leader</white>"
-  officer-line-3: "<gray>- Protéger le territoire : <white>/f réclamer l'auto sur</white> ou <white>/f annuler la réclamation auto sur</white>"
+  officer-line-2: >-
+    <gray>- Gérer les rôles : <white>/f promouvoir</white>, <white>/f rétrograder</white>, <white>/f leader</white>
+  officer-line-3: >-
+    <gray>- Protéger le territoire : <white>/f réclamer l'auto sur</white> ou <white>/f annuler la réclamation auto sur</white>
   admin-title: "<red><bold>Commandes d'administration</bold></red>"
   tip-notify: "<dark_gray>Conseil : <gray>Utilisez <white>/f notify status</white> pour gérer vos notifications."
   entry-line: "[FR] <yellow>{usage}<gray> - {description}"
@@ -47,9 +49,11 @@ faction:
   name-taken: "<red>Ce nom de faction est déjà pris."
   name-too-short: "Le nom de la faction <red> doit comporter au moins 3 caractères."
   name-too-long: "Le nom de la faction <red> peut contenir au maximum 32 caractères."
-  name-invalid: "Le nom de la faction <red> ne peut contenir que des lettres, des chiffres, des traits de soulignement et des traits d'union."
+  name-invalid: >-
+    Le nom de la faction <red> ne peut contenir que des lettres, des chiffres, des traits de soulignement et des traits d'union.
   disbanded: "La <red>Faction <yellow>{name}</yellow> a été dissoute."
-  disband-confirm: "<yellow>Êtes-vous sûr de vouloir dissoudre votre faction ? Exécutez à nouveau la commande dans les 30 secondes pour confirmer."
+  disband-confirm: >-
+    <yellow>Êtes-vous sûr de vouloir dissoudre votre faction ? Exécutez à nouveau la commande dans les 30 secondes pour confirmer.
   already-in-faction: "<red>Vous êtes déjà dans une faction."
   cost-to-create: "<yellow>Créer une faction coûte <gold>{cost}</gold>. Vous avez <gold>{balance}</gold>."
   not-enough-money-create: "<red>Vous ne pouvez pas vous permettre de créer une faction (coût {cost})."
@@ -67,7 +71,8 @@ member:
 
 invite:
   sent: "<green>Invitation envoyée à <yellow>{joueur}</yellow>."
-  received: "<yellow>{joueur} vous a invité à rejoindre <gold>{faction}</gold>. Tapez <green>/f rejoignez {faction}</green> pour accepter."
+  received: >-
+    <yellow>{joueur} vous a invité à rejoindre <gold>{faction}</gold>. Tapez <green>/f rejoignez {faction}</green> pour accepter.
   summary: "<gold>Vous avez <white>{count}</white> en attente d'invitation(s) de faction :"
   summary-line: "<yellow>- <white>{faction}</white> <gray>(invité par <white>{inviter}</white>)"
   accepted: "<green>Vous avez accepté l'invitation à <yellow>{faction}</yellow>."
@@ -92,9 +97,12 @@ claim:
   cost-per-chunk: "<yellow>Réclamer ce morceau coûte <gold>{cost}</gold>. Vous avez <gold>{balance}</gold>."
   not-enough-money-claim: "<red>Votre faction ne peut pas se permettre de réclamer ce morceau (coût {cost})."
   overclaimed: "<green>Vous avez réclamé une partie de <yellow>{faction}<green> !"
-  overclaimed-victim: "<red><yellow>{attacker}<red> a récupéré une partie de votre territoire ! Il reste des morceaux <yellow>{remaining}<red>."
+  overclaimed-victim: >-
+    <red><yellow>{attacker}<red> a récupéré une partie de votre territoire ! Il reste des morceaux <yellow>{remaining}<red>.
   enemy-not-raidable: "<red>{faction} a encore assez de pouvoir – vous ne pouvez pas encore revendiquer leurs terres."
-  enemy-offline-protected: "<red>{faction} est hors ligne : vous ne pouvez pas revendiquer outre mesure ses terres tant que tous les membres sont hors ligne."
+  enemy-offline-protected: >-
+    <red>{faction} est hors ligne : vous ne pouvez pas revendiquer outre mesure ses terres tant que tous les membres sont hors
+    ligne.
   shield-active: "<red>{faction} a un bouclier de guerre actif – son territoire est actuellement protégé."
   enter-faction: "<gray>Entrer sur le territoire <yellow>{faction}</yellow>."
   enter-wilderness: "<gray>Entrer dans <green>Nature sauvage</green>."
@@ -159,7 +167,8 @@ predefined:
   unknown: "<red>Faction prédéfinie inconnue : <white>{faction}"
   create-not-allowed: "<red>Vous ne pouvez créer que des factions prédéfinies sur ce serveur."
   disband-blocked: "<red>Les factions prédéfinies ne peuvent pas être dissoutes."
-  claim-saved: "<green>Réclamation prédéfinie enregistrée pour <yellow>{faction}</yellow> à <white>{x}</white>,<white>{z}</white>."
+  claim-saved: >-
+    <green>Réclamation prédéfinie enregistrée pour <yellow>{faction}</yellow> à <white>{x}</white>,<white>{z}</white>.
   home-saved: "<green>Maison prédéfinie enregistrée pour <yellow>{faction}</yellow>."
   reload-success: "<green>Factions prédéfinies rechargées."
   reload-failed: "<red>Échec du rechargement des factions prédéfinies."
@@ -186,12 +195,19 @@ power:
   staff-blocked-frozen: "<gray>[Puissance] <white>{joueur}</white> bloqué par le gel. Source : <white>{source}</white>."
   change-actor: "<gray>Puissance <white>{before}</white> -> <white>{after}</white> (<yellow>{delta}</yellow>)"
   change-faction: "<gray>[Faction] <white>{joueur}</white> : <yellow>{delta}</yellow> (<white>{after}</white>)"
-  change-staff: "<gray>[Puissance] <white>{joueur}</white> {delta} ({before} -> {after}) <dark_gray>{source} {reason} {world} {zone}"
+  change-staff: >-
+    <gray>[Puissance] <white>{joueur}</white> {delta} ({before} -> {after}) <dark_gray>{source} {reason} {world} {zone}
   admin-view: "<gray>[Puissance] <white>{joueur}</white> puissance=<yellow>{power}</yellow>, gelé=<yellow>{frozen}</yellow>"
-  admin-set-success: "<green>Régler la puissance pour <white>{joueur}</white> : <yellow>{before}</yellow> -> <yellow>{after}</yellow>."
-  admin-add-success: "<green>Ajout de la puissance <yellow>{delta}</yellow> à <white>{joueur}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>)."
-  admin-remove-success: "<green>Suppression de l'alimentation <yellow>{delta}</yellow> de <white>{joueur}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>)."
-  admin-reset-success: "<green>Réinitialiser l'alimentation pour <white>{joueur}</white> : <yellow>{before}</yellow> -> <yellow>{after}</yellow>."
+  admin-set-success: >-
+    <green>Régler la puissance pour <white>{joueur}</white> : <yellow>{before}</yellow> -> <yellow>{after}</yellow>.
+  admin-add-success: >-
+    <green>Ajout de la puissance <yellow>{delta}</yellow> à <white>{joueur}</white> (<yellow>{before}</yellow> ->
+    <yellow>{after}</yellow>).
+  admin-remove-success: >-
+    <green>Suppression de l'alimentation <yellow>{delta}</yellow> de <white>{joueur}</white> (<yellow>{before}</yellow> ->
+    <yellow>{after}</yellow>).
+  admin-reset-success: >-
+    <green>Réinitialiser l'alimentation pour <white>{joueur}</white> : <yellow>{before}</yellow> -> <yellow>{after}</yellow>.
   admin-freeze-success: "<green>Le gel de puissance pour <white>{joueur}</white> est désormais <yellow>{state}</yellow>."
 
 raidable:
@@ -207,7 +223,8 @@ fly:
   enemy-nearby: "<red>Faction fly désactivée – ennemi à proximité."
 
 lwc:
-  stale-protection-removed: "<yellow>Suppression de la protection LWC obsolète car le propriétaire n'a plus de droits de construction."
+  stale-protection-removed: >-
+    <yellow>Suppression de la protection LWC obsolète car le propriétaire n'a plus de droits de construction.
 
 info:
   header: "[FR] <gold>===== <yellow>{name}</yellow> ====="
@@ -227,7 +244,9 @@ admin:
   reload: "<green>Configuration rechargée."
 
 shield:
-  set: "<green>Ensemble de boucliers de guerre pour <yellow>{faction}</yellow> : <white>{start}:00 UTC</white> pour <white>{duration}h</white>."
+  set: >-
+    <green>Ensemble de boucliers de guerre pour <yellow>{faction}</yellow> : <white>{start}:00 UTC</white> pour
+    <white>{duration}h</white>.
   cleared: "<yellow>Bouclier de guerre autorisé pour <white>{faction}</white>."
   feature-disabled: "Les boucliers <red>War ne sont pas activés sur ce serveur."
   invalid-hour: "<red>L'heure de début doit être 0\u201323."
@@ -237,7 +256,8 @@ notifications:
   inbox-header: "<gold>Notifications de faction manquées (<white>{count}</white>) :"
 
 update:
-  available: "<yellow>Mise à jour disponible pour les factions : <white>{current}</white> -> <green>{latest}</green> <gray>({source})"
+  available: >-
+    <yellow>Mise à jour disponible pour les factions : <white>{current}</white> -> <green>{latest}</green> <gray>({source})
   url: "<gray>Télécharger : <aqua><click:open_url:'__PH0__'>{url}</click>"
 
 ezcountdown:
@@ -248,7 +268,9 @@ ezcountdown:
 merge:
   disabled: "La fusion de <red>Faction n'est pas activée sur ce serveur."
   request-sent: "<green>Demande de fusion envoyée à <yellow>{faction}<green>."
-  request-received: "<yellow>{faction}<green> a envoyé une demande de fusion à votre faction. Utilisez <white>/f merge accept {faction}<green> pour les absorber."
+  request-received: >-
+    <yellow>{faction}<green> a envoyé une demande de fusion à votre faction. Utilisez <white>/f merge accept {faction}<green> pour
+    les absorber.
   accepted: "<yellow>{faction}<green> a fusionné avec votre faction !"
   merged-into: "<green>A fusionné avec succès <yellow>{faction}<green> dans votre faction."
   already-requested: "<red>Une demande de fusion vers <yellow>{faction}<red> est déjà en attente."
@@ -323,10 +345,12 @@ custom:
     separator: "[FR] <dark_gray>----------------------------------------"
     none: "<yellow>Aucune faction trouvée."
     header: "<gold> Factions <gray>(page <white>{page}<gray>, trier <white>{sort}<gray>)"
-    row: "<yellow>#{rank} <white>{name}<gray> | membres <white>{members}<gray> | terrain <white>{land}<gray> | banque <white>{bank}"
+    row: >-
+      <yellow>#{rank} <white>{name}<gray> | membres <white>{members}<gray> | terrain <white>{land}<gray> | banque <white>{bank}
   top:
     header: "<gold> Haut de faction <gray>(page <white>{page}<gray>, tri <white>{sort}<gray>)"
-    row: "<yellow>#{rank} <white>{name}<gray> | puissance <white>{power}<gray> | terrain <white>{land}<gray> | banque <white>{bank}"
+    row: >-
+      <yellow>#{rank} <white>{name}<gray> | puissance <white>{power}<gray> | terrain <white>{land}<gray> | banque <white>{bank}
   invite:
     target-already-in-faction: "<red>Ce joueur fait déjà partie d'une faction."
     sent: "<green>Invité <white>{joueur}<green>."

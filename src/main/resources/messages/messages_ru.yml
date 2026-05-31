@@ -49,7 +49,8 @@ faction:
   name-too-long: "<red>Название фракции не должно превышать 32 символа."
   name-invalid: "<red>Название фракции может содержать только буквы, цифры, подчёркивания и дефисы."
   disbanded: "<red>Фракция <yellow>{name}</yellow> распущена."
-  disband-confirm: "<yellow>Вы уверены, что хотите распустить свою фракцию? Повторите команду в течение 30 секунд для подтверждения."
+  disband-confirm: >-
+    <yellow>Вы уверены, что хотите распустить свою фракцию? Повторите команду в течение 30 секунд для подтверждения.
   already-in-faction: "<red>Вы уже состоите в фракции."
   cost-to-create: "<yellow>Создание фракции стоит <gold>{cost}</gold>. Ваш баланс: <gold>{balance}</gold>."
   not-enough-money-create: "<red>Недостаточно средств для создания фракции (стоимость: {cost})."
@@ -67,7 +68,9 @@ member:
 
 invite:
   sent: "<green>Приглашение отправлено игроку <yellow>{player}</yellow>."
-  received: "<yellow>{player} приглашает вас вступить во фракцию <gold>{faction}</gold>. Введите <green>/f join {faction}</green> для принятия."
+  received: >-
+    <yellow>{player} приглашает вас вступить во фракцию <gold>{faction}</gold>. Введите <green>/f join {faction}</green> для
+    принятия.
   summary: "<gold>У вас <white>{count}</white> ожидающих приглашений во фракцию:"
   summary-line: "<yellow>- <white>{faction}</white> <gray>(от <white>{inviter}</white>)"
   accepted: "<green>Вы приняли приглашение вступить во фракцию <yellow>{faction}</yellow>."
@@ -92,7 +95,8 @@ claim:
   cost-per-chunk: "<yellow>Захват этого чанка стоит <gold>{cost}</gold>. Ваш баланс: <gold>{balance}</gold>."
   not-enough-money-claim: "<red>Недостаточно средств для захвата этого чанка (стоимость: {cost})."
   overclaimed: "<green>Вы отвоевали чанк у <yellow>{faction}</yellow>!"
-  overclaimed-victim: "<red><yellow>{attacker}</yellow> захватил чанк вашей территории! Осталось <yellow>{remaining}</yellow> чанков."
+  overclaimed-victim: >-
+    <red><yellow>{attacker}</yellow> захватил чанк вашей территории! Осталось <yellow>{remaining}</yellow> чанков.
   enemy-not-raidable: "<red>{faction} ещё имеет достаточно силы — пока нельзя отвоевать их землю."
   enemy-offline-protected: "<red>{faction} не в сети — нельзя захватить земли, пока все участники офлайн."
   shield-active: "<red>{faction} имеет активный военный щит — территория сейчас под защитой."
@@ -151,7 +155,8 @@ relation:
     <white>{faction}<yellow>. Отношения вступят в силу, когда другая сторона ответит взаимностью.
   pending-received: "<yellow><white>{faction}</white> запрашивает у вашей фракции отношения <white>{relation}</white>."
   mutual-established: "<green>Взаимные отношения <white>{relation}</white> с <white>{faction}</white> установлены."
-  mutual-established-target: "<green>Фракция <white>{faction}</white> и ваша фракция теперь находятся в отношениях <white>{relation}</white>."
+  mutual-established-target: >-
+    <green>Фракция <white>{faction}</white> и ваша фракция теперь находятся в отношениях <white>{relation}</white>.
   updated-by-other: "<yellow><white>{faction}</white> установила отношения как <white>{relation}</white>."
 
 predefined:
@@ -189,8 +194,11 @@ power:
   change-staff: "<gray>[Сила] <white>{player}</white> {delta} ({before} -> {after}) <dark_gray>{source} {reason} {world} {zone}"
   admin-view: "<gray>[Сила] <white>{player}</white> power=<yellow>{power}</yellow>, frozen=<yellow>{frozen}</yellow>"
   admin-set-success: "<green>Сила <white>{player}</white> установлена: <yellow>{before}</yellow> -> <yellow>{after}</yellow>."
-  admin-add-success: "<green>Добавлено <yellow>{delta}</yellow> силы игроку <white>{player}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>)."
-  admin-remove-success: "<green>Снято <yellow>{delta}</yellow> силы у <white>{player}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>)."
+  admin-add-success: >-
+    <green>Добавлено <yellow>{delta}</yellow> силы игроку <white>{player}</white> (<yellow>{before}</yellow> ->
+    <yellow>{after}</yellow>).
+  admin-remove-success: >-
+    <green>Снято <yellow>{delta}</yellow> силы у <white>{player}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>).
   admin-reset-success: "<green>Сила <white>{player}</white> сброшена: <yellow>{before}</yellow> -> <yellow>{after}</yellow>."
   admin-freeze-success: "<green>Заморозка силы для <white>{player}</white>: <yellow>{state}</yellow>."
 
@@ -227,7 +235,8 @@ admin:
   reload: "<green>Конфигурация перезагружена."
 
 shield:
-  set: "<green>Военный щит установлен для <yellow>{faction}</yellow>: с <white>{start}:00 UTC</white> на <white>{duration}</white> ч."
+  set: >-
+    <green>Военный щит установлен для <yellow>{faction}</yellow>: с <white>{start}:00 UTC</white> на <white>{duration}</white> ч.
   cleared: "<yellow>Военный щит для <white>{faction}</white> снят."
   feature-disabled: "<red>Военный щит на этом сервере не включён."
   invalid-hour: "<red>Час начала должен быть от 0 до 23."
@@ -248,7 +257,9 @@ ezcountdown:
 merge:
   disabled: "<red>Слияние фракций на этом сервере не включено."
   request-sent: "<green>Запрос на слияние отправлен фракции <yellow>{faction}</yellow>."
-  request-received: "<yellow>{faction}</yellow> отправила вашей фракции запрос на слияние. Используйте <white>/f merge accept {faction}</white> для принятия."
+  request-received: >-
+    <yellow>{faction}</yellow> отправила вашей фракции запрос на слияние. Используйте <white>/f merge accept {faction}</white> для
+    принятия.
   accepted: "<yellow>{faction}</yellow> слилась с вашей фракцией!"
   merged-into: "<green>Фракция <yellow>{faction}</yellow> успешно объединена с вашей."
   already-requested: "<red>Запрос на слияние с <yellow>{faction}</yellow> уже ожидает рассмотрения."

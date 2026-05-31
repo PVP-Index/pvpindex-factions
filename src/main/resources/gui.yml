@@ -208,4 +208,3 @@
           lore:
             - "<gray>Close this menu."
           action: CLOSE
-

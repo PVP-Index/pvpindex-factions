@@ -36,7 +36,8 @@ help:
   officer-title: "<gold>Consejos para funcionarios/moderadores</gold>"
   officer-line-1: "<gray>- Administrar invitaciones: <white>/f lista de invitaciones|revocar|declineall</white>"
   officer-line-2: "<gray>- Administrar roles: <white>/f promover</white>, <white>/f degradar</white>, <white>/f líder</white>"
-  officer-line-3: "<gray>- Proteger territorio: <white>/f reclamar automáticamente en</white> o <white>/f no reclamar automáticamente en</white>"
+  officer-line-3: >-
+    <gray>- Proteger territorio: <white>/f reclamar automáticamente en</white> o <white>/f no reclamar automáticamente en</white>
   admin-title: "<red><bold>Comandos de administración</bold></red>"
   tip-notify: "<dark_gray>Consejo: <gray>Utilice <white>/f notificar estado</white> para administrar sus notificaciones."
   entry-line: "[ES] <yellow>{usage}<gray> - {description}"
@@ -49,7 +50,8 @@ faction:
   name-too-long: "<red>El nombre de la facción puede tener como máximo 32 caracteres."
   name-invalid: "<red>El nombre de la facción solo puede contener letras, dígitos, guiones bajos y guiones."
   disbanded: "<red>Facción <yellow>{name}</yellow> se ha disuelto."
-  disband-confirm: "<yellow>¿Estás seguro de que quieres disolver tu facción? Ejecute el comando nuevamente dentro de 30 segundos para confirmar."
+  disband-confirm: >-
+    <yellow>¿Estás seguro de que quieres disolver tu facción? Ejecute el comando nuevamente dentro de 30 segundos para confirmar.
   already-in-faction: "<red>Ya estás en una facción."
   cost-to-create: "<yellow>Crear una facción cuesta <gold>{cost}</gold>. Tienes <gold>{balance}</gold>."
   not-enough-money-create: "<red>No puedes darte el lujo de crear una facción (cuesta {cost})."
@@ -67,7 +69,8 @@ member:
 
 invite:
   sent: "<green>Invitación enviada a <yellow>{player}</yellow>."
-  received: "<yellow>{player} te ha invitado a unirte a <gold>{faction}</gold>. Escriba <green>/f join {faction}</green> para aceptar."
+  received: >-
+    <yellow>{player} te ha invitado a unirte a <gold>{faction}</gold>. Escriba <green>/f join {faction}</green> para aceptar.
   summary: "<gold>Tienes <white>{count}</white> invitaciones de facción pendientes:"
   summary-line: "<yellow>- <white>{faction}</white> <gray>(invitado por <white>{inviter}</white>)"
   accepted: "<green>Aceptaste la invitación a <yellow>{faction}</yellow>."
@@ -92,9 +95,11 @@ claim:
   cost-per-chunk: "<yellow>Reclamar este fragmento cuesta <gold>{cost}</gold>. Tienes <gold>{balance}</gold>."
   not-enough-money-claim: "<red>Tu facción no puede darse el lujo de reclamar esta porción (cuesta {cost})."
   overclaimed: "<green>¡Reclamaste en exceso una parte de <yellow>{faction}<green>!"
-  overclaimed-victim: "¡<red><yellow>{attacker}<red> reclamó una parte de tu territorio! Quedan <yellow>{remaining}<red> fragmentos."
+  overclaimed-victim: >-
+    ¡<red><yellow>{attacker}<red> reclamó una parte de tu territorio! Quedan <yellow>{remaining}<red> fragmentos.
   enemy-not-raidable: "<red>{faction} todavía tiene suficiente poder; todavía no puedes reclamar sus tierras."
-  enemy-offline-protected: "<red>{faction} está desconectado: no puedes reclamar sus tierras mientras todos los miembros están desconectados."
+  enemy-offline-protected: >-
+    <red>{faction} está desconectado: no puedes reclamar sus tierras mientras todos los miembros están desconectados.
   shield-active: "<red>{faction} tiene un escudo de guerra activo: su territorio está protegido en este momento."
   enter-faction: "<gray>Entrando en territorio <yellow>{faction}</yellow>."
   enter-wilderness: "<gray>Entrando en <green>Desierto</green>."
@@ -136,7 +141,8 @@ flag:
   entry-off: "<gray> {flag}: <red>OFF</red>{edit_note}"
   set-on: "<green>Flag '<white>{flag}</white>' ahora es <green>ON</green>."
   set-off: "<red>Flag '<white>{flag}</white>' ahora es <red>OFF</red>."
-  invalid: "<red>Bandera desconocida '<white>{flag}</white>'. Válido: pvp, fuego amigo, explosiones, propagación de fuego, abierto"
+  invalid: >-
+    <red>Bandera desconocida '<white>{flag}</white>'. Válido: pvp, fuego amigo, explosiones, propagación de fuego, abierto
   not-editable: "<red>Flag '<white>{flag}</white>' está bloqueado por el administrador del servidor."
   officer-required: "<red>Solo los oficiales o superiores pueden cambiar las banderas de facción."
   admin-override: "<gray>[Administrador] Configure '<white>{flag}</white>' para <white>{faction}</white>."
@@ -186,12 +192,19 @@ power:
   staff-blocked-frozen: "<gray>[Power] <white>{player}</white> bloqueado por congelación. Fuente: <white>{source}</white>."
   change-actor: "<gray>Potencia <white>{before}</white> -> <white>{after}</white> (<yellow>{delta}</yellow>)"
   change-faction: "<gray>[Facción] <white>{player}</white>: <yellow>{delta}</yellow> (<white>{after}</white>)"
-  change-staff: "<gray>[Alimentación] <white>{player}</white> {delta} ({before} -> {after}) <dark_gray>{source} {reason} {world} {zone}"
+  change-staff: >-
+    <gray>[Alimentación] <white>{player}</white> {delta} ({before} -> {after}) <dark_gray>{source} {reason} {world} {zone}
   admin-view: "<gray>[Potencia] <white>{player}</white> potencia=<yellow>{power}</yellow>, congelado=<yellow>{frozen}</yellow>"
-  admin-set-success: "<green>Establezca la potencia para <white>{player}</white>: <yellow>{before}</yellow> -> <yellow>{after}</yellow>."
-  admin-add-success: "<green>Se agregó energía <yellow>{delta}</yellow> a <white>{player}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>)."
-  admin-remove-success: "<green>Se eliminó la energía <yellow>{delta}</yellow> de <white>{player}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>)."
-  admin-reset-success: "<green>Restablecer energía para <white>{player}</white>: <yellow>{before}</yellow> -> <yellow>{after}</yellow>."
+  admin-set-success: >-
+    <green>Establezca la potencia para <white>{player}</white>: <yellow>{before}</yellow> -> <yellow>{after}</yellow>.
+  admin-add-success: >-
+    <green>Se agregó energía <yellow>{delta}</yellow> a <white>{player}</white> (<yellow>{before}</yellow> ->
+    <yellow>{after}</yellow>).
+  admin-remove-success: >-
+    <green>Se eliminó la energía <yellow>{delta}</yellow> de <white>{player}</white> (<yellow>{before}</yellow> ->
+    <yellow>{after}</yellow>).
+  admin-reset-success: >-
+    <green>Restablecer energía para <white>{player}</white>: <yellow>{before}</yellow> -> <yellow>{after}</yellow>.
   admin-freeze-success: "<green>La congelación de energía para <white>{player}</white> ahora es <yellow>{state}</yellow>."
 
 raidable:
@@ -207,7 +220,8 @@ fly:
   enemy-nearby: "<red>Vuelo de facción desactivado: enemigo cercano."
 
 lwc:
-  stale-protection-removed: "<yellow>Se eliminó la protección LWC obsoleta porque el propietario ya no tiene derechos de construcción."
+  stale-protection-removed: >-
+    <yellow>Se eliminó la protección LWC obsoleta porque el propietario ya no tiene derechos de construcción.
 
 info:
   header: "[ES] <gold>===== <yellow>{name}</yellow> ====="
@@ -227,7 +241,9 @@ admin:
   reload: "<green>Configuración recargada."
 
 shield:
-  set: "<green>Escudo de guerra configurado para <yellow>{faction}</yellow>: <white>{start}:00 UTC</white> para <white>{duration}h</white>."
+  set: >-
+    <green>Escudo de guerra configurado para <yellow>{faction}</yellow>: <white>{start}:00 UTC</white> para
+    <white>{duration}h</white>.
   cleared: "<yellow>Escudo de guerra despejado para <white>{faction}</white>."
   feature-disabled: "<red>Los escudos de guerra no están habilitados en este servidor."
   invalid-hour: "<red>La hora de inicio debe ser 0\u201323."
@@ -237,7 +253,8 @@ notifications:
   inbox-header: "<gold>Notificaciones de facciones perdidas (<white>{count}</white>):"
 
 update:
-  available: "<yellow>Actualización disponible para Facciones: <white>{current}</white> -> <green>{latest}</green> <gray>({source})"
+  available: >-
+    <yellow>Actualización disponible para Facciones: <white>{current}</white> -> <green>{latest}</green> <gray>({source})
   url: "<gray>Descargar: <aqua><click:open_url:'__PH0__'>{url}</click>"
 
 ezcountdown:
@@ -248,7 +265,9 @@ ezcountdown:
 merge:
   disabled: "<red>La fusión de facciones no está habilitada en este servidor."
   request-sent: "<green>Solicitud de fusión enviada a <yellow>{faction}<green>."
-  request-received: "<yellow>{faction}<green> ha enviado una solicitud de fusión a tu facción. Utilice <white>/f merge aceptar {faction}<green> para absorberlos."
+  request-received: >-
+    <yellow>{faction}<green> ha enviado una solicitud de fusión a tu facción. Utilice <white>/f merge aceptar {faction}<green>
+    para absorberlos.
   accepted: "¡<yellow>{faction}<green> se ha fusionado con tu facción!"
   merged-into: "<green>Fusionaste con éxito <yellow>{faction}<green> en tu facción."
   already-requested: "<red>Ya está pendiente una solicitud de fusión para <yellow>{faction}<red>."
@@ -323,7 +342,8 @@ custom:
     separator: "[ES] <dark_gray>----------------------------------------"
     none: "<yellow>No se encontraron facciones."
     header: "<gold> Facciones <gray>(página <white>{page}<gray>, ordenar <white>{sort}<gray>)"
-    row: "<yellow>#{rank} <white>{name}<gray> | miembros <white>{members}<gray> | terreno <white>{land}<gray> | banco <white>{bank}"
+    row: >-
+      <yellow>#{rank} <white>{name}<gray> | miembros <white>{members}<gray> | terreno <white>{land}<gray> | banco <white>{bank}
   top:
     header: "<gold> Facción superior <gray>(página <white>{page}<gray>, orden <white>{sort}<gray>)"
     row: "<yellow>#{rank} <white>{name}<gray> | potencia <white>{power}<gray> | terreno <white>{land}<gray> | banco <white>{bank}"
@@ -356,7 +376,8 @@ custom:
     priority-success: "<green>Prioridad del rol <white>{name}<green> establecida en <white>{priority}<green>."
     priority-failed: "<red>No se pudo actualizar la prioridad del rol."
     prefix-success: "<green>Prefijo del rol <white>{name}<green> actualizado."
-    prefix-failed: "<red>No se pudo actualizar el prefijo del rol. Inténtalo de nuevo o contacta a un operador si el problema persiste."
+    prefix-failed: >-
+      <red>No se pudo actualizar el prefijo del rol. Inténtalo de nuevo o contacta a un operador si el problema persiste.
     prefix-disabled: "<red>Los prefijos de rol están desactivados. Activa roles.prefix.enabled y roles.overrides.enabled."
     delete-success: "<yellow>Rol <white>{name}<yellow> eliminado."
     delete-failed: "<red>No se pudo eliminar ese rol."
