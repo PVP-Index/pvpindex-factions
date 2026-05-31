@@ -170,10 +170,6 @@ public final class FactionTeam implements Team {
      * @return priority value
      */
     public static int roleToPriority(final TeamRole role) {
-        return switch (role) {
-            case OWNER -> RankModel.PRIORITY_OWNER;
-            case ADMIN -> RankModel.PRIORITY_OFFICER;
-            case MEMBER -> RankModel.PRIORITY_MEMBER;
-        };
+        return TeamRoleMapper.roleToPriority(role);
     }
 }

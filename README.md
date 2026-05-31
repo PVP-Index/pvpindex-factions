@@ -38,7 +38,7 @@ The plugin starts without any of these. Each integration is enabled only when th
 | Vault | Economy costs for faction creation and land claiming |
 | WorldGuard / WorldEdit | Territory protection hooks |
 | PlaceholderAPI | Faction placeholders for scoreboards and chat |
-| TeamsAPI | Team synchronization adapter; exposes faction, power, and power-history data through a standard API surface (2.3.0+ recommended) |
+| TeamsAPI | Team synchronization adapter; exposes faction, power, power-history, and role-definition data through a standard API surface (2.4.0+ recommended) |
 | EssentialsX | Route `/f home` through the Essentials teleport system |
 | dynmap | Render faction territory on the dynmap web map |
 | EzEconomy | Alternative economy provider |
@@ -123,6 +123,18 @@ Checkstyle enforces UTF-8 encoding, no star imports, no trailing whitespace, and
 | `factions.language.default` | `en` | Server default locale; player locale overrides this per-player |
 | `factions.audit.page-size` | `10` | Entries per page for `/f audit` and `/fa audit` |
 
+Role-specific settings live in `roles.yml`:
+| `roles.overrides.enabled` (`roles.yml`) | `false` | Global toggle for per-faction role overrides |
+| `roles.custom.enabled` (`roles.yml`) | `true` | Enable custom role creation/editing |
+| `roles.custom.min-priority` (`roles.yml`) | `11` | Minimum priority for custom roles |
+| `roles.custom.max-priority` (`roles.yml`) | `99` | Maximum priority for custom roles |
+| `roles.custom.max-per-faction` (`roles.yml`) | `8` | Maximum custom roles per faction (`0` = unlimited) |
+| `roles.prefix.enabled` (`roles.yml`) | `true` | Allow role prefix edits |
+| `roles.prefix.max-length` (`roles.yml`) | `32` | Maximum role prefix length (`0` = unlimited) |
+| `roles.defaults.owner.prefix` (`roles.yml`) | `"<gold>[Owner]</gold>"` | Default Owner role prefix for new factions |
+| `roles.defaults.officer.prefix` (`roles.yml`) | `"<yellow>[Officer]</yellow>"` | Default Officer role prefix for new factions |
+| `roles.defaults.member.prefix` (`roles.yml`) | `""` | Default Member role prefix for new factions |
+
 ---
 
 ## Commands
@@ -149,6 +161,13 @@ Admin commands use `/fa` (aliases: `/factionadmin`) and require the `factions.ad
 | `promote <player>` | Promote a member one rank |
 | `demote <player>` | Demote a member one rank |
 | `leader <player>` | Transfer faction leadership |
+| `role list` | List faction roles |
+| `role create <name> <priority> [prefix]` | Create a custom faction role |
+| `role rename <old> <new>` | Rename a custom faction role |
+| `role setpriority <role> <priority>` | Change a custom role priority |
+| `role setprefix <role> <prefix\|none>` | Set or clear a role prefix |
+| `role delete <role>` | Delete a custom faction role |
+| `role assign <player> <role>` | Assign a role to a faction member |
 | `info [faction]` | Show faction info |
 | `list` | List all factions |
 | `top` | Leaderboard ranked by power |

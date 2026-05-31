@@ -16,6 +16,15 @@ Rank management:
 - Promote: `/f promote <player>`
 - Demote: `/f demote <player>`
 - Transfer leadership: `/f leader <player>`
+- Role management: `/f role list|create|rename|setpriority|setprefix|delete|assign`
+
+## Custom Roles and Prefixes
+
+- Custom roles are configurable through `roles.custom.*` in `roles.yml`.
+- Prefix editing is configurable through `roles.prefix.*` in `roles.yml`.
+- Per-faction role overrides are globally controlled by `roles.overrides.enabled` in `roles.yml`.
+- Core roles (`Owner`, `Officer`, `Member`) remain protected from destructive edits.
+- Role authority is enforced consistently across `/f promote`, `/f demote`, `/f leader`, and `/f role assign`.
 
 ## Notes
 

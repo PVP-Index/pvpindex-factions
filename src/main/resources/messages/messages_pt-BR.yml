@@ -36,7 +36,9 @@ help:
   officer-title: "<gold>Dicas para oficiais/moderadores</gold>"
   officer-line-1: "<gray>- Gerenciar convites: <white>/f lista de convites|revoke|declineall</white>"
   officer-line-2: "<gray>- Gerenciar funções: <white>/f promover</white>, <white>/f rebaixar</white>, <white>/f líder</white>"
-  officer-line-3: "<gray>- Proteger território: <white>/f reivindicação automática em</white> ou <white>/f cancelamento de reivindicação automática em</white>"
+  officer-line-3: >-
+    <gray>- Proteger território: <white>/f reivindicação automática em</white> ou <white>/f cancelamento de reivindicação
+    automática em</white>
   admin-title: "<red><bold>Comandos de administrador</bold></red>"
   tip-notify: "<dark_gray>Dica: <gray>Use <white>/f notify status</white> para gerenciar suas notificações."
   entry-line: "<yellow>{usage}<gray> - descrição: {description}"
@@ -49,7 +51,8 @@ faction:
   name-too-long: "<red>O nome da facção pode ter no máximo 32 caracteres."
   name-invalid: "<red>O nome da facção só pode conter letras, dígitos, sublinhados e hifens."
   disbanded: "<red>Faction <yellow>{name}</yellow> foi dissolvida."
-  disband-confirm: "<yellow>Tem certeza que deseja desmantelar sua facção? Execute o comando novamente dentro de 30 segundos para confirmar."
+  disband-confirm: >-
+    <yellow>Tem certeza que deseja desmantelar sua facção? Execute o comando novamente dentro de 30 segundos para confirmar.
   already-in-faction: "<red>Você já está em uma facção."
   cost-to-create: "<yellow>Criar uma facção custa <gold>{cost}</gold>. Você tem <gold>{balance}</gold>."
   not-enough-money-create: "<red>Você não pode criar uma facção (custa {cost})."
@@ -67,7 +70,9 @@ member:
 
 invite:
   sent: "<green>Convite enviado para <yellow>{player}</yellow>."
-  received: "<yellow>{player} convidou você para participar de <gold>{faction}</gold>. Digite <green>/f join {faction}</green> para aceitar."
+  received: >-
+    <yellow>{player} convidou você para participar de <gold>{faction}</gold>. Digite <green>/f join {faction}</green> para
+    aceitar.
   summary: "<gold>Você tem <white>{count}</white> convite(s) de facção pendentes:"
   summary-line: "<yellow>- <white>{faction}</white> <gray>(convidado por <white>{inviter}</white>)"
   accepted: "<green>Você aceitou o convite para <yellow>{faction}</yellow>."
@@ -92,9 +97,11 @@ claim:
   cost-per-chunk: "<yellow>Reivindicar este pedaço custa <gold>{cost}</gold>. Você tem <gold>{balance}</gold>."
   not-enough-money-claim: "<red>Sua facção não pode se dar ao luxo de reivindicar este pedaço (custa {cost})."
   overclaimed: "<green>Você reivindicou um pedaço de <yellow>{faction}<green>!"
-  overclaimed-victim: "<red><yellow>{attacker}<red> reivindicou um pedaço do seu território! <yellow>{remaining}<red> pedaços permanecem."
+  overclaimed-victim: >-
+    <red><yellow>{attacker}<red> reivindicou um pedaço do seu território! <yellow>{remaining}<red> pedaços permanecem.
   enemy-not-raidable: "<red>{faction} ainda tem energia suficiente – você ainda não pode reivindicar suas terras."
-  enemy-offline-protected: "<red>{faction} está offline – você não pode reivindicar suas terras enquanto todos os membros estiverem offline."
+  enemy-offline-protected: >-
+    <red>{faction} está offline – você não pode reivindicar suas terras enquanto todos os membros estiverem offline.
   shield-active: "<red>{faction} tem um escudo de guerra ativo – seu território está protegido agora."
   enter-faction: "<gray>Entrando no território <yellow>{faction}</yellow>."
   enter-wilderness: "<gray>Entrando em <green>Selvagem</green>."
@@ -188,10 +195,16 @@ power:
   change-faction: "<gray>[Facção] <white>{player}</white>: <yellow>{delta}</yellow> (<white>{after}</white>)"
   change-staff: "<gray>[Poder] <white>{player}</white> {delta} ({before} -> {after}) <dark_gray>{source} {reason} {world} {zone}"
   admin-view: "<gray>[Poder] <white>{player}</white> poder=<yellow>{power}</yellow>, congelado=<yellow>{frozen}</yellow>"
-  admin-set-success: "<green>Defina a potência para <white>{player}</white>: <yellow>{before}</yellow> -> <yellow>{after}</yellow>."
-  admin-add-success: "<green>Adicionada potência <yellow>{delta}</yellow> a <white>{player}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>)."
-  admin-remove-success: "<green>Removida a alimentação <yellow>{delta}</yellow> de <white>{player}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>)."
-  admin-reset-success: "<green>Redefinir a alimentação para <white>{player}</white>: <yellow>{before}</yellow> -> <yellow>{after}</yellow>."
+  admin-set-success: >-
+    <green>Defina a potência para <white>{player}</white>: <yellow>{before}</yellow> -> <yellow>{after}</yellow>.
+  admin-add-success: >-
+    <green>Adicionada potência <yellow>{delta}</yellow> a <white>{player}</white> (<yellow>{before}</yellow> ->
+    <yellow>{after}</yellow>).
+  admin-remove-success: >-
+    <green>Removida a alimentação <yellow>{delta}</yellow> de <white>{player}</white> (<yellow>{before}</yellow> ->
+    <yellow>{after}</yellow>).
+  admin-reset-success: >-
+    <green>Redefinir a alimentação para <white>{player}</white>: <yellow>{before}</yellow> -> <yellow>{after}</yellow>.
   admin-freeze-success: "<green>O congelamento de energia para <white>{player}</white> agora é <yellow>{state}</yellow>."
 
 raidable:
@@ -227,7 +240,9 @@ admin:
   reload: "<green>Configuração recarregada."
 
 shield:
-  set: "<green>Escudo de guerra definido para <yellow>{faction}</yellow>: <white>{start}:00 UTC</white> para <white>{duration}h</white>."
+  set: >-
+    <green>Escudo de guerra definido para <yellow>{faction}</yellow>: <white>{start}:00 UTC</white> para
+    <white>{duration}h</white>.
   cleared: "<yellow>Escudo de guerra liberado para <white>{faction}</white>."
   feature-disabled: "<red>Os escudos de guerra não estão habilitados neste servidor."
   invalid-hour: "<red>A hora de início deve ser 0\u201323."
@@ -248,7 +263,9 @@ ezcountdown:
 merge:
   disabled: "<red>A fusão de facções não está habilitada neste servidor."
   request-sent: "<green>Solicitação de mesclagem enviada para <yellow>{faction}<green>."
-  request-received: "<yellow>{faction}<green> enviou um pedido de fusão para sua facção. Use <white>/f merge accept {faction}<green> para absorvê-los."
+  request-received: >-
+    <yellow>{faction}<green> enviou um pedido de fusão para sua facção. Use <white>/f merge accept {faction}<green> para
+    absorvê-los.
   accepted: "<yellow>{faction}<green> se fundiu com sua facção!"
   merged-into: "<green>Mesclado com sucesso <yellow>{faction}<green> em sua facção."
   already-requested: "<red>Uma solicitação de mesclagem para <yellow>{faction}<red> já está pendente."
@@ -323,7 +340,8 @@ custom:
     separator: "<dark_gray>-------------------------------------------"
     none: "<yellow>Nenhuma facção encontrada."
     header: "<gold> Facções <gray> (página <white>{page}<gray>, tipo <white>{sort}<gray>)"
-    row: "<yellow>#{rank} <white>{name}<gray> | membros <white>{members}<gray> | terreno <white>{land}<gray> | banco <white>{bank}"
+    row: >-
+      <yellow>#{rank} <white>{name}<gray> | membros <white>{members}<gray> | terreno <white>{land}<gray> | banco <white>{bank}
   top:
     header: "<gold> Topo da facção <gray> (página <white>{page}<gray>, classifique <white>{sort}<gray>)"
     row: "<yellow>#{rank} <white>{name}<gray> | potência <white>{power}<gray> | terreno <white>{land}<gray> | banco <white>{bank}"
@@ -340,81 +358,26 @@ custom:
     help-send: "<yellow>/f mesclagem enviar <faction> <gray>- Enviar uma solicitação de mesclagem"
     help-accept: "<yellow>/f mesclagem aceitar <faction> <gray>- Aceitar uma solicitação de mesclagem"
 
+  role:
+    list-header: "<gold>== Cargos da Facção =="
+    list-entry: "<gray>- <white>{name}<gray> | prioridade <white>{priority}<gray> | prefixo <white>{prefix}"
+    invalid-priority: "<red>A prioridade deve ser um número."
+    create-success: "<green>Cargo <white>{name}<green> criado com prioridade <white>{priority}<green>."
+    create-failed: "<red>Não foi possível criar esse cargo. Tente novamente ou contate um operador se o problema persistir."
+    create-disabled: "<red>Criação de cargos está desativada. Ative roles.custom.enabled e roles.overrides.enabled."
+    priority-out-of-range: "<red>A prioridade deve estar entre <yellow>{min}</yellow> e <yellow>{max}</yellow>."
+    actor-rank-insufficient: "<red>Você não pode criar um cargo com prioridade igual ou maior que o seu."
+    name-taken: "<red>Já existe um cargo chamado <yellow>{name}</yellow> na sua facção."
+    limit-reached: "<red>Sua facção atingiu o número máximo de cargos personalizados."
+    rename-success: "<green>Cargo <white>{old}<green> renomeado para <white>{new}<green>."
+    rename-failed: "<red>Não foi possível renomear esse cargo."
+    priority-success: "<green>Prioridade do cargo <white>{name}<green> definida como <white>{priority}<green>."
+    priority-failed: "<red>Não foi possível atualizar a prioridade do cargo."
+    prefix-success: "<green>Prefixo do cargo <white>{name}<green> atualizado."
+    prefix-failed: "<red>Não foi possível atualizar o prefixo do cargo. Tente novamente ou contate um operador."
+    prefix-disabled: "<red>Prefixos de cargo estão desativados. Ative roles.prefix.enabled e roles.overrides.enabled."
+    delete-success: "<yellow>Cargo <white>{name}<yellow> excluído."
+    delete-failed: "<red>Não foi possível excluir esse cargo."
+    assign-success: "<green>Cargo <white>{role}<green> atribuído a <white>{player}<green>."
+    assign-failed: "<red>Não foi possível atribuir esse cargo."
 map:
-  separator: "<dark_gray>----------------------------------------"
-  header: "<gold> Mapa de Território <gray>({world} @ {x}, {z})"
-  hint: "<gray>Use <white>/f map on</white> para manter os títulos de território ativados."
-  legend: "<gray>Legenda: <white>■ <gray>você, <green>■ <gray>sua facção, <yellow>■ <gray>outra facção, <aqua>■ <gray>zona segura, <red>■ <gray>zona de guerra, <dark_gray>■ <gray>deserto"
-  enabled: "<green>Títulos de território ativados."
-  disabled: "<yellow>Títulos de território desativados."
-  error:
-    usage: "<red>Uso: /f map [on|off|once] [--size=<size>]"
-    size-nan: "<red>O tamanho do mapa deve ser um número."
-    size-small: "<red>O tamanho do mapa deve ser pelo menos 1."
-    save-failed: "<red>Falha ao atualizar preferência do mapa."
-
-gui:
-  items:
-    info:
-      name: "<gold><bold>Sua Facção</bold></gold>"
-      lore:
-        - "<gray>Facção: <white>{faction}</white>"
-        - "<gray>Membros: <white>{faction_members}</white>"
-        - "<gray>Território: <white>{faction_land}</white>"
-        - "<gray>Banco: <white>${faction_bank}</white>"
-        - "<dark_gray>Abrir informações detalhadas"
-    map:
-      name: "<aqua><bold>Mapa de Território</bold></aqua>"
-      lore:
-        - "<gray>Abre um mapa territorial ao vivo."
-        - "<dark_gray>Clique para executar /f map"
-    claim:
-      name: "<green><bold>Reivindicar Chunk Atual</bold></green>"
-      lore:
-        - "<gray>Reivindicar onde você está parado."
-        - "<dark_gray>Ação rápida de reivindicação"
-    unclaim:
-      name: "<red><bold>Abandonar Chunk Atual</bold></red>"
-      lore:
-        - "<gray>Abandonar onde você está parado."
-        - "<dark_gray>Ação rápida de abandono"
-    invites:
-      name: "<yellow><bold>Convites</bold></yellow>"
-      lore:
-        - "<gray>Revisar e aceitar convites pendentes."
-        - "<dark_gray>Abre a lista de convites"
-    home:
-      name: "<gold><bold>Base da Facção</bold></gold>"
-      lore:
-        - "<gray>Teleportar para a base da facção."
-        - "<dark_gray>Clique para executar /f home"
-    warps:
-      name: "<light_purple><bold>Warps</bold></light_purple>"
-      lore:
-        - "<gray>Ver e usar warps da facção."
-        - "<dark_gray>Clique para executar /f warp list"
-    top:
-      name: "<#3ddad7><bold>Top Facções</bold></#3ddad7>"
-      lore:
-        - "<gray>Abrir o ranking das facções."
-        - "<dark_gray>Clique para executar /f top"
-    your-power:
-      name: "<white><bold>{player}</bold></white>"
-      lore:
-        - "<gray>Poder: <white>{power}</white><gray>/<white>{max_power}</white>"
-        - "<dark_gray>Status pessoal de facção"
-    language-status:
-      name: "<aqua><bold>Idioma</bold></aqua>"
-      lore:
-        - "<gray>Atual: <white>{language_current}</white>"
-        - "<gray>Padrão: <white>{language_default}</white>"
-        - "<dark_gray>Atualize após mudar"
-    language-reset:
-      name: "<yellow><bold>Redefinir Idioma</bold></yellow>"
-      lore:
-        - "<gray>Usar idioma padrão do servidor"
-        - "<dark_gray>Equivalente a /f language reset"
-    close:
-      name: "<red><bold>Fechar</bold></red>"
-      lore:
-        - "<gray>Fechar este menu."

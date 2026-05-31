@@ -37,11 +37,15 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
     private Object notificationAdapter;
     /** Stored as Object to avoid a bytecode-level reference to TeamsPowerHistoryService (TeamsAPI 1.8+). */
     private Object powerHistoryAdapter;
+    private com.pvpindex.factions.data.Repositories repos;
+    private Logger logger;
 
     @Override
     public boolean register(final Plugin plugin, final FactionServiceImpl factionImpl,
             final InviteServiceImpl inviteImpl, final WarpServiceImpl warpImpl,
             final TeamChestServiceImpl teamChestImpl) {
+        repos = factionImpl.getRepos();
+        logger = factionImpl.getLogger();
         teamsAdapter = new FactionsTeamsService(factionImpl);
         inviteAdapter = new FactionsTeamsInviteService(inviteImpl);
         warpAdapter = new FactionsTeamsWarpService(warpImpl, factionImpl);
@@ -54,6 +58,52 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
             TeamsAPI.registerWarpProvider(plugin, warpAdapter);
             TeamsAPI.registerClaimProvider(plugin, claimAdapter);
             TeamsAPI.registerPowerProvider(plugin, powerAdapter);
+            TeamsCustomRoleRegistry.registerAll(plugin, repos, logger);
+
+            // Install a runtime notifier so role lifecycle changes (create/update/rename/delete)
+            // are mirrored to TeamsAPI custom role definitions while TeamsAPI is present.
+            RoleChangeNotifierHolder.setNotifier(new RoleChangeNotifier() {
+                @Override
+                public void roleCreated(final com.pvpindex.factions.data.model.RankModel rank) {
+                    try {
+                        TeamsAPI.registerCustomRole(plugin, TeamsCustomRoleRegistry.toRoleDefinition(rank));
+                    } catch (Exception e) {
+                        logger.warning("Failed to register TeamsAPI custom role: " + e.getMessage());
+                    }
+                }
+
+                @Override
+                public void roleUpdated(final com.pvpindex.factions.data.model.RankModel rank) {
+                    try {
+                        TeamsAPI.registerCustomRole(plugin, TeamsCustomRoleRegistry.toRoleDefinition(rank));
+                    } catch (Exception e) {
+                        logger.warning("Failed to update TeamsAPI custom role: " + e.getMessage());
+                    }
+                }
+
+                @Override
+                public void roleRenamed(final com.pvpindex.factions.data.model.RankModel rank, final String oldName) {
+                    try {
+                        final String oldKey = TeamsCustomRoleRegistry.roleKey(rank.getFactionId(), rank.getId(), oldName);
+                        TeamsAPI.unregisterCustomRole(oldKey);
+                    } catch (Exception ignored) { }
+                    try {
+                        TeamsAPI.registerCustomRole(plugin, TeamsCustomRoleRegistry.toRoleDefinition(rank));
+                    } catch (Exception e) {
+                        logger.warning("Failed to register TeamsAPI custom role after rename: " + e.getMessage());
+                    }
+                }
+
+                @Override
+                public void roleDeleted(final com.pvpindex.factions.data.model.RankModel rank) {
+                    try {
+                        final String key = TeamsCustomRoleRegistry.roleKey(rank.getFactionId(), rank.getId(), rank.getName());
+                        TeamsAPI.unregisterCustomRole(key);
+                    } catch (Exception e) {
+                        logger.warning("Failed to unregister TeamsAPI custom role: " + e.getMessage());
+                    }
+                }
+            });
         } catch (Exception e) {
             unregister();
             return false;
@@ -211,5 +261,16 @@ public final class TeamsApiRegistrarImpl implements TeamsApiRegistrar {
             } catch (ReflectiveOperationException ignored) { }
             powerHistoryAdapter = null;
         }
+        // Always clear custom roles last; this is independent from optional service providers.
+        // The keys are reconstructed from repository data and no-op when absent.
+        if (repos != null && logger != null) {
+            try {
+                TeamsCustomRoleRegistry.unregisterAllForPluginData(repos, logger);
+            } catch (Exception ignored) { }
+        }
+        // Clear runtime notifier so core service stops trying to call TeamsAPI.
+        RoleChangeNotifierHolder.clearNotifier();
+        repos = null;
+        logger = null;
     }
 }

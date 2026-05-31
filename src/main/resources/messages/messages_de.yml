@@ -49,7 +49,9 @@ faction:
   name-too-long: "<red>Der Fraktionsname darf höchstens 32 Zeichen lang sein."
   name-invalid: "<red>Der Fraktionsname darf nur Buchstaben, Ziffern, Unterstriche und Bindestriche enthalten."
   disbanded: "<red>Fraktion <yellow>{name}</yellow> wurde aufgelöst."
-  disband-confirm: "<yellow>Sind Sie sicher, dass Sie Ihre Fraktion auflösen möchten? Führen Sie den Befehl zur Bestätigung innerhalb von 30 Sekunden erneut aus."
+  disband-confirm: >-
+    <yellow>Sind Sie sicher, dass Sie Ihre Fraktion auflösen möchten? Führen Sie den Befehl zur Bestätigung innerhalb von 30
+    Sekunden erneut aus.
   already-in-faction: "<red>Du bist bereits Mitglied einer Fraktion."
   cost-to-create: "<yellow>Das Erstellen einer Fraktion kostet <gold>{cost}</gold>. Sie haben <gold>{balance}</gold>."
   not-enough-money-create: "<red>Sie können es sich nicht leisten, eine Fraktion zu gründen (Kosten {cost})."
@@ -67,7 +69,9 @@ member:
 
 invite:
   sent: "<green>Einladung gesendet an <yellow>{player}</yellow>."
-  received: "<yellow>{player} hat Sie eingeladen, <gold>{faction}</gold> beizutreten. Geben Sie zum Akzeptieren <green>/f join {faction}</green> ein."
+  received: >-
+    <yellow>{player} hat Sie eingeladen, <gold>{faction}</gold> beizutreten. Geben Sie zum Akzeptieren <green>/f join
+    {faction}</green> ein.
   summary: "<gold>Sie haben <white>{count}</white> ausstehende Fraktionseinladung(en):"
   summary-line: "<yellow>- <white>{faction}</white> <gray>(eingeladen von <white>{inviter}</white>)"
   accepted: "<green>Sie haben die Einladung zu <yellow>{faction}</yellow> angenommen."
@@ -92,9 +96,12 @@ claim:
   cost-per-chunk: "<yellow>Die Inanspruchnahme dieses Teils kostet <gold>{cost}</gold>. Sie haben <gold>{balance}</gold>."
   not-enough-money-claim: "<red>Ihre Fraktion kann es sich nicht leisten, diesen Teil zu beanspruchen (Kosten {cost})."
   overclaimed: "<green>Du hast einen Teil von <yellow>{faction}<green> überfordert!"
-  overclaimed-victim: "<red><yellow>{attacker}<red> hat einen Teil Ihres Territoriums überrannt! Es bleiben noch <yellow>{remaining}<red> Chunk(s) übrig."
+  overclaimed-victim: >-
+    <red><yellow>{attacker}<red> hat einen Teil Ihres Territoriums überrannt! Es bleiben noch <yellow>{remaining}<red> Chunk(s)
+    übrig.
   enemy-not-raidable: "<red>{faction} hat immer noch genug Macht – Sie können ihr Land noch nicht beanspruchen."
-  enemy-offline-protected: "<red>{faction} ist offline – Sie können ihr Land nicht überfordern, während alle Mitglieder offline sind."
+  enemy-offline-protected: >-
+    <red>{faction} ist offline – Sie können ihr Land nicht überfordern, während alle Mitglieder offline sind.
   shield-active: "<red>{faction} hat einen aktiven Kriegsschild – sein Territorium ist derzeit geschützt."
   enter-faction: "<gray>Betritt das Gebiet <yellow>{faction}</yellow>."
   enter-wilderness: "<gray>Betritt <green>Wilderness</green>."
@@ -159,7 +166,8 @@ predefined:
   unknown: "<red>Unbekannte vordefinierte Fraktion: <white>{faction}"
   create-not-allowed: "<red>Sie können auf diesem Server nur vordefinierte Fraktionen erstellen."
   disband-blocked: "<red>Vordefinierte Fraktionen können nicht aufgelöst werden."
-  claim-saved: "<green>Vordefinierter Anspruch für <yellow>{faction}</yellow> bei <white>{x}</white>,<white>{z}</white> gespeichert."
+  claim-saved: >-
+    <green>Vordefinierter Anspruch für <yellow>{faction}</yellow> bei <white>{x}</white>,<white>{z}</white> gespeichert.
   home-saved: "<green>Vordefiniertes Zuhause für <yellow>{faction}</yellow> gespeichert."
   reload-success: "<green>Vordefinierte Fraktionen neu geladen."
   reload-failed: "<red>Vordefinierte Fraktionen konnten nicht neu geladen werden."
@@ -186,11 +194,17 @@ power:
   staff-blocked-frozen: "<gray>[Power] <white>{player}</white> durch Einfrieren blockiert. Quelle: <white>{source}</white>."
   change-actor: "<gray>Leistung <white>{before}</white> -> <white>{after}</white> (<yellow>{delta}</yellow>)"
   change-faction: "<gray>[Fraktion] <white>{player}</white>: <yellow>{delta}</yellow> (<white>{after}</white>)"
-  change-staff: "<gray>[Leistung] <white>{player}</white> {delta} ({before} -> {after}) <dark_gray>{source} {reason} {world} {zone}"
+  change-staff: >-
+    <gray>[Leistung] <white>{player}</white> {delta} ({before} -> {after}) <dark_gray>{source} {reason} {world} {zone}
   admin-view: "<gray>[Leistung] <white>{player}</white> Leistung=<yellow>{power}</yellow>, eingefroren=<yellow>{frozen}</yellow>"
-  admin-set-success: "<green>Stellen Sie die Leistung für <white>{player}</white> ein: <yellow>{before}</yellow> -> <yellow>{after}</yellow>."
-  admin-add-success: "<green>Hinzugefügt: <yellow>{delta}</yellow> Leistung zu <white>{player}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>)."
-  admin-remove-success: "<green>Entfernte die Stromversorgung von <yellow>{delta}</yellow> von <white>{player}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>)."
+  admin-set-success: >-
+    <green>Stellen Sie die Leistung für <white>{player}</white> ein: <yellow>{before}</yellow> -> <yellow>{after}</yellow>.
+  admin-add-success: >-
+    <green>Hinzugefügt: <yellow>{delta}</yellow> Leistung zu <white>{player}</white> (<yellow>{before}</yellow> ->
+    <yellow>{after}</yellow>).
+  admin-remove-success: >-
+    <green>Entfernte die Stromversorgung von <yellow>{delta}</yellow> von <white>{player}</white> (<yellow>{before}</yellow> ->
+    <yellow>{after}</yellow>).
   admin-reset-success: "<green>Reset-Leistung für <white>{player}</white>: <yellow>{before}</yellow> -> <yellow>{after}</yellow>."
   admin-freeze-success: "<green>Stromausfall für <white>{player}</white> ist jetzt <yellow>{state}</yellow>."
 
@@ -248,7 +262,9 @@ ezcountdown:
 merge:
   disabled: "<red>Fraktionszusammenführung ist auf diesem Server nicht aktiviert."
   request-sent: "<green>Zusammenführungsanforderung an <yellow>{faction}<green> gesendet."
-  request-received: "<yellow>{faction}<green> hat eine Fusionsanfrage an Ihre Fraktion gesendet. Verwenden Sie <white>/f merge, akzeptieren Sie {faction}<green>, um sie zu absorbieren."
+  request-received: >-
+    <yellow>{faction}<green> hat eine Fusionsanfrage an Ihre Fraktion gesendet. Verwenden Sie <white>/f merge, akzeptieren Sie
+    {faction}<green>, um sie zu absorbieren.
   accepted: "<yellow>{faction}<green> ist deiner Fraktion beigetreten!"
   merged-into: "<green>Habe <yellow>{faction}<green> erfolgreich in deine Fraktion integriert."
   already-requested: "<red>Eine Zusammenführungsanforderung an <yellow>{faction}<red> steht bereits aus."
@@ -340,81 +356,28 @@ custom:
     help-send: "<yellow>/f merge send <faction> <gray>- Eine Zusammenführungsanforderung senden"
     help-accept: "<yellow>/f merge akzeptieren <faction> <gray>- Akzeptieren Sie eine Zusammenführungsanforderung"
 
+  role:
+    list-header: "<gold>== Fraktionsrollen =="
+    list-entry: "<gray>- <white>{name}<gray> | Priorität <white>{priority}<gray> | Präfix <white>{prefix}"
+    invalid-priority: "<red>Die Priorität muss eine Zahl sein."
+    create-success: "<green>Rolle <white>{name}<green> mit Priorität <white>{priority}<green> erstellt."
+    create-failed: "<red>Die Rolle konnte nicht erstellt werden. Versuche es erneut oder wende dich an einen Serveroperator."
+    create-disabled: "<red>Rollenerstellung ist deaktiviert. Aktiviere roles.custom.enabled und roles.overrides.enabled."
+    priority-out-of-range: "<red>Die Priorität muss zwischen <yellow>{min}</yellow> und <yellow>{max}</yellow> liegen."
+    actor-rank-insufficient: >-
+      <red>Du kannst keine Rolle mit einer Priorität erstellen, die gleich oder höher als dein eigener Rang ist.
+    name-taken: "<red>Eine Rolle namens <yellow>{name}</yellow> existiert bereits in deiner Fraktion."
+    limit-reached: "<red>Deine Fraktion hat die maximale Anzahl an benutzerdefinierten Rollen erreicht."
+    rename-success: "<green>Rolle <white>{old}<green> in <white>{new}<green> umbenannt."
+    rename-failed: "<red>Die Rolle konnte nicht umbenannt werden."
+    priority-success: "<green>Priorität der Rolle <white>{name}<green> auf <white>{priority}<green> gesetzt."
+    priority-failed: "<red>Die Priorität der Rolle konnte nicht aktualisiert werden."
+    prefix-success: "<green>Präfix der Rolle <white>{name}<green> aktualisiert."
+    prefix-failed: >-
+      <red>Das Präfix der Rolle konnte nicht aktualisiert werden. Versuche es erneut oder wende dich an einen Serveroperator.
+    prefix-disabled: "<red>Rollenpräfixe sind deaktiviert. Aktiviere roles.prefix.enabled und roles.overrides.enabled."
+    delete-success: "<yellow>Rolle <white>{name}<yellow> gelöscht."
+    delete-failed: "<red>Die Rolle konnte nicht gelöscht werden."
+    assign-success: "<green>Rolle <white>{role}<green> an <white>{player}<green> zugewiesen."
+    assign-failed: "<red>Die Rolle konnte nicht zugewiesen werden."
 map:
-  separator: "<dark_gray>----------------------------------------"
-  header: "<gold> Gebietskarte <gray>({world} @ {x}, {z})"
-  hint: "<gray>Nutze <white>/f map on</white>, um Gebietstitel dauerhaft anzuzeigen."
-  legend: "<gray>Legende: <white>■ <gray>du, <green>■ <gray>deine Fraktion, <yellow>■ <gray>andere Fraktion, <aqua>■ <gray>Schutzzone, <red>■ <gray>Kriegszone, <dark_gray>■ <gray>Wildnis"
-  enabled: "<green>Gebietstitel aktiviert."
-  disabled: "<yellow>Gebietstitel deaktiviert."
-  error:
-    usage: "<red>Verwendung: /f map [on|off|once] [--size=<size>]"
-    size-nan: "<red>Die Kartengröße muss eine Zahl sein."
-    size-small: "<red>Die Kartengröße muss mindestens 1 sein."
-    save-failed: "<red>Karteneinstellung konnte nicht aktualisiert werden."
-
-gui:
-  items:
-    info:
-      name: "<gold><bold>Deine Fraktion</bold></gold>"
-      lore:
-        - "<gray>Fraktion: <white>{faction}</white>"
-        - "<gray>Mitglieder: <white>{faction_members}</white>"
-        - "<gray>Land: <white>{faction_land}</white>"
-        - "<gray>Bank: <white>${faction_bank}</white>"
-        - "<dark_gray>Detaillierte Fraktionsinfo öffnen"
-    map:
-      name: "<aqua><bold>Gebietskarte</bold></aqua>"
-      lore:
-        - "<gray>Zeigt eine Live-Gebietskarte."
-        - "<dark_gray>Klicken zum Ausführen von /f map"
-    claim:
-      name: "<green><bold>Aktuellen Chunk beanspruchen</bold></green>"
-      lore:
-        - "<gray>Beanspruche wo du stehst."
-        - "<dark_gray>Schnelle Beanspruchungsaktion"
-    unclaim:
-      name: "<red><bold>Aktuellen Chunk freigeben</bold></red>"
-      lore:
-        - "<gray>Gib den Chunk frei, auf dem du stehst."
-        - "<dark_gray>Schnelle Freigabeaktion"
-    invites:
-      name: "<yellow><bold>Einladungen</bold></yellow>"
-      lore:
-        - "<gray>Ausstehende Einladungen prüfen und annehmen."
-        - "<dark_gray>Öffnet die Einladungsliste"
-    home:
-      name: "<gold><bold>Fraktionsbasis</bold></gold>"
-      lore:
-        - "<gray>Zur Fraktionsbasis teleportieren."
-        - "<dark_gray>Klicken zum Ausführen von /f home"
-    warps:
-      name: "<light_purple><bold>Warps</bold></light_purple>"
-      lore:
-        - "<gray>Fraktionswarps anzeigen und nutzen."
-        - "<dark_gray>Klicken zum Ausführen von /f warp list"
-    top:
-      name: "<#3ddad7><bold>Top-Fraktionen</bold></#3ddad7>"
-      lore:
-        - "<gray>Fraktionsrangliste öffnen."
-        - "<dark_gray>Klicken zum Ausführen von /f top"
-    your-power:
-      name: "<white><bold>{player}</bold></white>"
-      lore:
-        - "<gray>Kraft: <white>{power}</white><gray>/<white>{max_power}</white>"
-        - "<dark_gray>Persönlicher Fraktionsstatus"
-    language-status:
-      name: "<aqua><bold>Sprache</bold></aqua>"
-      lore:
-        - "<gray>Aktuell: <white>{language_current}</white>"
-        - "<gray>Standard: <white>{language_default}</white>"
-        - "<dark_gray>Nach Änderung aktualisieren"
-    language-reset:
-      name: "<yellow><bold>Sprache zurücksetzen</bold></yellow>"
-      lore:
-        - "<gray>Server-Standardsprache verwenden"
-        - "<dark_gray>Entspricht /f language reset"
-    close:
-      name: "<red><bold>Schließen</bold></red>"
-      lore:
-        - "<gray>Dieses Menü schließen."

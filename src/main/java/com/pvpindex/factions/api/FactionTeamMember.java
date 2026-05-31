@@ -2,8 +2,10 @@ package com.pvpindex.factions.api;
 
 import com.pvpindex.factions.data.model.PlayerModel;
 import com.pvpindex.factions.data.model.RankModel;
+import com.skyblockexp.teamsapi.api.TeamsAPI;
 import com.skyblockexp.teamsapi.model.TeamMember;
 import com.skyblockexp.teamsapi.model.TeamRole;
+import com.skyblockexp.teamsapi.model.TeamRoleDefinition;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -27,20 +29,23 @@ public final class FactionTeamMember implements TeamMember {
 
     @Override
     public TeamRole getRole() {
-        if (rank == null) {
-            return TeamRole.MEMBER;
-        }
-        final int priority = rank.getPriority();
-        if (priority >= RankModel.PRIORITY_OWNER) {
-            return TeamRole.OWNER;
-        } else if (priority >= RankModel.PRIORITY_OFFICER) {
-            return TeamRole.ADMIN;
-        }
-        return TeamRole.MEMBER;
+        return TeamRoleMapper.rankToRole(rank);
     }
 
     @Override
     public Instant getJoinedAt() {
         return Instant.ofEpochMilli(player.getJoinedAt());
+    }
+
+    @Override
+    public TeamRoleDefinition getRoleDefinition() {
+        if (rank == null) {
+            return TeamRoleDefinition.of(getRole());
+        }
+        return TeamsAPI.getCustomRole(TeamsCustomRoleRegistry.roleKey(
+            rank.getFactionId(),
+            rank.getId(),
+            rank.getName()
+        )).orElseGet(() -> TeamRoleDefinition.of(getRole()));
     }
 }

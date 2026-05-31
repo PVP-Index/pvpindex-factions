@@ -189,8 +189,10 @@ power:
   change-staff: "<gray>[パワー] <white>{player}</white> {delta} ({before} -> {after}) <dark_gray>{source} {reason} {world} {zone}"
   admin-view: "<gray>[パワー] <white>{player}</white> power=<yellow>{power}</yellow>, frozen=<yellow>{frozen}</yellow>"
   admin-set-success: "<green><white>{player}</white> のパワーを設定しました: <yellow>{before}</yellow> -> <yellow>{after}</yellow>。"
-  admin-add-success: "<green><white>{player}</white> に <yellow>{delta}</yellow> パワーを追加しました（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。"
-  admin-remove-success: "<green><white>{player}</white> から <yellow>{delta}</yellow> パワーを削除しました（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。"
+  admin-add-success: >-
+    <green><white>{player}</white> に <yellow>{delta}</yellow> パワーを追加しました（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。
+  admin-remove-success: >-
+    <green><white>{player}</white> から <yellow>{delta}</yellow> パワーを削除しました（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。
   admin-reset-success: "<green><white>{player}</white> のパワーをリセットしました: <yellow>{before}</yellow> -> <yellow>{after}</yellow>。"
   admin-freeze-success: "<green><white>{player}</white> のパワーフリーズ状態: <yellow>{state}</yellow>。"
 
@@ -340,81 +342,26 @@ custom:
     help-send: "<yellow>/f merge send <faction> <gray>- 合併リクエストを送信"
     help-accept: "<yellow>/f merge accept <faction> <gray>- 合併リクエストを承認"
 
+  role:
+    list-header: "<gold>== 派閥ロール =="
+    list-entry: "<gray>- <white>{name}<gray> | 優先度 <white>{priority}<gray> | 接頭辞 <white>{prefix}"
+    invalid-priority: "<red>優先度は数字でなければなりません。"
+    create-success: "<green>優先度 <white>{priority}<green> のロール <white>{name}<green> を作成しました。"
+    create-failed: "<red>ロールを作成できませんでした。再試行するか、問題が続く場合はオペレーターに連絡してください。"
+    create-disabled: "<red>ロール作成は無効化されています。roles.custom.enabled と roles.overrides.enabled を有効にしてください。"
+    priority-out-of-range: "<red>優先度は <yellow>{min}</yellow> から <yellow>{max}</yellow> の間でなければなりません。"
+    actor-rank-insufficient: "<red>自分のランク以上の優先度を持つロールは作成できません。"
+    name-taken: "<red><yellow>{name}</yellow> というロールはすでに派閥に存在します。"
+    limit-reached: "<red>派閥はカスタムロールの最大数に達しました。"
+    rename-success: "<green>ロール <white>{old}<green> を <white>{new}<green> に名前変更しました。"
+    rename-failed: "<red>ロールの名前を変更できませんでした。"
+    priority-success: "<green>ロール <white>{name}<green> の優先度を <white>{priority}<green> に設定しました。"
+    priority-failed: "<red>ロールの優先度を更新できませんでした。"
+    prefix-success: "<green>ロール <white>{name}<green> の接頭辞を更新しました。"
+    prefix-failed: "<red>ロールの接頭辞を更新できませんでした。再試行するか、オペレーターに連絡してください。"
+    prefix-disabled: "<red>ロール接頭辞は無効化されています。roles.prefix.enabled と roles.overrides.enabled を有効にしてください。"
+    delete-success: "<yellow>ロール <white>{name}<yellow> を削除しました。"
+    delete-failed: "<red>ロールを削除できませんでした。"
+    assign-success: "<green>ロール <white>{role}<green> を <white>{player}<green> に割り当てました。"
+    assign-failed: "<red>ロールを割り当てできませんでした。"
 map:
-  separator: "<dark_gray>----------------------------------------"
-  header: "<gold> テリトリーマップ <gray>({world} @ {x}, {z})"
-  hint: "<gray><white>/f map on</white> でテリトリータイトルを常時表示できます。"
-  legend: "<gray>凡例: <white>■ <gray>あなた, <green>■ <gray>自分のファクション, <yellow>■ <gray>他のファクション, <aqua>■ <gray>セーフゾーン, <red>■ <gray>ウォーゾーン, <dark_gray>■ <gray>荒野"
-  enabled: "<green>テリトリータイトルが有効になりました。"
-  disabled: "<yellow>テリトリータイトルが無効になりました。"
-  error:
-    usage: "<red>使用法: /f map [on|off|once] [--size=<size>]"
-    size-nan: "<red>マップサイズは数値で入力してください。"
-    size-small: "<red>マップサイズは1以上にしてください。"
-    save-failed: "<red>マップ設定の更新に失敗しました。"
-
-gui:
-  items:
-    info:
-      name: "<gold><bold>あなたのファクション</bold></gold>"
-      lore:
-        - "<gray>ファクション: <white>{faction}</white>"
-        - "<gray>メンバー: <white>{faction_members}</white>"
-        - "<gray>土地: <white>{faction_land}</white>"
-        - "<gray>銀行: <white>${faction_bank}</white>"
-        - "<dark_gray>詳細情報を開く"
-    map:
-      name: "<aqua><bold>テリトリーマップ</bold></aqua>"
-      lore:
-        - "<gray>リアルタイムのテリトリーマップを表示。"
-        - "<dark_gray>クリックして /f map を実行"
-    claim:
-      name: "<green><bold>現在のチャンクを占領</bold></green>"
-      lore:
-        - "<gray>今いる場所を占領します。"
-        - "<dark_gray>クイック占領アクション"
-    unclaim:
-      name: "<red><bold>現在のチャンクの占領解除</bold></red>"
-      lore:
-        - "<gray>今いる場所の占領を解除します。"
-        - "<dark_gray>クイック占領解除アクション"
-    invites:
-      name: "<yellow><bold>招待</bold></yellow>"
-      lore:
-        - "<gray>保留中の招待を確認・承認します。"
-        - "<dark_gray>招待リストを開く"
-    home:
-      name: "<gold><bold>ファクションホーム</bold></gold>"
-      lore:
-        - "<gray>ファクションホームにテレポートします。"
-        - "<dark_gray>クリックして /f home を実行"
-    warps:
-      name: "<light_purple><bold>ワープ</bold></light_purple>"
-      lore:
-        - "<gray>ファクションワープを表示・使用します。"
-        - "<dark_gray>クリックして /f warp list を実行"
-    top:
-      name: "<#3ddad7><bold>トップファクション</bold></#3ddad7>"
-      lore:
-        - "<gray>ファクションランキングを開きます。"
-        - "<dark_gray>クリックして /f top を実行"
-    your-power:
-      name: "<white><bold>{player}</bold></white>"
-      lore:
-        - "<gray>パワー: <white>{power}</white><gray>/<white>{max_power}</white>"
-        - "<dark_gray>個人ファクションステータス"
-    language-status:
-      name: "<aqua><bold>言語</bold></aqua>"
-      lore:
-        - "<gray>現在: <white>{language_current}</white>"
-        - "<gray>デフォルト: <white>{language_default}</white>"
-        - "<dark_gray>変更後にリフレッシュをクリック"
-    language-reset:
-      name: "<yellow><bold>言語をリセット</bold></yellow>"
-      lore:
-        - "<gray>サーバーのデフォルト言語を使用"
-        - "<dark_gray>/f language reset と同等"
-    close:
-      name: "<red><bold>閉じる</bold></red>"
-      lore:
-        - "<gray>このメニューを閉じます。"

@@ -189,8 +189,10 @@ power:
   change-staff: "<gray>[能量] <white>{player}</white> {delta} ({before} -> {after}) <dark_gray>{source} {reason} {world} {zone}"
   admin-view: "<gray>[能量] <white>{player}</white> power=<yellow>{power}</yellow>, frozen=<yellow>{frozen}</yellow>"
   admin-set-success: "<green>已设置 <white>{player}</white> 的能量: <yellow>{before}</yellow> -> <yellow>{after}</yellow>。"
-  admin-add-success: "<green>已为 <white>{player}</white> 增加 <yellow>{delta}</yellow> 点能量（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。"
-  admin-remove-success: "<green>已从 <white>{player}</white> 移除 <yellow>{delta}</yellow> 点能量（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。"
+  admin-add-success: >-
+    <green>已为 <white>{player}</white> 增加 <yellow>{delta}</yellow> 点能量（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。
+  admin-remove-success: >-
+    <green>已从 <white>{player}</white> 移除 <yellow>{delta}</yellow> 点能量（<yellow>{before}</yellow> -> <yellow>{after}</yellow>）。
   admin-reset-success: "<green>已重置 <white>{player}</white> 的能量: <yellow>{before}</yellow> -> <yellow>{after}</yellow>。"
   admin-freeze-success: "<green><white>{player}</white> 的能量冻结状态: <yellow>{state}</yellow>。"
 
@@ -339,81 +341,26 @@ custom:
     help-send: "<yellow>/f merge send <faction> <gray>- 发送合并请求"
     help-accept: "<yellow>/f merge accept <faction> <gray>- 接受合并请求"
 
+  role:
+    list-header: "<gold>== 派系职位 =="
+    list-entry: "<gray>- <white>{name}<gray> | 优先级 <white>{priority}<gray> | 前缀 <white>{prefix}"
+    invalid-priority: "<red>优先级必须是数字。"
+    create-success: "<green>已创建优先级为 <white>{priority}<green> 的职位 <white>{name}<green>。"
+    create-failed: "<red>无法创建该职位。请重试，或如问题持续存在请联系服务器管理员。"
+    create-disabled: "<red>职位创建已禁用。请启用 roles.custom.enabled 和 roles.overrides.enabled。"
+    priority-out-of-range: "<red>优先级必须在 <yellow>{min}</yellow> 到 <yellow>{max}</yellow> 之间。"
+    actor-rank-insufficient: "<red>您不能创建优先级等于或高于自身等级的职位。"
+    name-taken: "<red>您的派系中已存在名为 <yellow>{name}</yellow> 的职位。"
+    limit-reached: "<red>您的派系已达到自定义职位的上限。"
+    rename-success: "<green>已将职位 <white>{old}<green> 重命名为 <white>{new}<green>。"
+    rename-failed: "<red>无法重命名该职位。"
+    priority-success: "<green>已将职位 <white>{name}<green> 的优先级设置为 <white>{priority}<green>。"
+    priority-failed: "<red>无法更新该职位的优先级。"
+    prefix-success: "<green>已更新职位 <white>{name}<green> 的前缀。"
+    prefix-failed: "<red>无法更新该职位的前缀。请重试，或联系服务器管理员。"
+    prefix-disabled: "<red>职位前缀已禁用。请启用 roles.prefix.enabled 和 roles.overrides.enabled。"
+    delete-success: "<yellow>已删除职位 <white>{name}<yellow>。"
+    delete-failed: "<red>无法删除该职位。"
+    assign-success: "<green>已将职位 <white>{role}<green> 分配给 <white>{player}<green>。"
+    assign-failed: "<red>无法分配该职位。"
 map:
-  separator: "<dark_gray>----------------------------------------"
-  header: "<gold> 领土地图 <gray>({world} @ {x}, {z})"
-  hint: "<gray>使用 <white>/f map on</white> 可保持领土标题常显。"
-  legend: "<gray>图例: <white>■ <gray>你, <green>■ <gray>你的派系, <yellow>■ <gray>其他派系, <aqua>■ <gray>安全区, <red>■ <gray>战区, <dark_gray>■ <gray>荒野"
-  enabled: "<green>领土标题已启用。"
-  disabled: "<yellow>领土标题已禁用。"
-  error:
-    usage: "<red>用法: /f map [on|off|once] [--size=<size>]"
-    size-nan: "<red>地图大小必须是数字。"
-    size-small: "<red>地图大小至少为1。"
-    save-failed: "<red>更新地图偏好失败。"
-
-gui:
-  items:
-    info:
-      name: "<gold><bold>你的派系</bold></gold>"
-      lore:
-        - "<gray>派系: <white>{faction}</white>"
-        - "<gray>成员: <white>{faction_members}</white>"
-        - "<gray>领地: <white>{faction_land}</white>"
-        - "<gray>银行: <white>${faction_bank}</white>"
-        - "<dark_gray>查看详细派系信息"
-    map:
-      name: "<aqua><bold>领土地图</bold></aqua>"
-      lore:
-        - "<gray>查看实时领土地图。"
-        - "<dark_gray>点击执行 /f map"
-    claim:
-      name: "<green><bold>占领当前区块</bold></green>"
-      lore:
-        - "<gray>占领你所在的位置。"
-        - "<dark_gray>快速占领操作"
-    unclaim:
-      name: "<red><bold>取消占领当前区块</bold></red>"
-      lore:
-        - "<gray>取消你所在位置的占领。"
-        - "<dark_gray>快速取消占领操作"
-    invites:
-      name: "<yellow><bold>邀请</bold></yellow>"
-      lore:
-        - "<gray>查看并接受待处理的邀请。"
-        - "<dark_gray>打开邀请列表"
-    home:
-      name: "<gold><bold>派系基地</bold></gold>"
-      lore:
-        - "<gray>传送到派系基地。"
-        - "<dark_gray>点击执行 /f home"
-    warps:
-      name: "<light_purple><bold>传送点</bold></light_purple>"
-      lore:
-        - "<gray>查看并使用派系传送点。"
-        - "<dark_gray>点击执行 /f warp list"
-    top:
-      name: "<#3ddad7><bold>派系排行</bold></#3ddad7>"
-      lore:
-        - "<gray>查看派系排行榜。"
-        - "<dark_gray>点击执行 /f top"
-    your-power:
-      name: "<white><bold>{player}</bold></white>"
-      lore:
-        - "<gray>能量: <white>{power}</white><gray>/<white>{max_power}</white>"
-        - "<dark_gray>个人派系状态"
-    language-status:
-      name: "<aqua><bold>语言</bold></aqua>"
-      lore:
-        - "<gray>当前: <white>{language_current}</white>"
-        - "<gray>默认: <white>{language_default}</white>"
-        - "<dark_gray>更改后点击刷新"
-    language-reset:
-      name: "<yellow><bold>重置语言</bold></yellow>"
-      lore:
-        - "<gray>使用服务器默认语言"
-        - "<dark_gray>等同于 /f language reset"
-    close:
-      name: "<red><bold>关闭</bold></red>"
-      lore:
-        - "<gray>关闭此菜单。"

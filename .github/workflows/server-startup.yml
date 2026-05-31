@@ -64,8 +64,11 @@ jobs:
         if: matrix.platform != 'spigot' && steps.cache.outputs.cache-hit != 'true'
         run: |
           mkdir -p server-env
+          BUILD="${{ steps.resolve.outputs.build }}"
+          JAR="${{ steps.resolve.outputs.jar }}"
+          BASE="https://api.papermc.io/v2/projects/${{ matrix.platform }}/versions/${{ matrix.mc }}"
           curl -fsSL \
-            "https://api.papermc.io/v2/projects/${{ matrix.platform }}/versions/${{ matrix.mc }}/builds/${{ steps.resolve.outputs.build }}/downloads/${{ steps.resolve.outputs.jar }}" \
+            "${BASE}/builds/${BUILD}/downloads/${JAR}" \
             -o server-env/server.jar
 
       # ── Spigot (BuildTools) ──────────────────────────────────────────────────

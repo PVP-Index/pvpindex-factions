@@ -4,6 +4,7 @@ import com.github.ezframework.jaloquent.exception.StorageException;
 import com.pvpindex.factions.data.Repositories;
 import com.pvpindex.factions.data.model.FactionModel;
 import com.pvpindex.factions.data.model.PlayerModel;
+import com.pvpindex.factions.data.model.RankModel;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +24,7 @@ public final class FactionsPlaceholders extends PlaceholderExpansion {
     private static final String AUTHOR = "gyvex";
     private static final String VERSION = "1.0.0";
     private static final String NONE = "None";
+    private static final String NO_PREFIX = "";
 
     private final Repositories repos;
     private final Logger logger;
@@ -99,7 +101,20 @@ public final class FactionsPlaceholders extends PlaceholderExpansion {
                     .map(f -> String.valueOf(f.getBank())).orElse("0.0");
             }
             case "player_power" -> pmOpt.map(p -> String.valueOf(p.getPower())).orElse("0");
+            case "player_role" -> resolveRole(pmOpt).map(RankModel::getName).orElse(NONE);
+            case "player_role_prefix" -> resolveRole(pmOpt).map(RankModel::getPrefix).orElse(NO_PREFIX);
             default -> null;
         };
+    }
+
+    private Optional<RankModel> resolveRole(final Optional<PlayerModel> pmOpt) throws StorageException {
+        if (pmOpt.isEmpty()) {
+            return Optional.empty();
+        }
+        final String rankId = pmOpt.get().getRankId();
+        if (rankId == null || rankId.isBlank()) {
+            return Optional.empty();
+        }
+        return repos.ranks().find(rankId);
     }
 }

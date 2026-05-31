@@ -2,6 +2,7 @@ package com.pvpindex.factions.command.sub.admin;
 
 import com.pvpindex.factions.command.CommandContext;
 import com.pvpindex.factions.command.FactionCommand;
+import com.pvpindex.factions.config.FactionsConfig;
 import com.pvpindex.factions.config.MessagesConfig;
 import com.pvpindex.factions.predefined.PredefinedConfigManager;
 import com.pvpindex.factions.util.MsgUtil;
@@ -24,6 +25,22 @@ public final class CmdAdminReload extends FactionCommand {
     @Override
     protected void perform(final CommandContext ctx) {
         ctx.getPlugin().reloadConfig();
+        final File rolesFile = new File(ctx.getPlugin().getDataFolder(), "roles.yml");
+        if (!rolesFile.exists()) {
+            ctx.getPlugin().saveResource("roles.yml", false);
+        }
+        final FactionsConfig reloadedConfig = new FactionsConfig(
+            ctx.getPlugin().getConfig(),
+            YamlConfiguration.loadConfiguration(rolesFile));
+        if (ctx.getPlugin() instanceof com.pvpindex.factions.PvPIndexFactions pf
+            && pf.getBootstrap() != null) {
+            pf.getBootstrap().getInfraRegistry().setConfig(reloadedConfig);
+            final boolean servicesOk = pf.getBootstrap().reloadServices();
+            if (!servicesOk) {
+                ctx.getPlugin().getLogger().warning(
+                    "Failed to restart services during /fa reload; a plugin restart may be required.");
+            }
+        }
         String defaultLocale = "en";
         if (ctx.getPlugin().getConfig() != null) {
             final String configured = ctx.getPlugin().getConfig().getString("factions.language.default", "en");
@@ -57,10 +74,6 @@ public final class CmdAdminReload extends FactionCommand {
                 ctx.getPlugin().saveResource(name, false);
             }
         }
-        final File legacyMessages = new File(dataFolder, "messages.yml");
-        if (!legacyMessages.exists()) {
-            ctx.getPlugin().saveResource("messages.yml", false);
-        }
         final Map<String, FileConfiguration> bundles = new LinkedHashMap<>();
         final File[] bundleFiles = messagesDir.listFiles((dir, name) -> name.startsWith("messages_") && name.endsWith(".yml"));
         if (bundleFiles != null) {
@@ -68,9 +81,6 @@ public final class CmdAdminReload extends FactionCommand {
                 final String raw = file.getName().substring("messages_".length(), file.getName().length() - 4);
                 bundles.put(MessagesConfig.normalizeLocale(raw), YamlConfiguration.loadConfiguration(file));
             }
-        }
-        if (!bundles.containsKey("en")) {
-            bundles.put("en", YamlConfiguration.loadConfiguration(legacyMessages));
         }
         return new MessagesConfig(bundles, defaultLocale);
     }

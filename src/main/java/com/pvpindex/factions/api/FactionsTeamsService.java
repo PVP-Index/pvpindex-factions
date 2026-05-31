@@ -196,19 +196,13 @@ public class FactionsTeamsService implements TeamsService {
 
             final String factionId = teamId.toString();
             final List<RankModel> ranks = repos.ranks().findByFactionId(factionId);
-
-            final int targetPriority = FactionTeam.roleToPriority(role);
-            final RankModel targetRank = ranks.stream()
-                .filter(r -> r.getPriority() == targetPriority)
-                .findFirst()
-                .orElse(null);
-
-            if (targetRank == null) {
+            final Optional<RankModel> targetRank = TeamRoleMapper.resolveRankForRole(ranks, role);
+            if (targetRank.isEmpty()) {
                 return false;
             }
 
             final TeamRole oldRole = getMemberRole(teamId, playerUUID).orElse(TeamRole.MEMBER);
-            pm.get().setRankId(targetRank.getId());
+            pm.get().setRankId(targetRank.get().getId());
             repos.players().save(pm.get());
 
             final FactionTeam team = wrap(repos.factions().find(factionId).orElseThrow());
@@ -236,13 +230,7 @@ public class FactionsTeamsService implements TeamsService {
             if (rank.isEmpty()) {
                 return Optional.of(TeamRole.MEMBER);
             }
-            final int priority = rank.get().getPriority();
-            if (priority >= RankModel.PRIORITY_OWNER) {
-                return Optional.of(TeamRole.OWNER);
-            } else if (priority >= RankModel.PRIORITY_OFFICER) {
-                return Optional.of(TeamRole.ADMIN);
-            }
-            return Optional.of(TeamRole.MEMBER);
+            return Optional.of(TeamRoleMapper.rankToRole(rank.get()));
         } catch (StorageException e) {
             logger.log(Level.SEVERE, "Failed to get member role", e);
             return Optional.empty();

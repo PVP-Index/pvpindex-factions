@@ -49,7 +49,8 @@ faction:
   name-too-long: "<red>Название фракции не должно превышать 32 символа."
   name-invalid: "<red>Название фракции может содержать только буквы, цифры, подчёркивания и дефисы."
   disbanded: "<red>Фракция <yellow>{name}</yellow> распущена."
-  disband-confirm: "<yellow>Вы уверены, что хотите распустить свою фракцию? Повторите команду в течение 30 секунд для подтверждения."
+  disband-confirm: >-
+    <yellow>Вы уверены, что хотите распустить свою фракцию? Повторите команду в течение 30 секунд для подтверждения.
   already-in-faction: "<red>Вы уже состоите в фракции."
   cost-to-create: "<yellow>Создание фракции стоит <gold>{cost}</gold>. Ваш баланс: <gold>{balance}</gold>."
   not-enough-money-create: "<red>Недостаточно средств для создания фракции (стоимость: {cost})."
@@ -67,7 +68,9 @@ member:
 
 invite:
   sent: "<green>Приглашение отправлено игроку <yellow>{player}</yellow>."
-  received: "<yellow>{player} приглашает вас вступить во фракцию <gold>{faction}</gold>. Введите <green>/f join {faction}</green> для принятия."
+  received: >-
+    <yellow>{player} приглашает вас вступить во фракцию <gold>{faction}</gold>. Введите <green>/f join {faction}</green> для
+    принятия.
   summary: "<gold>У вас <white>{count}</white> ожидающих приглашений во фракцию:"
   summary-line: "<yellow>- <white>{faction}</white> <gray>(от <white>{inviter}</white>)"
   accepted: "<green>Вы приняли приглашение вступить во фракцию <yellow>{faction}</yellow>."
@@ -92,7 +95,8 @@ claim:
   cost-per-chunk: "<yellow>Захват этого чанка стоит <gold>{cost}</gold>. Ваш баланс: <gold>{balance}</gold>."
   not-enough-money-claim: "<red>Недостаточно средств для захвата этого чанка (стоимость: {cost})."
   overclaimed: "<green>Вы отвоевали чанк у <yellow>{faction}</yellow>!"
-  overclaimed-victim: "<red><yellow>{attacker}</yellow> захватил чанк вашей территории! Осталось <yellow>{remaining}</yellow> чанков."
+  overclaimed-victim: >-
+    <red><yellow>{attacker}</yellow> захватил чанк вашей территории! Осталось <yellow>{remaining}</yellow> чанков.
   enemy-not-raidable: "<red>{faction} ещё имеет достаточно силы — пока нельзя отвоевать их землю."
   enemy-offline-protected: "<red>{faction} не в сети — нельзя захватить земли, пока все участники офлайн."
   shield-active: "<red>{faction} имеет активный военный щит — территория сейчас под защитой."
@@ -151,7 +155,8 @@ relation:
     <white>{faction}<yellow>. Отношения вступят в силу, когда другая сторона ответит взаимностью.
   pending-received: "<yellow><white>{faction}</white> запрашивает у вашей фракции отношения <white>{relation}</white>."
   mutual-established: "<green>Взаимные отношения <white>{relation}</white> с <white>{faction}</white> установлены."
-  mutual-established-target: "<green>Фракция <white>{faction}</white> и ваша фракция теперь находятся в отношениях <white>{relation}</white>."
+  mutual-established-target: >-
+    <green>Фракция <white>{faction}</white> и ваша фракция теперь находятся в отношениях <white>{relation}</white>.
   updated-by-other: "<yellow><white>{faction}</white> установила отношения как <white>{relation}</white>."
 
 predefined:
@@ -189,8 +194,11 @@ power:
   change-staff: "<gray>[Сила] <white>{player}</white> {delta} ({before} -> {after}) <dark_gray>{source} {reason} {world} {zone}"
   admin-view: "<gray>[Сила] <white>{player}</white> power=<yellow>{power}</yellow>, frozen=<yellow>{frozen}</yellow>"
   admin-set-success: "<green>Сила <white>{player}</white> установлена: <yellow>{before}</yellow> -> <yellow>{after}</yellow>."
-  admin-add-success: "<green>Добавлено <yellow>{delta}</yellow> силы игроку <white>{player}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>)."
-  admin-remove-success: "<green>Снято <yellow>{delta}</yellow> силы у <white>{player}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>)."
+  admin-add-success: >-
+    <green>Добавлено <yellow>{delta}</yellow> силы игроку <white>{player}</white> (<yellow>{before}</yellow> ->
+    <yellow>{after}</yellow>).
+  admin-remove-success: >-
+    <green>Снято <yellow>{delta}</yellow> силы у <white>{player}</white> (<yellow>{before}</yellow> -> <yellow>{after}</yellow>).
   admin-reset-success: "<green>Сила <white>{player}</white> сброшена: <yellow>{before}</yellow> -> <yellow>{after}</yellow>."
   admin-freeze-success: "<green>Заморозка силы для <white>{player}</white>: <yellow>{state}</yellow>."
 
@@ -227,7 +235,8 @@ admin:
   reload: "<green>Конфигурация перезагружена."
 
 shield:
-  set: "<green>Военный щит установлен для <yellow>{faction}</yellow>: с <white>{start}:00 UTC</white> на <white>{duration}</white> ч."
+  set: >-
+    <green>Военный щит установлен для <yellow>{faction}</yellow>: с <white>{start}:00 UTC</white> на <white>{duration}</white> ч.
   cleared: "<yellow>Военный щит для <white>{faction}</white> снят."
   feature-disabled: "<red>Военный щит на этом сервере не включён."
   invalid-hour: "<red>Час начала должен быть от 0 до 23."
@@ -248,7 +257,9 @@ ezcountdown:
 merge:
   disabled: "<red>Слияние фракций на этом сервере не включено."
   request-sent: "<green>Запрос на слияние отправлен фракции <yellow>{faction}</yellow>."
-  request-received: "<yellow>{faction}</yellow> отправила вашей фракции запрос на слияние. Используйте <white>/f merge accept {faction}</white> для принятия."
+  request-received: >-
+    <yellow>{faction}</yellow> отправила вашей фракции запрос на слияние. Используйте <white>/f merge accept {faction}</white> для
+    принятия.
   accepted: "<yellow>{faction}</yellow> слилась с вашей фракцией!"
   merged-into: "<green>Фракция <yellow>{faction}</yellow> успешно объединена с вашей."
   already-requested: "<red>Запрос на слияние с <yellow>{faction}</yellow> уже ожидает рассмотрения."
@@ -339,81 +350,26 @@ custom:
     help-send: "<yellow>/f merge send <faction> <gray>- Отправить запрос на слияние"
     help-accept: "<yellow>/f merge accept <faction> <gray>- Принять запрос на слияние"
 
+  role:
+    list-header: "<gold>== Роли Фракции =="
+    list-entry: "<gray>- <white>{name}<gray> | приоритет <white>{priority}<gray> | префикс <white>{prefix}"
+    invalid-priority: "<red>Приоритет должен быть числом."
+    create-success: "<green>Роль <white>{name}<green> создана с приоритетом <white>{priority}<green>."
+    create-failed: "<red>Не удалось создать роль. Попробуйте снова или обратитесь к оператору сервера."
+    create-disabled: "<red>Создание ролей отключено. Включите roles.custom.enabled и roles.overrides.enabled."
+    priority-out-of-range: "<red>Приоритет должен быть от <yellow>{min}</yellow> до <yellow>{max}</yellow>."
+    actor-rank-insufficient: "<red>Нельзя создать роль с приоритетом, равным или выше вашего ранга."
+    name-taken: "<red>Роль с именем <yellow>{name}</yellow> уже существует в вашей фракции."
+    limit-reached: "<red>Ваша фракция достигла максимального количества пользовательских ролей."
+    rename-success: "<green>Роль <white>{old}<green> переименована в <white>{new}<green>."
+    rename-failed: "<red>Не удалось переименовать роль."
+    priority-success: "<green>Приоритет роли <white>{name}<green> установлен на <white>{priority}<green>."
+    priority-failed: "<red>Не удалось обновить приоритет роли."
+    prefix-success: "<green>Префикс роли <white>{name}<green> обновлён."
+    prefix-failed: "<red>Не удалось обновить префикс роли. Попробуйте снова или обратитесь к оператору."
+    prefix-disabled: "<red>Префиксы ролей отключены. Включите roles.prefix.enabled и roles.overrides.enabled."
+    delete-success: "<yellow>Роль <white>{name}<yellow> удалена."
+    delete-failed: "<red>Не удалось удалить роль."
+    assign-success: "<green>Роль <white>{role}<green> назначена игроку <white>{player}<green>."
+    assign-failed: "<red>Не удалось назначить роль."
 map:
-  separator: "<dark_gray>----------------------------------------"
-  header: "<gold> Карта территорий <gray>({world} @ {x}, {z})"
-  hint: "<gray>Используйте <white>/f map on</white> чтобы постоянно отображать названия территорий."
-  legend: "<gray>Легенда: <white>■ <gray>Вы, <green>■ <gray>Ваша фракция, <yellow>■ <gray>Другие фракции, <aqua>■ <gray>Безопасная зона, <red>■ <gray>Зона войны, <dark_gray>■ <gray>Пустошь"
-  enabled: "<green>Названия территорий включены."
-  disabled: "<yellow>Названия территорий отключены."
-  error:
-    usage: "<red>Использование: /f map [on|off|once] [--size=<size>]"
-    size-nan: "<red>Размер карты должен быть числом."
-    size-small: "<red>Размер карты должен быть не менее 1."
-    save-failed: "<red>Не удалось обновить настройки карты."
-
-gui:
-  items:
-    info:
-      name: "<gold><bold>Ваша фракция</bold></gold>"
-      lore:
-        - "<gray>Фракция: <white>{faction}</white>"
-        - "<gray>Участники: <white>{faction_members}</white>"
-        - "<gray>Земли: <white>{faction_land}</white>"
-        - "<gray>Банк: <white>${faction_bank}</white>"
-        - "<dark_gray>Нажмите для подробной информации"
-    map:
-      name: "<aqua><bold>Карта территорий</bold></aqua>"
-      lore:
-        - "<gray>Посмотреть карту территорий в реальном времени."
-        - "<dark_gray>Нажмите для выполнения /f map"
-    claim:
-      name: "<green><bold>Захватить текущий чанк</bold></green>"
-      lore:
-        - "<gray>Захватить чанк на вашей текущей позиции."
-        - "<dark_gray>Быстрый захват"
-    unclaim:
-      name: "<red><bold>Освободить текущий чанк</bold></red>"
-      lore:
-        - "<gray>Освободить чанк на вашей текущей позиции."
-        - "<dark_gray>Быстрое освобождение"
-    invites:
-      name: "<yellow><bold>Приглашения</bold></yellow>"
-      lore:
-        - "<gray>Просмотреть и принять ожидающие приглашения."
-        - "<dark_gray>Открыть список приглашений"
-    home:
-      name: "<gold><bold>База фракции</bold></gold>"
-      lore:
-        - "<gray>Телепортироваться на базу фракции."
-        - "<dark_gray>Нажмите для выполнения /f home"
-    warps:
-      name: "<light_purple><bold>Варпы</bold></light_purple>"
-      lore:
-        - "<gray>Просмотреть и использовать варпы фракции."
-        - "<dark_gray>Нажмите для выполнения /f warp list"
-    top:
-      name: "<#3ddad7><bold>Топ фракций</bold></#3ddad7>"
-      lore:
-        - "<gray>Просмотреть рейтинг фракций."
-        - "<dark_gray>Нажмите для выполнения /f top"
-    your-power:
-      name: "<white><bold>{player}</bold></white>"
-      lore:
-        - "<gray>Сила: <white>{power}</white><gray>/<white>{max_power}</white>"
-        - "<dark_gray>Личный статус фракции"
-    language-status:
-      name: "<aqua><bold>Язык</bold></aqua>"
-      lore:
-        - "<gray>Текущий: <white>{language_current}</white>"
-        - "<gray>По умолчанию: <white>{language_default}</white>"
-        - "<dark_gray>После изменения нажмите обновить"
-    language-reset:
-      name: "<yellow><bold>Сбросить язык</bold></yellow>"
-      lore:
-        - "<gray>Использовать язык сервера по умолчанию"
-        - "<dark_gray>Аналогично /f language reset"
-    close:
-      name: "<red><bold>Закрыть</bold></red>"
-      lore:
-        - "<gray>Закрыть это меню."

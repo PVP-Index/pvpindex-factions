@@ -13,9 +13,15 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class FactionsConfig {
 
     private final FileConfiguration cfg;
+    private final FileConfiguration rolesCfg;
 
     public FactionsConfig(final FileConfiguration cfg) {
+        this(cfg, cfg);
+    }
+
+    public FactionsConfig(final FileConfiguration cfg, final FileConfiguration rolesCfg) {
         this.cfg = cfg;
+        this.rolesCfg = rolesCfg;
     }
 
     // -------------------------------------------------------------------------
@@ -319,6 +325,50 @@ public class FactionsConfig {
     }
 
     // -------------------------------------------------------------------------
+    // Roles
+    // -------------------------------------------------------------------------
+
+    public boolean isCustomRolesEnabled() {
+        return rolesCfg.getBoolean("roles.custom.enabled", true);
+    }
+
+    public boolean isRoleFactionOverridesEnabled() {
+        return rolesCfg.getBoolean("roles.overrides.enabled", false);
+    }
+
+    public int getMinCustomRolePriority() {
+        return rolesCfg.getInt("roles.custom.min-priority", RankDefaults.MIN_CUSTOM_PRIORITY);
+    }
+
+    public int getMaxCustomRolePriority() {
+        return rolesCfg.getInt("roles.custom.max-priority", RankDefaults.MAX_CUSTOM_PRIORITY);
+    }
+
+    public int getMaxCustomRolesPerFaction() {
+        return rolesCfg.getInt("roles.custom.max-per-faction", 0);
+    }
+
+    public boolean isRolePrefixesEnabled() {
+        return rolesCfg.getBoolean("roles.prefix.enabled", true);
+    }
+
+    public int getMaxRolePrefixLength() {
+        return rolesCfg.getInt("roles.prefix.max-length", 32);
+    }
+
+    public String getDefaultOwnerRolePrefix() {
+        return rolesCfg.getString("roles.defaults.owner.prefix", "");
+    }
+
+    public String getDefaultOfficerRolePrefix() {
+        return rolesCfg.getString("roles.defaults.officer.prefix", "");
+    }
+
+    public String getDefaultMemberRolePrefix() {
+        return rolesCfg.getString("roles.defaults.member.prefix", "");
+    }
+
+    // -------------------------------------------------------------------------
     // Economy
     // -------------------------------------------------------------------------
 
@@ -609,5 +659,13 @@ public class FactionsConfig {
         return cfg.getBoolean(
                 "factions.flags." + flag.getId() + ".player-editable",
                 true);
+    }
+
+    private static final class RankDefaults {
+        private static final int MIN_CUSTOM_PRIORITY = 11;
+        private static final int MAX_CUSTOM_PRIORITY = 99;
+
+        private RankDefaults() {
+        }
     }
 }

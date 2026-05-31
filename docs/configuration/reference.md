@@ -110,6 +110,21 @@ This page documents all shipped configuration keys with a description and a conc
 |---|---|---|
 | `factions.audit.page-size` | Entries per page for `/f audit` and `/fa audit`. | `audit: { page-size: 10 }` |
 
+### `roles.yml` (`roles.*`)
+
+| Key | Description | Example |
+|---|---|---|
+| `roles.overrides.enabled` (`roles.yml`) | Global toggle for per-faction role overrides. | `roles: { overrides: { enabled: false } }` |
+| `roles.custom.enabled` (`roles.yml`) | Enable custom role CRUD through `/f role ...`. | `roles: { custom: { enabled: true } }` |
+| `roles.custom.min-priority` (`roles.yml`) | Minimum allowed priority for custom roles. | `roles: { custom: { min-priority: 11 } }` |
+| `roles.custom.max-priority` (`roles.yml`) | Maximum allowed priority for custom roles. | `roles: { custom: { max-priority: 99 } }` |
+| `roles.custom.max-per-faction` (`roles.yml`) | Maximum custom roles per faction (`0` = unlimited). | `roles: { custom: { max-per-faction: 8 } }` |
+| `roles.prefix.enabled` (`roles.yml`) | Allow role prefix editing in `/f role setprefix`. | `roles: { prefix: { enabled: true } }` |
+| `roles.prefix.max-length` (`roles.yml`) | Maximum role prefix length (`0` = unlimited). | `roles: { prefix: { max-length: 32 } }` |
+| `roles.defaults.owner.prefix` (`roles.yml`) | Default Owner prefix used when a faction is created. | `roles: { defaults: { owner: { prefix: "<gold>[Owner]</gold>" } } }` |
+| `roles.defaults.officer.prefix` (`roles.yml`) | Default Officer prefix used when a faction is created. | `roles: { defaults: { officer: { prefix: "<yellow>[Officer]</yellow>" } } }` |
+| `roles.defaults.member.prefix` (`roles.yml`) | Default Member prefix used when a faction is created. | `roles: { defaults: { member: { prefix: "" } } }` |
+
 ### `factions.fly.*`
 
 | Key | Description | Example |
