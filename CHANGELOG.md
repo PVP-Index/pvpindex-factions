@@ -6,6 +6,17 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [1.1.8] - 2026-06-06
+
+### Changed
+
+- Updated TeamsAPI integration from `2.4.0` to `2.5.0`.
+
+### Added
+
+- `TeamsService.getTeamIds()` - returns all team UUIDs for iteration without loading full team objects. Consumers can iterate over team IDs for bulk operations without loading each full `Team` object.
+- `Team.getOwner()` - default method available via existing `getOwnerUUID()` and `getMember()` implementation. Returns the owner's `TeamMember` directly.
+
 ## [1.1.7] - 2026-05-29
 
 ### Server owner highlights
@@ -92,7 +103,7 @@ Role management command suite:
 ### Integrations
 
 - TeamsAPI baseline: `2.4.0+`
-  - Modrinth: https://modrinth.com/plugin/teams-api
+   - Modrinth: https://modrinth.com/plugin/teams-api
 - PlaceholderAPI role placeholders available:
   - Modrinth: https://modrinth.com/plugin/placeholderapi
 
