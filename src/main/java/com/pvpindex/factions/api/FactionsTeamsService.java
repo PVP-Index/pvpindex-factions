@@ -106,6 +106,21 @@ public class FactionsTeamsService implements TeamsService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Returns all team UUIDs for iteration without loading full team objects.
+     * Available since TeamsAPI 2.5.0.</p>
+     */
+    @Override
+    public Collection<UUID> getTeamIds() {
+        final List<UUID> ids = new ArrayList<>();
+        for (final FactionModel f : impl.getAllFactions()) {
+            ids.add(UUID.fromString(f.getId()));
+        }
+        return ids;
+    }
+
     // -------------------------------------------------------------------------
     // Mutations — delegate to impl then fire TeamsAPI events
     // -------------------------------------------------------------------------
