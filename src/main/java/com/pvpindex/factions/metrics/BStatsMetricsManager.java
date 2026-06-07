@@ -82,7 +82,7 @@ public final class BStatsMetricsManager implements Listener {
         scheduleRelationRefresh();
 
         final Metrics metrics = new Metrics(plugin, pluginId);
-        metrics.addCustomChart(new SingleLineChart("created_factions", createdFactionsSinceStartup::get));
+        metrics.addCustomChart(new SingleLineChart("created_factions", () -> createdFactionsSinceStartup.getAndSet(0)));
         metrics.addCustomChart(new SingleLineChart("total_factions", totalFactions::get));
 
         metrics.addCustomChart(new DrilldownPie("relationship_type", () -> {
