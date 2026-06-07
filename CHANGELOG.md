@@ -6,6 +6,12 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [1.1.9] - 2026-06-07
+
+### Fixed
+
+- Fixed bStats `created_factions` chart to reset the counter after each report, ensuring it shows the number of factions created in the reporting period rather than the cumulative total since startup.
+
 ## [1.1.8] - 2026-06-06
 
 ### Changed
